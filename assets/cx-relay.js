@@ -65,7 +65,8 @@
     KEYS.forEach(function (k) {
       var now = read(k);
       if (now === seen[k]) return;
-      if (now == null) { seen[k] = now; return; }      /* 지운 건 굳이 퍼뜨리지 않는다 */
+      /* 지운 것도 빈 값으로 알려야 다른 기기에 남은 옛 기록이 지워진다 */
+      if (now == null) { send(k, '{}'); seen[k] = null; return; }
       send(k, now);
     });
   }
