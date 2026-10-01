@@ -77,6 +77,7 @@
   .vid.pre video,.vid.pre .snd{display:none}
   /* 현장 제어에서 '총회 시작'을 누르기 전 — LIVE 대신 '중계 준비 중' */
   .vid .badge .wait{display:none}
+  .amodal.waiting .aggrid{opacity:.5;pointer-events:none}
   .vid.waiting .badge .live{display:none}
   .vid.waiting .badge .wait{display:inline-flex}
   .vid .lang{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.4);color:#fff;font-size:12px;font-weight:600;border-radius:8px;padding:5px 9px}
@@ -1591,8 +1592,8 @@ var AUTH={pick:null, then:null};
   document.getElementById('authX').addEventListener('click',authClose);
   document.getElementById('authBack').addEventListener('click',authClose);
   document.getElementById('authOk').addEventListener('click',function(){
-    /* PASS 는 앱으로 넘기는 화면을 한 번 더 거친다 */
-    if(AUTH.pick==='pass'){ qrStep(); return; }
+    /* PASS 는 실제 서비스처럼 별도 창에서 본인확인을 마친다 */
+    if(AUTH.pick==='pass'){ passPopup(); return; }
     authDone();
   });
 })();
@@ -1613,6 +1614,43 @@ function drawQR(seed){
   }
   finder(0,0); finder(N-7,0); finder(0,N-7);
 }
+/* PASS — 작은 새 창을 띄우고, 그 창이 끝나면 postMessage 로 결과를 받는다 */
+var PASSWIN=null, PASSMSG=null;
+function passPopup(){
+  var w=480,h=800;
+  var x=Math.max(0,(screen.width-w)/2), y=Math.max(0,(screen.height-h)/2);
+  try{
+    PASSWIN=window.open('passauth.html','cxPassAuth',
+      'width='+w+',height='+h+',left='+Math.round(x)+',top='+Math.round(y)+
+      ',resizable=yes,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
+  }catch(e){ PASSWIN=null; }
+  if(!PASSWIN){ qrStep(); return; }          /* 팝업이 막히면 기존 모달 단계로 */
+  try{ PASSWIN.focus(); }catch(e){}
+  document.querySelector('.amodal').classList.add('waiting');
+  var ok=document.getElementById('authOk');
+  ok.disabled=true; ok.textContent='PASS 창에서 인증 중…';
+  if(PASSMSG) window.removeEventListener('message',PASSMSG);
+  PASSMSG=function(e){
+    if(e.origin!==location.origin || !e.data || !e.data.cxPass) return;
+    window.removeEventListener('message',PASSMSG); PASSMSG=null;
+    passReset();
+    if(e.data.ok) authDone();
+  };
+  window.addEventListener('message',PASSMSG);
+  /* 창을 그냥 닫은 경우 되돌린다 */
+  clearInterval(passPopup.t);
+  passPopup.t=setInterval(function(){
+    if(PASSWIN && PASSWIN.closed){ clearInterval(passPopup.t); if(PASSMSG){ window.removeEventListener('message',PASSMSG); PASSMSG=null; } passReset(); }
+  },600);
+}
+function passReset(){
+  clearInterval(passPopup.t);
+  document.querySelector('.amodal').classList.remove('waiting');
+  var ok=document.getElementById('authOk');
+  ok.textContent='인증'; ok.disabled=!AUTH.pick;
+  PASSWIN=null;
+}
+
 var QRT=null;
 function qrStep(){
   document.querySelector('.amodal').classList.add('step2');
@@ -1631,6 +1669,8 @@ function qrStep(){
 }
 function authReset(){
   clearInterval(QRT); QRT=null;
+  passReset();
+  try{ if(PASSWIN && !PASSWIN.closed) PASSWIN.close(); }catch(e){}
   document.querySelector('.amodal').classList.remove('step2');
   document.getElementById('authBack').style.display='none';
 }
