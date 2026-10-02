@@ -52,19 +52,27 @@
 
   /* 2 · QR 인증 — 피그마 좌표 그대로 */
   .s2{position:relative;height:100%}
-  .lead{position:absolute;left:32px;top:15px;font-size:26px;line-height:1.35;letter-spacing:-1px;color:var(--ink)}
+  /* 피그마 좌표 그대로 (캔버스 480x800 · 이 영역은 헤더 100px 아래에서 시작) */
+  .lead{position:absolute;left:32px;right:45px;top:15px;
+    font-size:26px;line-height:1.35;letter-spacing:-1px;color:var(--ink)}
   .lead b{font-weight:700;color:var(--red)}
   .hrule{position:absolute;left:32px;top:126px;width:416px;height:1px;background:#E5E5E5}
+  /* QR · 또는 · 인증번호 — 세로 가운데를 QR 에 맞춘다 */
   .qr{position:absolute;left:69px;top:152px;width:120px;height:120px}
   .qr canvas{width:120px;height:120px;display:block;image-rendering:pixelated}
-  .or{position:absolute;left:206px;top:193px;font-size:18px;color:var(--gray)}
-  .num{position:absolute;right:35px;top:183px;font-size:32px;font-weight:600;letter-spacing:-.2px;
-    color:#020202;font-variant-numeric:tabular-nums}
+  .or{position:absolute;left:234px;top:152px;height:120px;transform:translateX(-50%);
+    display:flex;align-items:center;font-size:18px;color:var(--gray);white-space:nowrap}
+  .num{position:absolute;left:347px;top:152px;height:120px;transform:translateX(-50%);
+    display:flex;align-items:center;font-size:32px;font-weight:600;letter-spacing:-.2px;
+    color:#020202;font-variant-numeric:tabular-nums;white-space:nowrap}
+  /* 남은시간 줄 — 아이콘 24px 기준으로 한 줄에 정렬 */
   .tmr{position:absolute;left:52px;top:322px;width:24px;height:24px}
-  .tlb{position:absolute;left:82px;top:323px;font-size:18px;font-weight:600;color:var(--gray)}
-  .tval{position:absolute;left:151px;top:323px;font-size:18px;font-weight:600;color:var(--red);
-    font-variant-numeric:tabular-nums}
-  .text{position:absolute;right:32px;top:323px;font-size:18px;font-weight:600;color:#020202;
+  .tlb{position:absolute;left:82px;top:322px;height:24px;display:flex;align-items:center;
+    font-size:18px;font-weight:600;color:var(--gray);white-space:nowrap}
+  .tval{position:absolute;left:151px;top:322px;height:24px;display:flex;align-items:center;
+    font-size:18px;font-weight:600;color:var(--red);font-variant-numeric:tabular-nums}
+  .text{position:absolute;left:366px;top:322px;height:24px;display:flex;align-items:center;
+    padding:0;font-size:18px;font-weight:600;color:#020202;white-space:nowrap;
     text-decoration:underline;text-underline-offset:3px}
   .note{position:absolute;left:32px;top:395px;width:416px;text-align:center;
     font-size:18px;line-height:1.5;color:var(--gray)}
