@@ -23,6 +23,20 @@
 
   var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att'];
   var HOST = 'https://ntfy.sh';
+
+  /* ── 중계 서버 ───────────────────────────────────────────────
+     Firebase Realtime Database 주소를 넣으면 그쪽을 쓴다(발행 한도·크기 제한 없음).
+       · 아래 FB 에 적거나
+       · 주소 뒤에 ?fb=https://<프로젝트>-default-rtdb.firebasedatabase.app 를 붙이거나
+       · 페이지에서 window.CX_FIREBASE_DB 로 지정
+     비어 있으면 예전처럼 ntfy.sh 공개 토픽으로 동작한다. */
+  var FB = '';
+  var fbUrl = (location.search.match(/[?&]fb=([^&]+)/) || [])[1];
+  var DB = (fbUrl ? decodeURIComponent(fbUrl) : (window.CX_FIREBASE_DB || FB) || '').replace(/\/$/, '');
+  var USE_FB = /^https?:\/\//.test(DB);
+  function fbKey(k) { return k.replace(/[.#$/\[\]]/g, '_'); }     /* RTDB 키에 쓸 수 없는 글자 치환 */
+  function unFbKey(x) { for (var i = 0; i < KEYS.length; i++) if (fbKey(KEYS[i]) === x) return KEYS[i]; return null; }
+  function fbPath() { return DB + '/cx/' + topic; }
   var topic = (location.search.match(/[?&]relay=([A-Za-z0-9_-]{4,64})/) || [])[1]
     || window.CX_RELAY_TOPIC || 'cx-kudos-live-9f73a2c4';
   var SELF = Math.random().toString(36).slice(2);   /* 내가 보낸 것은 되받지 않는다 */
@@ -79,6 +93,16 @@
   function send(k, txt, prev) {
     seen[k] = txt;
     var t = Date.now();
+    if (USE_FB) {
+      try {
+        fetch(fbPath() + '/' + fbKey(k) + '.json', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: SELF, v: txt, t: t })
+        }).catch(function () {});
+      } catch (e) {}
+      return;
+    }
     /* 바뀐 항목만 추려 보낼 수 있으면 그렇게 한다 — 사진이 쌓여도 새 건만 나간다 */
     if (PATCH[k] && prev != null) {
       var d = diff(prev, txt);
@@ -151,10 +175,40 @@
     if (KEYS.indexOf(e.key) >= 0) watch();
   });
 
+  /* Firebase 스트리밍이 보내 주는 put · patch 를 로컬에 반영한다 */
+  function fbTake(ev) {
+    var m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (!m || m.path == null) return;
+    function one(keyPart, rec) {
+      var k = unFbKey(keyPart); if (!k || !rec || rec.from === SELF) return;
+      apply(k, rec.v, rec.t);
+    }
+    if (m.path === '/') {                        /* 처음 붙었을 때 전체가 한 번에 온다 */
+      var all = m.data || {};
+      Object.keys(all).forEach(function (x) { one(x, all[x]); });
+      return;
+    }
+    var seg = m.path.replace(/^\//, '').split('/');
+    one(seg[0], seg.length > 1 ? null : m.data);
+  }
+
   var es = null, wait = 0;
   function connect() {
     try { if (es) es.close(); } catch (e) {}
     try {
+      if (USE_FB) {
+        es = new EventSource(fbPath() + '.json');
+        es.addEventListener('put', fbTake);
+        es.addEventListener('patch', fbTake);
+        es.onopen = function () { wait = 0; window.cxRelay.ok = true; };
+        es.onerror = function () {
+          window.cxRelay.ok = false;
+          try { es.close(); } catch (e) {}
+          wait = Math.min(30000, (wait || 1000) * 2);
+          setTimeout(connect, wait);
+        };
+        return;
+      }
       es = new EventSource(HOST + '/' + topic + '/sse');
       es.onopen = function () { wait = 0; window.cxRelay.ok = true; };
       es.onmessage = function (ev) {
@@ -175,6 +229,21 @@
 
   /* 늦게 들어온 기기 — 최근에 지나간 값을 칸마다 한 번씩 받아 둔다 */
   function catchUp() {
+    if (USE_FB) {
+      try {
+        fetch(fbPath() + '.json')
+          .then(function (r) { return r.json(); })
+          .then(function (all) {
+            if (!all) return;
+            Object.keys(all).forEach(function (x) {
+              var k = unFbKey(x), rec = all[x];
+              if (k && rec && rec.from !== SELF) apply(k, rec.v, rec.t);
+            });
+          })
+          .catch(function () {});
+      } catch (e) {}
+      return;
+    }
     try {
       fetch(HOST + '/' + topic + '/json?poll=1&since=12h')
         .then(function (r) { return r.text(); })
