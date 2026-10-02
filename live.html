@@ -2128,16 +2128,22 @@ function paintLeft(){
 
 /* 영상은 길이를 알기 전에 위치를 옮기면 그대로 멈춰 버린다.
    받은 값을 들고 있다가 메타데이터가 오면 그때 맞춘다. */
-var VWANT=null;
+var VWANT=null, VLAST=null, VFREE=false;
 function syncVid(){
   if(window.__PRE) return;
   var v=document.getElementById('vid');
   if(!v||!VWANT||v.readyState<1||!v.duration) return;
-  var c=VWANT, drift=(Date.now()-c.at)/1000;
-  var want=(c.vt+(c.vpaused?0:drift))%v.duration;
-  if(isFinite(want)&&Math.abs(v.currentTime-want)>1.5) v.currentTime=want;
-  if(c.vpaused) v.pause(); else v.play().catch(function(){});
+  var c=VWANT;
   document.querySelector('.vid').classList.add('playing');
+  /* 총회를 멈춘 경우에만 영상도 멈춘다 — 제어 화면 미리보기가 꺼져 있다고 따라 멈추지 않는다 */
+  if(c.run===false){ v.pause(); return; }
+  /* 제어 화면 영상이 실제로 돌고 있을 때만 위치를 맞춘다 */
+  if(!VFREE && isFinite(c.vt)){
+    var drift=(Date.now()-c.at)/1000;
+    var want=(c.vt+drift)%v.duration;
+    if(isFinite(want)&&Math.abs(v.currentTime-want)>5) v.currentTime=want;
+  }
+  if(v.paused) v.play().catch(function(){});
 }
 /* 총회 시작 전(현장 제어 시계가 한 번도 돌지 않음)에는 준비 중 화면 — 시작 신호가 오면 생중계로 */
 function setWaiting(on){
@@ -2166,6 +2172,13 @@ function applyClock(c){
   }
   var drift=(Date.now()-c.at)/1000;
   CLOCK.t=c.t+(c.run?drift:0); CLOCK.run=!!c.run;
+  /* 제어 화면의 영상이 실제로 흐르고 있는지 본다 — 멈춰 있으면 시청 화면은 자체 재생으로 둔다 */
+  if(VLAST && c.at>VLAST.at){
+    var gap=(c.at-VLAST.at)/1000, adv=(+c.vt||0)-(+VLAST.vt||0);
+    if(gap>2 && adv<gap*0.3) VFREE=true;
+    else if(adv>=gap*0.5) VFREE=false;
+  }
+  VLAST={at:c.at, vt:(+c.vt||0)};
   VWANT=c; syncVid();
 }
 (function(){ var v=document.getElementById('vid');
