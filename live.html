@@ -408,7 +408,8 @@
   .arb.pass{background:#0071f3}.arb.fail{background:#e9081b}.arb.disc{background:#151419}.arb.wd{background:#a7aab1}
 
   /* overlay + modal */
-  .ovl{position:fixed;inset:0;background:rgba(10,12,20,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:24px}
+  /* 긴급 표결 모달(z 500) 위에 떠야 간편인증을 이어서 진행할 수 있다 */
+  .ovl{position:fixed;inset:0;background:rgba(10,12,20,.55);display:none;align-items:center;justify-content:center;z-index:600;padding:24px}
   .ovl.on{display:flex}
   html:has(.ovl.on),html:has(.ovl.on) body{overflow:hidden}   /* 모달이 떠 있는 동안 바깥은 스크롤되지 않는다 */
   .ovl.on *{overscroll-behavior:contain}
