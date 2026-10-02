@@ -45,6 +45,30 @@
     try { window.dispatchEvent(new CustomEvent('cx-relay', { detail: { key: k, value: txt } })); } catch (e) {}
   }
 
+  /* 사람별로 쌓이는 칸은 통째로 보내면 위임이 늘수록 매번 전부 다시 나간다.
+     바뀐 항목만 추려 보내고 받는 쪽에서 합친다. */
+  var PATCH = { 'cx.app.px': 1 };
+  function obj(t) { try { var o = JSON.parse(t); return (o && typeof o === 'object' && !(o instanceof Array)) ? o : null; } catch (e) { return null; } }
+  function diff(oldT, newT) {
+    var a = obj(oldT), b = obj(newT);
+    if (!a || !b) return null;
+    var put = {}, del = [], n = 0, k;
+    for (k in b) if (JSON.stringify(b[k]) !== JSON.stringify(a[k])) { put[k] = b[k]; n++; }
+    for (k in a) if (!(k in b)) { del.push(k); n++; }
+    if (!n) return { put: {}, del: [] };
+    return { put: put, del: del };
+  }
+  function merge(k, d) {
+    var cur = obj(read(k)) || {};
+    Object.keys(d.put || {}).forEach(function (x) { cur[x] = d.put[x]; });
+    (d.del || []).forEach(function (x) { delete cur[x]; });
+    var txt = JSON.stringify(cur);
+    seen[k] = txt;
+    try { localStorage.setItem(k, txt); } catch (e) {}
+    try { window.dispatchEvent(new StorageEvent('storage', { key: k, newValue: txt })); } catch (e) {}
+    try { window.dispatchEvent(new CustomEvent('cx-relay', { detail: { key: k, value: txt } })); } catch (e) {}
+  }
+
   /* ntfy 한 건은 4KB 를 넘지 못한다 — 큰 값(신분증 사진 등)은 조각으로 나눠 보낸다 */
   var MAX = 2400;
   function post(obj) {
@@ -52,9 +76,17 @@
       fetch(HOST + '/' + topic, { method: 'POST', body: JSON.stringify(obj) }).catch(function () {});
     } catch (e) {}
   }
-  function send(k, txt) {
+  function send(k, txt, prev) {
     seen[k] = txt;
     var t = Date.now();
+    /* 바뀐 항목만 추려 보낼 수 있으면 그렇게 한다 — 사진이 쌓여도 새 건만 나간다 */
+    if (PATCH[k] && prev != null) {
+      var d = diff(prev, txt);
+      if (d) {
+        var pt = JSON.stringify({ from: SELF, k: k, p: d.put, x: d.del, t: t });
+        if (pt.length < txt.length) { sendText(k, pt, t, d); return; }
+      }
+    }
     if (txt.length <= MAX) { post({ from: SELF, k: k, v: txt, t: t }); return; }
     var id = SELF + '-' + t, n = Math.ceil(txt.length / MAX);
     for (var i = 0; i < n; i++) {
@@ -66,16 +98,34 @@
       })(i);
     }
   }
+  /* 패치 한 건 — 작으면 그대로, 크면 조각으로 */
+  function sendText(k, body, t, d) {
+    if (body.length <= MAX) { post(JSON.parse(body)); return; }
+    var id = SELF + '-' + t + '-p', n = Math.ceil(body.length / MAX);
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        setTimeout(function () {
+          post({ from: SELF, k: k, id: id, i: i, n: n, c: body.substr(i * MAX, MAX), t: t, pw: 1 });
+        }, i * 150);
+      })(i);
+    }
+  }
   /* 조각 모으기 — 다 모이면 한 값으로 합쳐 반영한다 */
   var BUF = {};
   function take(p) {
     if (!p || p.from === SELF) return;
     if (p.id) {
-      var b = BUF[p.id] || (BUF[p.id] = { k: p.k, n: p.n, t: p.t, got: 0, parts: [] });
+      var b = BUF[p.id] || (BUF[p.id] = { k: p.k, n: p.n, t: p.t, got: 0, parts: [], pw: p.pw });
       if (b.parts[p.i] == null) { b.parts[p.i] = p.c; b.got++; }
-      if (b.got >= b.n) { apply(b.k, b.parts.join(''), b.t); delete BUF[p.id]; }
+      if (b.got >= b.n) {
+        var whole = b.parts.join('');
+        if (b.pw) { try { take(JSON.parse(whole)); } catch (e) {} }
+        else apply(b.k, whole, b.t);
+        delete BUF[p.id];
+      }
       return;
     }
+    if (p.k && p.p) { merge(p.k, { put: p.p, del: p.x }); return; }   /* 바뀐 항목만 온 경우 */
     if (p.k) { apply(p.k, p.v, p.t); return; }
     if (p.s) apply('cx.live', JSON.stringify(p.s), p.t);   /* 예전 형식 */
   }
@@ -91,8 +141,9 @@
       var now = read(k);
       if (now === seen[k]) return;
       /* 지운 것도 빈 값으로 알려야 다른 기기에 남은 옛 기록이 지워진다 */
+      var prev = seen[k];
       if (now == null) { send(k, '{}'); seen[k] = null; return; }
-      send(k, now);
+      send(k, now, prev);
     });
   }
   setInterval(watch, 700);
@@ -128,13 +179,14 @@
       fetch(HOST + '/' + topic + '/json?poll=1&since=12h')
         .then(function (r) { return r.text(); })
         .then(function (t) {
-          var last = {}, groups = {};
+          var last = {}, groups = {}, patches = [];
           t.split('\n').forEach(function (l) {
             if (!l.trim()) return;
             try {
               var m = JSON.parse(l);
               if (m.event !== 'message' || !m.message) return;
               var p = JSON.parse(m.message);
+              if (p.k && p.p) { patches.push(p); return; }  /* 바뀐 항목만 — 나중에 순서대로 */
               if (p.id) {                                   /* 조각난 값 — 먼저 모은다 */
                 var g = groups[p.id] || (groups[p.id] = { k: p.k, n: p.n, t: p.t || 0, got: 0, parts: [] });
                 if (g.parts[p.i] == null) { g.parts[p.i] = p.c; g.got++; }
@@ -153,6 +205,8 @@
             if (!last[g.k] || g.t > last[g.k].t) last[g.k] = { v: v, t: g.t };
           });
           Object.keys(last).forEach(function (k) { apply(k, last[k].v, last[k].t); });
+          patches.sort(function (a, b) { return (a.t || 0) - (b.t || 0); })
+                 .forEach(function (p) { merge(p.k, { put: p.p, del: p.x }); });
         })
         .catch(function () {});
     } catch (e) {}
