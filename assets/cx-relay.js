@@ -45,14 +45,39 @@
     try { window.dispatchEvent(new CustomEvent('cx-relay', { detail: { key: k, value: txt } })); } catch (e) {}
   }
 
+  /* ntfy 한 건은 4KB 를 넘지 못한다 — 큰 값(신분증 사진 등)은 조각으로 나눠 보낸다 */
+  var MAX = 2400;
+  function post(obj) {
+    try {
+      fetch(HOST + '/' + topic, { method: 'POST', body: JSON.stringify(obj) }).catch(function () {});
+    } catch (e) {}
+  }
   function send(k, txt) {
     seen[k] = txt;
-    try {
-      fetch(HOST + '/' + topic, {
-        method: 'POST',
-        body: JSON.stringify({ from: SELF, k: k, v: txt, t: Date.now() })
-      }).catch(function () {});
-    } catch (e) {}
+    var t = Date.now();
+    if (txt.length <= MAX) { post({ from: SELF, k: k, v: txt, t: t }); return; }
+    var id = SELF + '-' + t, n = Math.ceil(txt.length / MAX);
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        /* 한꺼번에 쏘면 받는 쪽에서 밀리므로 조금씩 띄워 보낸다 */
+        setTimeout(function () {
+          post({ from: SELF, k: k, id: id, i: i, n: n, c: txt.substr(i * MAX, MAX), t: t });
+        }, i * 150);
+      })(i);
+    }
+  }
+  /* 조각 모으기 — 다 모이면 한 값으로 합쳐 반영한다 */
+  var BUF = {};
+  function take(p) {
+    if (!p || p.from === SELF) return;
+    if (p.id) {
+      var b = BUF[p.id] || (BUF[p.id] = { k: p.k, n: p.n, t: p.t, got: 0, parts: [] });
+      if (b.parts[p.i] == null) { b.parts[p.i] = p.c; b.got++; }
+      if (b.got >= b.n) { apply(b.k, b.parts.join(''), b.t); delete BUF[p.id]; }
+      return;
+    }
+    if (p.k) { apply(p.k, p.v, p.t); return; }
+    if (p.s) apply('cx.live', JSON.stringify(p.s), p.t);   /* 예전 형식 */
   }
   /* 예전 방식 호출 호환 — cxRelay.publish(상태객체) 또는 publish('cx.live', 값) */
   function publish(a, b) {
@@ -85,10 +110,7 @@
         try {
           var m = JSON.parse(ev.data);
           if (m.event !== 'message' || !m.message) return;
-          var p = JSON.parse(m.message);
-          if (p.from === SELF) return;
-          if (p.k) { apply(p.k, p.v, p.t); return; }
-          if (p.s) apply('cx.live', JSON.stringify(p.s), p.t);   /* 예전 형식 */
+          take(JSON.parse(m.message));
         } catch (e) {}
       };
       es.onerror = function () {
@@ -106,18 +128,29 @@
       fetch(HOST + '/' + topic + '/json?poll=1&since=12h')
         .then(function (r) { return r.text(); })
         .then(function (t) {
-          var last = {};
+          var last = {}, groups = {};
           t.split('\n').forEach(function (l) {
             if (!l.trim()) return;
             try {
               var m = JSON.parse(l);
               if (m.event !== 'message' || !m.message) return;
               var p = JSON.parse(m.message);
+              if (p.id) {                                   /* 조각난 값 — 먼저 모은다 */
+                var g = groups[p.id] || (groups[p.id] = { k: p.k, n: p.n, t: p.t || 0, got: 0, parts: [] });
+                if (g.parts[p.i] == null) { g.parts[p.i] = p.c; g.got++; }
+                return;
+              }
               var k = p.k || (p.s ? 'cx.live' : null);
               var v = p.k ? p.v : (p.s ? JSON.stringify(p.s) : null);
               if (!k || v == null) return;
               if (!last[k] || (p.t || 0) > last[k].t) last[k] = { v: v, t: p.t || 0 };
             } catch (e) {}
+          });
+          Object.keys(groups).forEach(function (id) {
+            var g = groups[id];
+            if (g.got < g.n) return;                         /* 덜 온 묶음은 버린다 */
+            var v = g.parts.join('');
+            if (!last[g.k] || g.t > last[g.k].t) last[g.k] = { v: v, t: g.t };
           });
           Object.keys(last).forEach(function (k) { apply(k, last[k].v, last[k].t); });
         })
