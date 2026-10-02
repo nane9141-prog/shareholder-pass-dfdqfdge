@@ -2,154 +2,160 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=480,initial-scale=1">
 <title>PASS 인증</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
-  :root{
-    --red:#EC1C24; --ink:#17171C; --sub:#6B6B73; --line:#E6E6EA;
-    --bg:#FFFFFF; --foot:#F4F4F6;
-  }
+  /* 피그마 480 × 800 기준. 창 크기가 달라도 같은 비율로 보이도록 폭을 480 으로 고정한다. */
+  :root{ --red:#FE3947; --ink:#050505; --gray:#656565; --line:#D6D6D6; --foot:#F0F0F0; }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
-  body{background:var(--bg);color:var(--ink);
-    font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-    display:flex;flex-direction:column;letter-spacing:-.02em}
+  body{background:#fff;color:var(--ink);font-family:Pretendard,-apple-system,BlinkMacSystemFont,
+    'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    display:flex;flex-direction:column;overflow-x:hidden}
   button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  img{display:block}
 
-  /* ── 상단 ─────────────────────────────── */
-  .hd{flex:none;display:flex;align-items:center;gap:12px;padding:22px 24px 0}
-  .logo{display:flex;align-items:center;gap:10px}
-  .mark{height:34px;display:flex;align-items:center}
-  .mark img{height:34px;display:block}
-  .tag{font-size:11.5px;line-height:15px;color:#9A9AA2;font-weight:500}
-  .lang{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#55555D}
-  .lang svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6}
+  /* ── Header (h100 · pl32 · pr30.3 · pt31) ── */
+  .hd{flex:none;height:100px;display:flex;align-items:flex-start;justify-content:space-between;
+    padding:31px 30.3px 0 32px}
+  .hl{display:flex;gap:8px;align-items:center}
+  .hl .logo{width:116px;height:36px}
+  .hl .tag{font-size:15px;line-height:20px;font-weight:500;letter-spacing:-.9px;color:var(--ink)}
+  .hr{display:flex;gap:5.3px;align-items:center;padding-top:6px}
+  .hr .gl{width:18px;height:18px}
+  .hr .ko{font-size:16px;font-weight:700;color:#68717B}
+  .hr .cv{width:8px;height:8px;border-right:1px solid #999;border-bottom:1px solid #999;
+    transform:rotate(45deg);margin:-4px 2px 0 1px}
 
-  /* ── 본문 ─────────────────────────────── */
-  .bd{flex:1;min-height:0;overflow-y:auto;padding:36px 24px 24px}
+  /* ── Main ── */
+  .main{flex:1;min-height:0;position:relative}
   .scr{display:none}
   .scr.on{display:block}
 
-  /* 1단계 — 인증방법 선택 */
-  h1{font-size:27px;font-weight:800;line-height:1.35;letter-spacing:-.035em}
-  .ways{margin-top:34px;display:flex;flex-direction:column;gap:12px}
-  .way{width:100%;display:flex;align-items:center;gap:14px;padding:22px 20px;text-align:left;
-    background:#fff;border:1px solid var(--line);border-radius:12px;transition:.15s}
-  .way:hover{border-color:#C9C9D1}
-  .way:active{background:#FAFAFB}
-  .way .c{flex:1;min-width:0;display:flex;flex-direction:column}
-  .way .t{display:block;font-size:18px;font-weight:800;letter-spacing:-.03em}
-  .way .d{display:block;margin-top:6px;font-size:13.5px;color:var(--sub)}
-  .way .ic{flex:none;width:44px;height:44px;color:#D4D4DA}
-  .way .ic svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.5;
-    stroke-linecap:round;stroke-linejoin:round}
+  /* 1 · 인증방법 선택 (left 32 · right 45 · top 15 from main) */
+  .s1{padding:15px 45px 0 32px}
+  .s1 h1{font-size:32px;line-height:40px;letter-spacing:-1.7px;font-weight:400}
+  .s1 h1 b{font-weight:700}
+  .ways{margin-top:36px;display:flex;flex-direction:column;gap:12px}
+  .way{width:100%;height:100px;display:flex;align-items:center;padding:24px;
+    border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left}
+  .way:active{background:#FAFAFA}
+  .way .c{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;letter-spacing:-.8px}
+  .way .t{font-size:23px;line-height:25.3px;font-weight:700;color:var(--ink)}
+  .way .d{font-size:18px;line-height:25.3px;font-weight:400;color:#7B7B7B}
+  .way .ic{flex:none;width:46px;height:46px}
+  .mvno{margin-top:19px;display:flex;gap:6px;align-items:center;justify-content:flex-end}
+  .mvno img{width:20px;height:20px}
+  .mvno span{font-size:16px;letter-spacing:-.7px;color:#676F78}
 
-  /* 2단계 — QR 인증 */
-  .lead{font-size:17px;font-weight:700;line-height:1.55;letter-spacing:-.03em}
-  .lead b{color:var(--red)}
-  .rule{height:1px;background:var(--line);margin:24px 0}
-  .qrow{display:flex;align-items:center;gap:18px}
-  .qrbox{flex:none;width:118px;height:118px;padding:5px;background:#fff;border:1px solid var(--line);border-radius:6px}
-  .qrbox canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
-  .or{flex:none;font-size:14px;color:var(--sub)}
-  .code{flex:1;text-align:right;font-size:33px;font-weight:800;letter-spacing:-.02em;
+  /* 2 · QR 인증 — 피그마 좌표 그대로 */
+  .s2{position:relative;height:100%}
+  .lead{position:absolute;left:32px;top:15px;font-size:26px;line-height:1.35;letter-spacing:-1px;color:var(--ink)}
+  .lead b{font-weight:700;color:var(--red)}
+  .hrule{position:absolute;left:32px;top:126px;width:416px;height:1px;background:#E5E5E5}
+  .qr{position:absolute;left:69px;top:152px;width:120px;height:120px}
+  .qr canvas{width:120px;height:120px;display:block;image-rendering:pixelated}
+  .or{position:absolute;left:206px;top:193px;font-size:18px;color:var(--gray)}
+  .num{position:absolute;right:35px;top:183px;font-size:32px;font-weight:600;letter-spacing:-.2px;
+    color:#020202;font-variant-numeric:tabular-nums}
+  .tmr{position:absolute;left:52px;top:322px;width:24px;height:24px}
+  .tlb{position:absolute;left:82px;top:323px;font-size:18px;font-weight:600;color:var(--gray)}
+  .tval{position:absolute;left:151px;top:323px;font-size:18px;font-weight:600;color:var(--red);
     font-variant-numeric:tabular-nums}
-  .tmrow{margin-top:26px;display:flex;align-items:center;gap:8px}
-  .tmrow .clk{width:20px;height:20px;flex:none;display:block}
-  .tmrow .clk img{width:20px;height:20px;display:block}
-  .tm{font-size:15px;font-weight:700}
-  .tm b{color:var(--red);font-variant-numeric:tabular-nums}
-  .ext{margin-left:auto;font-size:13.5px;color:var(--sub);text-decoration:underline;text-underline-offset:3px}
-  .note{margin-top:30px;text-align:center;font-size:13.5px;line-height:1.7;color:var(--sub)}
-  .note b{color:#55555D;font-weight:700}
-  .go{margin-top:20px;width:100%;height:56px;border-radius:8px;background:var(--red);color:#fff;
-    font-size:18px;font-weight:800;letter-spacing:-.03em}
-  .go:active{background:#D4181F}
-  .go[disabled]{background:#E3E3E7;color:#A8A8B0}
-  /* 인증 완료 */
-  .okwrap{padding:60px 0 0;text-align:center}
-  .okic{width:76px;height:76px;margin:0 auto;border-radius:50%;background:#FDECEC;color:var(--red);
+  .text{position:absolute;right:32px;top:323px;font-size:18px;font-weight:600;color:#020202;
+    text-decoration:underline;text-underline-offset:3px}
+  .note{position:absolute;left:32px;top:395px;width:416px;text-align:center;
+    font-size:18px;line-height:1.5;color:var(--gray)}
+  .note b{font-weight:700;color:#151515}
+  .go{position:absolute;left:32px;top:468px;width:416px;height:60px;border-radius:12px;
+    background:var(--red);color:#fff;font-size:26px;font-weight:700;letter-spacing:-1px}
+  .go:active{background:#E62A38}
+
+  /* 3 · 완료 */
+  .s3{padding:70px 32px 0;text-align:center}
+  .okic{width:88px;height:88px;margin:0 auto;border-radius:50%;background:#FFECEE;color:var(--red);
     display:flex;align-items:center;justify-content:center}
-  .okic svg{width:38px;height:38px;fill:none;stroke:currentColor;stroke-width:3;
+  .okic svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:3.4;
     stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;
     animation:draw .45s ease-out .1s forwards}
   @keyframes draw{to{stroke-dashoffset:0}}
-  .okwrap h2{margin-top:22px;font-size:22px;font-weight:800;letter-spacing:-.03em}
-  .okwrap p{margin-top:10px;font-size:14px;color:var(--sub);line-height:1.6}
+  .s3 h2{margin-top:26px;font-size:26px;font-weight:700;letter-spacing:-1px}
+  .s3 p{margin-top:12px;font-size:18px;line-height:1.5;color:var(--gray)}
 
-  /* ── 하단 ─────────────────────────────── */
-  .ft{flex:none;background:var(--foot);padding:16px 24px;display:flex;align-items:center;gap:12px}
-  .ft .l{flex:1;min-width:0;font-size:11.5px;line-height:1.7;color:#8A8A92}
-  .ft .l b{color:#55555D;font-weight:700}
-  .nice{flex:none;height:22px;display:block}
+  /* ── Footer (h66 · #F0F0F0 · p12/10) ── */
+  .ft{flex:none;position:relative;height:66px;background:var(--foot);padding:12px 10px}
+  .ft .row{display:flex;gap:7px}
+  .ft .row span{font-size:13px;line-height:22px;letter-spacing:-.5px;color:#637080}
+  .ft .row span.b{font-weight:700;color:#343D48}
+  .ft .ssl{font-size:13px;line-height:22px;letter-spacing:-.5px;color:#637080}
+  .ft .nice{position:absolute;right:9.9px;top:25px;width:77px;height:20px;object-fit:cover}
 </style>
 </head>
 <body>
 
 <div class="hd">
-  <div class="logo">
-    <span class="mark" id="mark"><img src="assets/pass-logo.svg" alt="PASS"></span>
+  <div class="hl">
+    <img class="logo" src="assets/pass-logo.svg" alt="PASS">
     <span class="tag">인증을 넘어<br>일상으로 PASS</span>
   </div>
-  <span class="lang">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>
-    KO
-    <svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="m6 9 6 6 6-6"/></svg>
-  </span>
+  <div class="hr">
+    <img class="gl" src="assets/pass-globe.svg" alt="">
+    <span class="ko">KO</span>
+    <span class="cv"></span>
+  </div>
 </div>
 
-<div class="bd">
+<div class="main">
 
   <!-- 1 · 인증방법 선택 -->
-  <section class="scr on" id="s1">
-    <h1>인증방법을<br>선택해주세요</h1>
+  <section class="scr s1 on" id="s1">
+    <h1><b>인증방법</b>을<br>선택해 주세요</h1>
     <div class="ways">
-      <button class="way" type="button" data-w="app">
+      <button class="way" type="button">
         <span class="c"><span class="t">PASS 인증</span><span class="d">앱으로 간편하고 안전하게!</span></span>
-        <span class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M9.5 6.5 8 8l1.5 1.5M14.5 6.5 16 8l-1.5 1.5"/></svg></span>
+        <img class="ic" src="assets/pass-way1.svg" alt="">
       </button>
-      <button class="way" type="button" data-w="qr">
-        <span class="c"><span class="t">QR코드 인증</span><span class="d">QR코드 스캔으로 간편하게!</span></span>
-        <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></span>
+      <button class="way" type="button">
+        <span class="c"><span class="t">QR코드 인증</span><span class="d">앱으로 간편하고 안전하게!</span></span>
+        <img class="ic" src="assets/pass-way2.svg" alt="">
       </button>
-      <button class="way" type="button" data-w="sms">
-        <span class="c"><span class="t">문자(SMS) 인증</span><span class="d">SMS 인증번호로 본인확인</span></span>
-        <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-4 4V6Z"/><path d="M9 10h.01M12 10h.01M15 10h.01"/></svg></span>
+      <button class="way" type="button">
+        <span class="c"><span class="t">문자(SMS) 인증</span><span class="d">앱으로 간편하고 안전하게!</span></span>
+        <img class="ic" src="assets/pass-way3.svg" alt="">
       </button>
     </div>
+    <div class="mvno"><img src="assets/pass-info.svg" alt=""><span>알뜰폰 사업자 확인</span></div>
   </section>
 
   <!-- 2 · QR 인증 -->
-  <section class="scr" id="s2">
+  <section class="scr s2" id="s2">
     <p class="lead">PASS앱 실행 후, 상단의 QR인증에서<br><b>QR코드 스캔</b> 또는 <b>인증번호 입력</b>을<br>선택해 주세요</p>
-    <div class="rule"></div>
-    <div class="qrow">
-      <div class="qrbox"><canvas id="qr" width="232" height="232"></canvas></div>
-      <span class="or">또는</span>
-      <span class="code" id="code">0000000</span>
-    </div>
-    <div class="tmrow">
-      <span class="clk"><img src="assets/pass-timer.svg" alt=""></span>
-      <span class="tm">남은시간 <b id="left">4 34</b></span>
-      <button class="ext" type="button" id="ext">시간연장</button>
-    </div>
+    <div class="hrule"></div>
+    <div class="qr"><canvas id="qr" width="240" height="240"></canvas></div>
+    <span class="or">또는</span>
+    <span class="num" id="num">0000000</span>
+    <img class="tmr" src="assets/pass-timer.svg" alt="">
+    <span class="tlb">남은시간</span>
+    <span class="tval" id="left">4:34</span>
+    <button class="text" type="button" id="ext">시간연장</button>
     <p class="note">자동으로 인증 처리가 안될 경우<br>아래의 <b>‘인증 완료’</b> 버튼을 눌러주세요</p>
     <button class="go" type="button" id="go">인증완료</button>
   </section>
 
   <!-- 3 · 완료 -->
-  <section class="scr" id="s3">
-    <div class="okwrap">
-      <div class="okic"><svg viewBox="0 0 24 24"><path d="m4 12.5 5.5 5.5L20 7"/></svg></div>
-      <h2>본인확인이 완료되었습니다</h2>
-      <p>창이 곧 닫힙니다.<br>주주총회 화면에서 의결권을 행사해 주세요.</p>
-    </div>
+  <section class="scr s3" id="s3">
+    <div class="okic"><svg viewBox="0 0 24 24"><path d="m4 12.5 5.5 5.5L20 7"/></svg></div>
+    <h2>본인확인이 완료되었습니다</h2>
+    <p>창이 곧 닫힙니다.<br>주주총회 화면에서 의결권을 행사해 주세요.</p>
   </section>
 
 </div>
 
 <div class="ft">
-  <div class="l"><b>이용약관</b> &nbsp;<b>개인정보처리방침</b> &nbsp;도움말<br>VeriSign 256-bit SSL 암호화 적용</div>
+  <div class="row"><span>이용약관</span><span class="b">개인정보처리방침</span><span>도움말</span></div>
+  <div class="ssl">VeriSign 256-bit SSL 암호화 적용</div>
   <img class="nice" src="assets/pass-copyright.gif" alt="NICE평가정보">
 </div>
 
@@ -161,7 +167,6 @@
 
   function show(id){
     document.querySelectorAll('.scr').forEach(function(s){ s.classList.toggle('on', s.id===id); });
-    $('.bd').scrollTop=0;
   }
 
   /* QR — 실제 인증이 아니므로 모양만 그린다 */
@@ -169,27 +174,26 @@
     var cv=$('#qr'), g=cv.getContext('2d'), N=29, u=cv.width/N, r=seed||1;
     function rnd(){ r=(r*1103515245+12345)&0x7fffffff; return r/0x7fffffff; }
     g.fillStyle='#fff'; g.fillRect(0,0,cv.width,cv.height);
+    g.fillStyle='#020202';
     for(var y=0;y<N;y++) for(var x=0;x<N;x++){
-      var inF=(x<8&&y<8)||(x>N-9&&y<8)||(x<8&&y>N-9);
-      if(inF) continue;
-      if(rnd()>0.5){ g.fillStyle='#17171C'; g.fillRect(x*u,y*u,u,u); }
+      if((x<8&&y<8)||(x>N-9&&y<8)||(x<8&&y>N-9)) continue;
+      if(rnd()>0.5) g.fillRect(x*u,y*u,u,u);
     }
     function finder(x,y){
-      g.fillStyle='#17171C'; g.fillRect(x*u,y*u,7*u,7*u);
+      g.fillStyle='#020202'; g.fillRect(x*u,y*u,7*u,7*u);
       g.fillStyle='#fff';    g.fillRect((x+1)*u,(y+1)*u,5*u,5*u);
-      g.fillStyle='#17171C'; g.fillRect((x+2)*u,(y+2)*u,3*u,3*u);
+      g.fillStyle='#020202'; g.fillRect((x+2)*u,(y+2)*u,3*u,3*u);
     }
     finder(0,0); finder(N-7,0); finder(0,N-7);
   }
 
-  var T=null, left=294;                      /* 4분 54초 */
+  var T=null, left=274;                       /* 4분 34초 */
   function paint(){
     var m=Math.floor(left/60), s=left%60;
-    $('#left').textContent=m+' '+(s<10?'0':'')+s;
+    $('#left').textContent=m+':'+(s<10?'0':'')+s;
   }
   function tick(){
-    clearInterval(T);
-    paint();
+    clearInterval(T); paint();
     T=setInterval(function(){
       left--; paint();
       if(left<=0){ clearInterval(T); done(false); }
@@ -197,8 +201,8 @@
   }
   function openQR(){
     drawQR(Date.now()%100000);
-    $('#code').textContent=String(1000000+Math.floor(Math.random()*8999999));
-    left=294; tick();
+    $('#num').textContent=String(1000000+Math.floor(Math.random()*8999999));
+    left=274; tick();
     show('s2');
     /* 시연용 — 앱에서 승인한 것으로 보고 잠시 뒤 자동으로 넘어간다 */
     clearTimeout(openQR.t);
@@ -208,8 +212,7 @@
   function done(ok){
     clearInterval(T); clearTimeout(openQR.t);
     if(!ok){ reply(false); window.close(); return; }
-    show('s3');
-    reply(true);
+    show('s3'); reply(true);
     setTimeout(function(){ window.close(); }, 1600);
   }
   function reply(ok){
@@ -220,14 +223,14 @@
   }
 
   document.querySelectorAll('.way').forEach(function(b){
-    b.addEventListener('click', function(){
-      /* 시연 범위 — 어떤 방법을 골라도 QR 단계로 간다 */
-      openQR();
-    });
+    b.addEventListener('click', openQR);        /* 시연 범위 — 어떤 방법이든 QR 단계로 */
   });
   $('#go').addEventListener('click', function(){ done(true); });
-  $('#ext').addEventListener('click', function(){ left=294; tick(); });
-  window.addEventListener('beforeunload', function(){ if($('#s3').classList.contains('on')) return; reply(false); });
+  $('#ext').addEventListener('click', function(){ left=274; tick(); });
+  window.addEventListener('beforeunload', function(){
+    if($('#s3').classList.contains('on')) return;
+    reply(false);
+  });
 })();
 </script>
 </body>
