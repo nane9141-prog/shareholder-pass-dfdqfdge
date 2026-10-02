@@ -227,6 +227,31 @@
   .vc{padding:0;border:1px solid #272929;border-radius:12px;background:#fff;overflow:hidden}
   .vc .body{display:flex;flex-direction:column;gap:12px;padding:20px}
   .vc .cat{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  /* 의안 타이틀 영역 — 번호·유형 배지 / 진행상태 · 의안명 · 결의종류 (gap 4) */
+  .vc .vhd{display:flex;flex-direction:column;gap:4px}
+  .vc .vhd .r1{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:19px}
+  .vc .vhd .lf{display:flex;align-items:center;gap:8px;min-width:0}
+  .vc .vhd .rt{flex:none;display:flex;align-items:center;gap:8px}
+  .vc .vhd .no3{font-size:12px;line-height:1.5;font-weight:500;letter-spacing:-.01em;color:#151419}
+  .vc .vhd .tbdg{flex:none;display:inline-flex;align-items:center;justify-content:center;
+    padding:2px 4px;border-radius:6px;background:#F3F4F6;color:#151419;
+    font-size:10px;line-height:1.5;font-weight:500;letter-spacing:-.01em}
+  .vc .vhd .nm{font-size:18px;line-height:1.5;font-weight:700;letter-spacing:-.01em;
+    color:#151419;word-break:keep-all}
+  .vc .vhd .rz{display:flex;align-items:center;gap:2px;
+    font-size:12px;line-height:1.5;font-weight:500;letter-spacing:-.01em;color:#6B7078}
+  .vc .vhd .iq{width:16px;height:16px;padding:0;border:0;background:none;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;color:#A7AAB1}
+  .vc .vhd .iq svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round}
+  .vc .vhd .iq:hover{color:#6B7078}
+  /* 결의 기준 툴팁 */
+  .rztip{position:fixed;z-index:2000;max-width:260px;padding:10px 12px;border-radius:8px;
+    background:#272929;color:#fff;font-size:12px;line-height:18px;letter-spacing:-.01em;
+    box-shadow:0 8px 24px rgba(16,24,40,.24);opacity:0;transform:translateY(3px);
+    transition:opacity .14s ease,transform .14s ease;pointer-events:none}
+  .rztip.on{opacity:1;transform:translateY(0)}
+  .rztip b{display:block;margin-bottom:3px;font-size:12px;font-weight:700}
   .vc .cat .no3{font-size:12px;line-height:18px;font-weight:500;color:#151419}
   .vc .rb2{height:26px;padding:4px 8px;border-radius:8px;font-size:14px;line-height:18px;
     font-weight:500;color:#fff;margin-left:8px}
@@ -234,7 +259,7 @@
   .vc .nm{font-size:18px;line-height:27px;font-weight:700;color:#151419}
   .vc .base{font-size:12px;line-height:18px;font-weight:500;color:#6B7078}
   .vc .det2{background:#F8F8FA;border:1px solid #EEF0F2;border-radius:8px;padding:12px;
-    display:flex;flex-direction:column;gap:8px}
+    display:flex;flex-direction:column;gap:12px}
   .vc .det2 .h3{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
     border:0;background:none;padding:0;font-family:inherit;letter-spacing:inherit;cursor:pointer}
   .vc .det2 .h3 b{font-size:12px;line-height:18px;font-weight:700;color:#151419}
@@ -242,7 +267,9 @@
   .vc .det2.open .h3 svg{transform:rotate(180deg)}
   .vc .det2 .bd3{display:none;flex-direction:column;gap:12px}
   .vc .det2.open .bd3{display:flex}
-  .vc .det2 .tx3{font-size:12px;line-height:18px;color:#151419;white-space:pre-line}
+  .vc .det2 .tx3{font-size:12px;line-height:18px;color:#151419;white-space:pre-line;
+    max-height:280px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none}
+  .vc .det2 .tx3::-webkit-scrollbar{display:none}
   .vc .det2 .f3{display:flex;align-items:center;gap:8px;height:34px;padding:8px 12px;
     background:#fff;border:1px solid #EEF0F2;border-radius:8px}
   .vc .det2 .f3 svg{width:16px;height:16px;flex:none;stroke:#151419;fill:none;stroke-width:1.6}
@@ -858,6 +885,50 @@ function resBadgeV(r){
   return {pass:'<span class="arb pass">가결</span>',fail:'<span class="arb fail">부결</span>',
           disc:'<span class="arb disc">폐기</span>',wd:'<span class="arb wd">철회</span>'}[r]||'';
 }
+/* 결의종류(보통·특별)와 투표유형(집중투표·양립불가)을 갈라 둔다 */
+function agKinds(no){
+  var a=agOf(no)||{}, t=a.types||[], d=CXD.center[no]||{};
+  var res=null, vt=null;
+  t.forEach(function(x){
+    if(x.indexOf('결의')>=0) res=x; else vt=x;
+  });
+  if(!vt && (d.type==='집중투표'||d.type==='양립불가')) vt=d.type;
+  if(!res) res=(d.type==='특별결의')?'특별결의':'보통결의';
+  return {res:res, vt:vt};
+}
+var RZTIP={
+  '보통결의':'출석한 주주 의결권의 과반수와 발행주식총수의 4분의 1 이상이 찬성하면 가결됩니다.',
+  '특별결의':'출석한 주주 의결권의 3분의 2 이상과 발행주식총수의 3분의 1 이상이 찬성하면 가결됩니다.'
+};
+/* 결의종류 아이콘 — 마우스를 올리면 가결 기준을 알려준다 */
+(function(){
+  var tip=null;
+  function close(){ if(tip){ tip.remove(); tip=null; } }
+  document.addEventListener('mouseover',function(e){
+    var b=e.target.closest? e.target.closest('.iq') : null;
+    if(!b){ if(tip && !(e.target.closest&&e.target.closest('.rztip'))) close(); return; }
+    if(tip && tip.dataset.k===b.dataset.rz) return;
+    close();
+    var tx=RZTIP[b.dataset.rz]; if(!tx) return;
+    tip=document.createElement('div');
+    tip.className='rztip'; tip.dataset.k=b.dataset.rz;
+    tip.innerHTML='<b>'+b.dataset.rz+'</b>'+tx;
+    document.body.appendChild(tip);
+    var r=b.getBoundingClientRect();
+    var left=Math.min(Math.max(12, r.left-8), innerWidth-tip.offsetWidth-12);
+    var top=r.bottom+8;
+    if(top+tip.offsetHeight>innerHeight-12) top=r.top-tip.offsetHeight-8;
+    tip.style.left=left+'px'; tip.style.top=top+'px';
+    requestAnimationFrame(function(){ tip && tip.classList.add('on'); });
+  });
+  document.addEventListener('mouseout',function(e){
+    if(!tip) return;
+    var to=e.relatedTarget;
+    if(to && to.closest && (to.closest('.iq')||to.closest('.rztip'))) return;
+    close();
+  });
+  window.addEventListener('scroll',close,true);
+})();
 function typeLabel(no){
   var d=CXD.center[no]; if(!d)return '';
   return d.type==='집중투표'?'집중투표':d.type==='양립불가'?'양립불가':d.type==='특별결의'?'특별결의':'보통결의';
@@ -1055,9 +1126,17 @@ function renderVote(){
   var vs=VS[no]||{s:'wait'}, st=vs.s, r=(st==='result')?resultOf(no):null;
   var right = r ? '<span class="rb2 '+r+'">'+({pass:'가결',fail:'부결',disc:'폐기'}[r])+'</span>'
                 : statDot(st);
-  var body='<div class="cat"><span class="no3">'+chip(no)+'</span>'+right+'</div>'
+  var K=agKinds(no);
+  var body='<div class="vhd">'
+    +'<div class="r1"><span class="lf"><span class="no3">'+chip(no)+'</span>'
+      +(K.vt?'<span class="tbdg">'+K.vt+'</span>':'')+'</span>'
+      +'<span class="rt">'+right+'</span></div>'
     +'<div class="nm">'+(a?a.nm:d.name)+'</div>'
-    +'<div class="base">'+typeLabel(no)+'</div>'
+    +'<div class="rz"><span>'+K.res+'</span>'
+      +'<button class="iq" type="button" aria-label="'+K.res+' 가결 기준" data-rz="'+K.res+'">'
+      +'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>'
+      +'</button></div>'
+    +'</div>'
     +detBox(a, st!=='result');
   if(st==='result'){
     body += (d.type==='집중투표') ? candBars(d)
