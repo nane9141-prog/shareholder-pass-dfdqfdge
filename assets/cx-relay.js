@@ -30,7 +30,7 @@
        · 주소 뒤에 ?fb=https://<프로젝트>-default-rtdb.firebasedatabase.app 를 붙이거나
        · 페이지에서 window.CX_FIREBASE_DB 로 지정
      비어 있으면 예전처럼 ntfy.sh 공개 토픽으로 동작한다. */
-  var FB = '';
+  var FB = 'https://cxdemo-a0903-default-rtdb.asia-southeast1.firebasedatabase.app';
   var fbUrl = (location.search.match(/[?&]fb=([^&]+)/) || [])[1];
   var DB = (fbUrl ? decodeURIComponent(fbUrl) : (window.CX_FIREBASE_DB || FB) || '').replace(/\/$/, '');
   var USE_FB = /^https?:\/\//.test(DB);
