@@ -21,7 +21,7 @@
 (function () {
   if (window.cxRelay) return;
 
-  var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att'];
+  var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att', 'cx.ans'];
   var HOST = 'https://ntfy.sh';
 
   /* ── 중계 서버 ───────────────────────────────────────────────
@@ -61,7 +61,7 @@
 
   /* 사람별로 쌓이는 칸은 통째로 보내면 위임이 늘수록 매번 전부 다시 나간다.
      바뀐 항목만 추려 보내고 받는 쪽에서 합친다. */
-  var PATCH = { 'cx.app.px': 1 };
+  var PATCH = { 'cx.app.px': 1, 'cx.ans': 1 };
   function obj(t) { try { var o = JSON.parse(t); return (o && typeof o === 'object' && !(o instanceof Array)) ? o : null; } catch (e) { return null; } }
   function diff(oldT, newT) {
     var a = obj(oldT), b = obj(newT);

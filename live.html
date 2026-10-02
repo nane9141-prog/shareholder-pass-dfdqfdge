@@ -824,7 +824,7 @@
   </div>
 </div>
 
-<script src="assets/cx-relay.js?v=7"></script>
+<script src="assets/cx-relay.js?v=8"></script>
 <script src="assets/companies.js?v=14"></script>
 <script src="assets/agenda.js"></script>
 <script src="assets/caption-kudoselectric.js?v=2"></script>
@@ -1435,10 +1435,11 @@ document.getElementById('qSubmit').addEventListener('click',function(){
   var amtype=!kind?null:pr?document.getElementById('qPrType').value:document.getElementById('qAmType').value;
   /* 의사진행 동의는 의안이 아니라 총회 진행에 대한 것 — 현장 제어에는 지금 의안으로 올린다 */
   var ag=pr?'총회 진행 전반':sel.value;
-  QUES.unshift({name:PASSNAME, mine:true, own:true, time:nowHm(), date:todayStr()+' '+nowHm(),
+  var qid='PASS-'+Date.now();
+  QUES.unshift({name:PASSNAME, mine:true, own:true, qid:qid, time:nowHm(), date:todayStr()+' '+nowHm(),
     ag:ag, q:ta.value.trim(), priv:false, kind:kind, amk:pr?'의사진행 동의':'수정 동의', amtype:amtype, via:via});
   /* 현장 제어의 질의 목록에도 같은 건이 올라간다 */
-  cxPush('cx.qna',{id:'PASS-'+Date.now(), name:PASSNAME, t:'개인', sh:MY.held,
+  cxPush('cx.qna',{id:qid, name:PASSNAME, t:'개인', sh:MY.held,
     tm:nowHm(), ag:pr?CURRENT:sel.value, kind:kind, amtype:pr?'의사진행 · '+amtype:amtype, via:via, q:ta.value.trim()});
   /* 발언으로 신청한 동의는 발언 대기 목록에도 올린다 */
   if(via==='발언') SPQ.unshift({kind:'수정동의', ag:ag, tx:ta.value.trim(), st:'대기', own:true, tm:nowHm()});
@@ -1557,10 +1558,30 @@ function renderAm(){
       +'<span class="pv am">'+(x.amk||'동의')+(x.amtype?' · '+x.amtype:'')+'</span></span>'
       +'<span class="rt"><span class="ag">'+(x.ag==='총회 진행 전반'?x.ag:chip(x.ag))+'</span></span></div>'
       +'<div class="q">'+x.q+'</div>'
-      +'<div class="ans priv"><span class="lock">운영진 검토 후 의장에게 전달됩니다</span></div></div>';
+      +(x.ans
+          ? '<div class="ans '+(x.pub?'pub':'priv')+'"><b>답변</b><span>'+x.ans+'</span></div>'
+          : '<div class="ans priv"><span class="lock">운영진 검토 후 의장에게 전달됩니다</span></div>')
+      +'</div>';
   }).join('');
 }
 renderAm();
+
+/* ---- 현장 제어가 등록한 답변 받기 — 질의·동의 모두 같은 칸(cx.ans)을 본다 ---- */
+function applyAns(m){
+  if(!m) return;
+  var hit=false;
+  (window.QUES||[]).forEach(function(x){
+    var r=x.qid && m[x.qid];
+    if(!r) return;
+    if(x.ans!==r.a || x.pub!==r.pub){ x.ans=r.a; x.pub=!!r.pub; hit=true; }
+  });
+  if(!hit) return;
+  if(typeof mySave==='function') mySave();
+  if(typeof renderQ==='function') renderQ();
+  if(typeof renderAm==='function') renderAm();
+  toast('신청하신 건에 답변이 등록되었습니다');
+}
+cxRead('cx.ans', applyAns);
 
 /* ---- 실시간 공지사항 ----
    목록에는 제목만 두고, 누르면 전문을 모달로 펼친다. */
@@ -1649,10 +1670,11 @@ function renderSp(){
   document.getElementById('spSubmit').addEventListener('click',function(){
     var bm=ruleBlock(SPKIND==='a'?'amend':'speak'); if(bm){ toast(bm); return; }
     var ta=document.getElementById('spBody');
+    var sqid='PASS-'+Date.now();
     SPQ.unshift({kind:SPKIND==='a'?'수정동의':'발언', ag:document.getElementById('spTarget').value,
-      tx:ta.value.trim(), st:'대기', own:true, tm:nowHm()});
+      tx:ta.value.trim(), st:'대기', own:true, tm:nowHm(), qid:sqid});
     /* 발언 신청은 현장 제어의 발언 대기 목록으로, 발언으로 신청한 동의는 동의 탭으로 올라간다 */
-    cxPush('cx.qna',{id:'PASS-'+Date.now(), name:PASSNAME, t:'개인', sh:MY.held,
+    cxPush('cx.qna',{id:sqid, name:PASSNAME, t:'개인', sh:MY.held,
       tm:nowHm(), ag:document.getElementById('spTarget').value, kind:SPKIND==='a'?'수정동의':'발언', via:'발언', q:ta.value.trim()});
     ta.value=''; document.getElementById('spLen').textContent='0';
     document.getElementById('spAgree').checked=false; spCheck();
