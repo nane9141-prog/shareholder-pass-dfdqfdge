@@ -2130,7 +2130,9 @@ function applyLive(s){
      지난 회차의 남은 값 때문에 제1호가 진행 중처럼 보이면 안 된다 */
   if(window.__PRE || !STARTED) return;
   /* 긴급 표결(총회 지연 의안) — 상정되어 있는 동안 카드 모달로 띄운다 */
-  if(typeof renderUrgent==='function') renderUrgent((s.urgent && s.ag===s.urgent.no) ? s.urgent : null);
+  /* 긴급 표결 — 의안을 올려 둔 것만으로는 뜨지 않고, 그 의안의 투표가 시작되면 띄운다 */
+  var urgOn = !!(s.urgent && s.ag===s.urgent.no && (+s.stage||0)>=2);
+  if(typeof renderUrgent==='function') renderUrgent(urgOn ? s.urgent : null);
   if(!s.ag) return;
   var nos=units.map(function(a){return a.no;});
   var i=nos.indexOf(s.ag);
