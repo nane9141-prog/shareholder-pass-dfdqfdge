@@ -536,8 +536,8 @@
     border:1px solid #EEF0F2;border-radius:10px;background:#fff;cursor:pointer;
     font-family:inherit;letter-spacing:inherit}
   .aggrid .ag.sel{background:#F8F8FA;border-color:#272929}
-  .aggrid .ag .lg2{width:52px;height:52px;border:1px solid rgba(0,0,0,.05);border-radius:16px;
-    display:flex;align-items:center;justify-content:center;font-weight:800}
+  .aggrid .ag .lg2{width:52px;height:52px;display:flex;align-items:center;justify-content:center}
+  .aggrid .ag .lg2 img{width:52px;height:52px;display:block;border-radius:14px}
   .aggrid .ag .nm2{font-size:12px;line-height:16px;font-weight:700;color:#151419;text-align:center}
   .am-a{padding:12px 28px 32px}
   .am-a button{width:100%;height:48px;border:0;border-radius:8px;background:#151419;
@@ -1568,19 +1568,17 @@ function renderSp(){
 /* ---- 간편인증 ----
    시연용이라 실제 인증은 하지 않는다. 기관을 고르고 인증을 누르면 곧바로 다음 단계로 넘어간다. */
 var AUTHS=[
-  ['naver','네이버','#00C300','#fff','N'],
-  ['kakao','카카오','#FAE100','#371D1E','K'],
-  ['toss','토스','#FFFFFF','#3182F6','toss'],
-  ['payco','페이코','#FA2828','#fff','P'],
-  ['pass','PASS','#EC4745','#fff','PASS'],
-  ['kb','KB국민','#FFFFFF','#F8B500','KB']
+  ['naver','네이버','assets/auth-naver.png'],
+  ['toss','토스','assets/auth-toss.png'],
+  ['payco','페이코','assets/auth-payco.png'],
+  ['pass','PASS','assets/auth-pass.png'],
+  ['kb','KB국민','assets/auth-kb.png']
 ];
 var AUTH={pick:null, then:null};
 (function(){
   document.getElementById('authList').innerHTML=AUTHS.map(function(a){
-    var fs = a[4].length>2 ? 12 : 20;
     return '<button class="ag" type="button" data-k="'+a[0]+'">'
-      +'<span class="lg2" style="background:'+a[2]+';color:'+a[3]+';font-size:'+fs+'px">'+a[4]+'</span>'
+      +'<span class="lg2"><img src="'+a[2]+'" alt=""></span>'
       +'<span class="nm2">'+a[1]+'</span></button>';
   }).join('');
   document.getElementById('authList').addEventListener('click',function(e){
