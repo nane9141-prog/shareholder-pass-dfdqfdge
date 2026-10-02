@@ -538,6 +538,8 @@
   .aggrid .ag.sel{background:#F8F8FA;border-color:#272929}
   .aggrid .ag .lg2{width:52px;height:52px;display:flex;align-items:center;justify-content:center}
   .aggrid .ag .lg2 img{width:52px;height:52px;display:block;border-radius:14px}
+  .aggrid .ag .lg2 .fb{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+    justify-content:center;font-size:22px;font-weight:800}
   .aggrid .ag .nm2{font-size:12px;line-height:16px;font-weight:700;color:#151419;text-align:center}
   .am-a{padding:12px 28px 32px}
   .am-a button{width:100%;height:48px;border:0;border-radius:8px;background:#151419;
@@ -1569,6 +1571,8 @@ function renderSp(){
    시연용이라 실제 인증은 하지 않는다. 기관을 고르고 인증을 누르면 곧바로 다음 단계로 넘어간다. */
 var AUTHS=[
   ['naver','네이버','assets/auth-naver.png'],
+  /* 카카오는 아이콘 파일이 오면 그걸 쓰고, 없으면 노란 뱃지로 대신한다 */
+  ['kakao','카카오','assets/auth-kakao.png','#FAE100','#371D1E','K'],
   ['toss','토스','assets/auth-toss.png'],
   ['payco','페이코','assets/auth-payco.png'],
   ['pass','PASS','assets/auth-pass.png'],
@@ -1577,10 +1581,18 @@ var AUTHS=[
 var AUTH={pick:null, then:null};
 (function(){
   document.getElementById('authList').innerHTML=AUTHS.map(function(a){
+    var fb = a[3] ? ' data-bg="'+a[3]+'" data-fg="'+a[4]+'" data-ch="'+a[5]+'"' : '';
     return '<button class="ag" type="button" data-k="'+a[0]+'">'
-      +'<span class="lg2"><img src="'+a[2]+'" alt=""></span>'
+      +'<span class="lg2"'+fb+'><img src="'+a[2]+'" alt=""></span>'
       +'<span class="nm2">'+a[1]+'</span></button>';
   }).join('');
+  /* 아이콘 파일이 없으면 글자 뱃지로 바꿔 둔다 */
+  document.querySelectorAll('#authList .lg2 img').forEach(function(im){
+    im.addEventListener('error',function(){
+      var p=im.parentElement; if(!p.dataset.bg){ im.remove(); return; }
+      p.innerHTML='<span class="fb" style="background:'+p.dataset.bg+';color:'+p.dataset.fg+'">'+p.dataset.ch+'</span>';
+    });
+  });
   document.getElementById('authList').addEventListener('click',function(e){
     var b=e.target.closest('.ag'); if(!b) return;
     document.querySelectorAll('#authList .ag').forEach(function(x){ x.classList.toggle('sel', x===b); });
