@@ -19,9 +19,8 @@
   /* ── 상단 ─────────────────────────────── */
   .hd{flex:none;display:flex;align-items:center;gap:12px;padding:22px 24px 0}
   .logo{display:flex;align-items:center;gap:10px}
-  .mark{height:30px;padding:0 9px;border-radius:3px;background:var(--red);color:#fff;
-    display:flex;align-items:center;font-size:20px;font-weight:800;letter-spacing:.02em}
-  .mark img{height:30px;display:block}
+  .mark{height:34px;display:flex;align-items:center}
+  .mark img{height:34px;display:block}
   .tag{font-size:11.5px;line-height:15px;color:#9A9AA2;font-weight:500}
   .lang{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#55555D}
   .lang svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6}
@@ -56,8 +55,8 @@
   .code{flex:1;text-align:right;font-size:33px;font-weight:800;letter-spacing:-.02em;
     font-variant-numeric:tabular-nums}
   .tmrow{margin-top:26px;display:flex;align-items:center;gap:8px}
-  .tmrow .clk{width:19px;height:19px;flex:none;color:#9A9AA2}
-  .tmrow .clk svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8}
+  .tmrow .clk{width:20px;height:20px;flex:none;display:block}
+  .tmrow .clk img{width:20px;height:20px;display:block}
   .tm{font-size:15px;font-weight:700}
   .tm b{color:var(--red);font-variant-numeric:tabular-nums}
   .ext{margin-left:auto;font-size:13.5px;color:var(--sub);text-decoration:underline;text-underline-offset:3px}
@@ -82,15 +81,14 @@
   .ft{flex:none;background:var(--foot);padding:16px 24px;display:flex;align-items:center;gap:12px}
   .ft .l{flex:1;min-width:0;font-size:11.5px;line-height:1.7;color:#8A8A92}
   .ft .l b{color:#55555D;font-weight:700}
-  .nice{flex:none;border:1px solid #C9C9D1;border-radius:2px;padding:3px 7px;
-    font-size:10.5px;font-weight:700;color:#55555D;background:#fff;white-space:nowrap}
+  .nice{flex:none;height:22px;display:block}
 </style>
 </head>
 <body>
 
 <div class="hd">
   <div class="logo">
-    <span class="mark" id="mark">PASS</span>
+    <span class="mark" id="mark"><img src="assets/pass-logo.svg" alt="PASS"></span>
     <span class="tag">인증을 넘어<br>일상으로 PASS</span>
   </div>
   <span class="lang">
@@ -131,7 +129,7 @@
       <span class="code" id="code">0000000</span>
     </div>
     <div class="tmrow">
-      <span class="clk"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <span class="clk"><img src="assets/pass-timer.svg" alt=""></span>
       <span class="tm">남은시간 <b id="left">4 34</b></span>
       <button class="ext" type="button" id="ext">시간연장</button>
     </div>
@@ -152,7 +150,7 @@
 
 <div class="ft">
   <div class="l"><b>이용약관</b> &nbsp;<b>개인정보처리방침</b> &nbsp;도움말<br>VeriSign 256-bit SSL 암호화 적용</div>
-  <span class="nice">NICE평가정보</span>
+  <img class="nice" src="assets/pass-copyright.gif" alt="NICE평가정보">
 </div>
 
 <script>
@@ -160,14 +158,6 @@
   'use strict';
   var $=function(s){ return document.querySelector(s); };
   var ORIGIN=location.origin;
-
-  /* 로고 이미지가 있으면 쓰고, 없으면 글자로 둔다 */
-  (function(){
-    var img=new Image();
-    img.onload=function(){ $('#mark').innerHTML=''; $('#mark').style.cssText='background:none;padding:0'; $('#mark').appendChild(img); };
-    img.onerror=function(){};
-    img.alt='PASS'; img.src='assets/pass-logo.png';
-  })();
 
   function show(id){
     document.querySelectorAll('.scr').forEach(function(s){ s.classList.toggle('on', s.id===id); });
