@@ -878,7 +878,8 @@ var PROG=0;   /* 상정했거나 끝난 의안 수 */
 /* 현장 제어에서 넘어오는 표결 상태 */
 var LIVE={sec:null};
 var STARTED=false;   /* 현장 제어 시계가 돌기 시작했는가 — 시작 전에는 의안을 모두 대기로 둔다 */
-var STAGE={0:'wait',1:'wait',2:'vote',3:'cnt'};
+/* 4 = 표결 마감 — 의장이 결과를 공표하기 전까지는 집계중으로 둔다 */
+var STAGE={0:'wait',1:'wait',2:'vote',3:'cnt',4:'cnt'};
 /* 의안별 상태: 대기·투표중·집계중 + 결과(가결/부결/폐기/철회) — 비어 있으면 모두 대기 */
 var VS={};
 function num(no){return String(no).replace(/제|호/g,'');}
