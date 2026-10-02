@@ -1440,14 +1440,27 @@ document.getElementById('qSubmit').addEventListener('click',function(){
   cxPush('cx.qna',{id:'PASS-'+Date.now(), name:PASSNAME, t:'개인', sh:MY.held,
     tm:nowHm(), ag:pr?CURRENT:sel.value, kind:kind, amtype:pr?'의사진행 · '+amtype:amtype, via:via, q:ta.value.trim()});
   /* 발언으로 신청한 동의는 발언 대기 목록에도 올린다 */
-  if(via==='발언') SPQ.unshift({kind:'수정동의', ag:ag, tx:ta.value.trim(), st:'대기'});
+  if(via==='발언') SPQ.unshift({kind:'수정동의', ag:ag, tx:ta.value.trim(), st:'대기', own:true, tm:nowHm()});
   ta.value=''; document.getElementById('qLen').textContent='0';
   document.getElementById('qAgree').checked=false;
   document.getElementById('qSubmit').disabled=true;
+  mySave();
   closeM('qOvl'); renderQ(); renderAm(); if(via==='발언') renderSp();
   toast(pr ? '의사진행 동의가 접수되었습니다. 운영진 검토 후 의장에게 전달됩니다.' : kind ? '동의가 접수되었습니다. 운영진 검토 후 의장에게 전달됩니다.'
              : '질의가 접수되었습니다. 운영진 검토 후 의장에게 전달됩니다.');
 });
+/* 내가 접수한 질의·발언·동의는 새로고침해도 남아 있어야 한다.
+   같은 칸을 현장 제어가 총회 종료 때 지운다(cx.pass.my). */
+var MYKEY='cx.pass.my';
+function myLoad(){ try{ return JSON.parse(localStorage.getItem(MYKEY)||'{}'); }catch(e){ return {}; } }
+function mySave(){
+  try{
+    localStorage.setItem(MYKEY, JSON.stringify({
+      q:(window.QUES||[]).filter(function(x){ return x.own; }),
+      sp:(window.SPQ||[]).filter(function(x){ return x.own; }), ts:Date.now()
+    }));
+  }catch(e){}
+}
 function nowHm(){ var d=new Date(); return (d.getHours()<10?'0':'')+d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes(); }
 function todayStr(){ var d=new Date(); return d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2); }
 var PASSNAME=(window.PASS_USER&&PASS_USER.name)||'박성용';
@@ -1455,7 +1468,7 @@ var PASSNAME=(window.PASS_USER&&PASS_USER.name)||'박성용';
 /* ---- 질의 목록 (전체/내가 쓴 질의, 답변·공개범위) ---- */
 /* 질의는 의안마다 쌓인다. 아직 상정하지 않은 의안의 질의는 목록에 나오지 않고,
    현장 제어가 의안을 넘길 때마다 그만큼 늘어난다. */
-var QUES=[
+var QUES=window.QUES=[
   {name:'박성용',mine:true,time:'09:41',date:'2026.09.29 09:41',ag:'제1호',
    q:'당기순이익 대비 배당성향을 어떤 기준으로 정하고 계신지 알고 싶습니다.',
    ans:'별도재무제표 당기순이익을 기준으로 약 27% 수준을 유지하고 있으며, 실적과 자본 상황을 함께 고려합니다.',pub:true},
@@ -1520,7 +1533,7 @@ function renderQ(){
   host.querySelectorAll('.del').forEach(function(b){
     b.addEventListener('click',function(){
       var t=list[+b.dataset.i];
-      QUES.splice(QUES.indexOf(t),1); renderQ();
+      QUES.splice(QUES.indexOf(t),1); if(typeof mySave==='function') mySave(); renderQ();
     });
   });
 }
@@ -1592,7 +1605,7 @@ var SPFORM={
       rules:'동의는 해당 의안의 표결이 개시되기 전까지 신청할 수 있습니다. 의장 지명 후 마이크가 활성화되며 '
             +'제안 취지를 직접 설명하게 됩니다. 상정 여부는 의장이 판단하고, 상정되면 원안보다 먼저 표결합니다.' }
 };
-var SPQ=[];
+var SPQ=[]; window.SPQ=SPQ;
 function paintSpForm(){
   var f=SPFORM[SPKIND];
   document.getElementById('spBodyLb').textContent=f.label;
@@ -1636,15 +1649,24 @@ function renderSp(){
     var bm=ruleBlock(SPKIND==='a'?'amend':'speak'); if(bm){ toast(bm); return; }
     var ta=document.getElementById('spBody');
     SPQ.unshift({kind:SPKIND==='a'?'수정동의':'발언', ag:document.getElementById('spTarget').value,
-      tx:ta.value.trim(), st:'대기'});
+      tx:ta.value.trim(), st:'대기', own:true, tm:nowHm()});
     /* 발언 신청은 현장 제어의 발언 대기 목록으로, 발언으로 신청한 동의는 동의 탭으로 올라간다 */
     cxPush('cx.qna',{id:'PASS-'+Date.now(), name:PASSNAME, t:'개인', sh:MY.held,
       tm:nowHm(), ag:document.getElementById('spTarget').value, kind:SPKIND==='a'?'수정동의':'발언', via:'발언', q:ta.value.trim()});
     ta.value=''; document.getElementById('spLen').textContent='0';
     document.getElementById('spAgree').checked=false; spCheck();
+    mySave();
     closeM('spOvl'); renderSp();
     toast((SPKIND==='a'?'동의':'발언')+' 신청이 접수되었습니다. 의장 지명 후 마이크가 켜집니다.');
   });
+  /* 저장해 둔 내 접수분 복원 — 최신 건이 위로 오도록 거꾸로 넣는다 */
+  (function(){
+    var m=myLoad();
+    (m.sp||[]).slice().reverse().forEach(function(x){ SPQ.unshift(x); });
+    (m.q||[]).slice().reverse().forEach(function(x){ QUES.unshift(x); });
+    if(typeof renderQ==='function') renderQ();
+    if(typeof renderAm==='function') renderAm();
+  })();
   paintSpForm(); renderSp();
 })();
 
