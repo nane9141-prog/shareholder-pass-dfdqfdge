@@ -289,7 +289,17 @@
     } catch (e) {}
   }
 
-  window.cxRelay = { topic: topic, keys: KEYS, ok: false, publish: publish, connect: connect, catchUp: function () { catchUp(); } };
+  /* 중계에 쌓인 값을 지운다 — 총회 종료 초기화에서 부른다 */
+  function wipe(list) {
+    (list || KEYS).forEach(function (k) {
+      seen[k] = null; stamp[k] = 0; quiet[k] = Date.now() + 2000;
+      if (USE_FB) {
+        try { fetch(fbPath() + '/' + fbKey(k) + '.json', { method: 'DELETE' }).catch(function () {}); } catch (e) {}
+      } else { post({ from: SELF, k: k, v: '{}', t: Date.now() }); }
+    });
+  }
+  window.cxRelay = { topic: topic, keys: KEYS, ok: false, publish: publish, connect: connect,
+    catchUp: function () { catchUp(); }, wipe: wipe };
   connect();
   catchUp();
   /* 화면으로 돌아왔을 때 끊겨 있으면 다시 잇고 밀린 값을 받아온다 */
