@@ -54,6 +54,7 @@
     if (read(k) === txt) { seen[k] = txt; return; }
     stamp[k] = t || Date.now();
     seen[k] = txt;                                     /* 이걸 다시 내보내지 않도록 */
+    quiet[k] = Date.now() + 1200;
     try { localStorage.setItem(k, txt); } catch (e) {}
     try { window.dispatchEvent(new StorageEvent('storage', { key: k, newValue: txt })); } catch (e) {}
     try { window.dispatchEvent(new CustomEvent('cx-relay', { detail: { key: k, value: txt } })); } catch (e) {}
@@ -160,10 +161,12 @@
   }
 
   /* 로컬에서 값이 바뀌면 내보낸다 — 페이지마다 코드를 고칠 필요가 없다 */
+  var quiet = {};                     /* 방금 받아 반영한 칸 — 잠시 되쏘지 않는다 */
   function watch() {
     KEYS.forEach(function (k) {
       var now = read(k);
       if (now === seen[k]) return;
+      if (quiet[k] && Date.now() < quiet[k]) { seen[k] = now; return; }
       /* 지운 것도 빈 값으로 알려야 다른 기기에 남은 옛 기록이 지워진다 */
       var prev = seen[k];
       if (now == null) { send(k, '{}'); seen[k] = null; return; }
