@@ -21,7 +21,7 @@
 (function () {
   if (window.cxRelay) return;
 
-  var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att', 'cx.ans'];
+  var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att', 'cx.ans', 'cx.reset'];
   var HOST = 'https://ntfy.sh';
 
   /* ── 중계 서버 ───────────────────────────────────────────────
@@ -62,7 +62,9 @@
 
   /* 사람별로 쌓이는 칸은 통째로 보내면 위임이 늘수록 매번 전부 다시 나간다.
      바뀐 항목만 추려 보내고 받는 쪽에서 합친다. */
-  var PATCH = { 'cx.app.px': 1, 'cx.ans': 1 };
+  /* 사람별·의안별로 쌓이는 칸 — 바뀐 항목만 주고받고, 통째로 비우는 신호는 내보내지 않는다.
+     (한쪽이 비어 있다고 다른 기기의 기록까지 지워지면 안 된다. 초기화는 cx.reset 으로만 한다) */
+  var PATCH = { 'cx.app.px': 1, 'cx.ans': 1, 'cx.onsite': 1, 'cx.collect': 1 };
   function obj(t) { try { var o = JSON.parse(t); return (o && typeof o === 'object' && !(o instanceof Array)) ? o : null; } catch (e) { return null; } }
   function diff(oldT, newT) {
     var a = obj(oldT), b = obj(newT);
@@ -169,7 +171,10 @@
       if (quiet[k] && Date.now() < quiet[k]) { seen[k] = now; return; }
       /* 지운 것도 빈 값으로 알려야 다른 기기에 남은 옛 기록이 지워진다 */
       var prev = seen[k];
-      if (now == null) { send(k, '{}'); seen[k] = null; return; }
+      if (now == null) {
+        if (PATCH[k]) { seen[k] = null; return; }     /* 쌓이는 칸은 비우기를 퍼뜨리지 않는다 */
+        send(k, '{}'); seen[k] = null; return;
+      }
       send(k, now, prev);
     });
   }
