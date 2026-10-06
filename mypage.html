@@ -236,7 +236,7 @@
     <div class="grp"><span class="gl">내 정보 설정</span>
       <a class="m" href="#account" data-v="account">개인정보</a></div>
     <div class="grp"><span class="gl">주주총회 내역</span>
-      <a class="m" href="#apply" data-v="apply">사전 참석 신청 내역</a>
+      <a class="m" href="#apply" data-v="apply">사전 신청 내역</a>
       <a class="m" href="#attend" data-v="attend">출석 내역</a>
       <a class="m" href="#qna" data-v="qna">질의 및 발언 내역</a>
       <a class="m" href="#vote" data-v="vote">의결권 행사 내역</a></div>
@@ -259,7 +259,7 @@
     </div>
 
     <!-- 신청 내역 · 출석 내역 · 질의 및 발언 내역 · 의결권 행사 내역 -->
-    <div class="view" data-view="apply"><h1>사전 참석 신청 내역</h1><div style="height:24px"></div>
+    <div class="view" data-view="apply"><h1>사전 신청 내역</h1><div style="height:24px"></div>
       <div class="chips" data-chips="apply"></div><div style="height:24px"></div>
       <div class="list" data-list="apply"></div>
       <div class="pg" data-pg="apply"></div></div>
@@ -375,7 +375,7 @@ var VIEWS = {
       if(h.closed) return '<span class="obtn dim">신청 마감</span>';
       return h.apply==='done'
         ? '<button class="obtn" type="button">신청 철회</button>'
-        : '<button class="obtn brand" type="button">사전 참석 신청</button>';
+        : '<button class="obtn brand" type="button">사전 신청</button>';
     }
   },
   attend: {
@@ -730,7 +730,7 @@ function tlData(c){
   var units=AGENDA.filter(function(a){ return !a.sub; }).slice(0,5);
   return [
     { d: tlDate(c.date,-6), items:[
-      { t:'사전 참석 신청', tm:'09:12' },
+      { t:'사전 신청', tm:'09:12' },
       { t:'사전 전자투표 행사', tm:'09:21', vote:true }]},
     { d: tlDate(c.date,-5), items:[
       { t:'사전 질의 등록', tm:'09:34' }]},
@@ -858,7 +858,7 @@ show();
     <div class="chp-tm">지금</div>
     <div class="chp-ask">어떤 도움이 필요하신가요?</div>
     <div class="chp-opts" id="chOpts">
-      <button class="chp-opt" type="button">사전 참석 신청 · 철회</button>
+      <button class="chp-opt" type="button">사전 신청 · 철회</button>
       <button class="chp-opt" type="button">전자투표 방법</button>
       <button class="chp-opt" type="button">대리인(위임) 지정</button>
       <button class="chp-opt" type="button">주주 인증 · 로그인</button>
