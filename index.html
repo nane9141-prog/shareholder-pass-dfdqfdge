@@ -102,7 +102,7 @@
   .ovl{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,12,20,.55)}
   .ovl.on{display:flex}
   html:has(.ovl.on),html:has(.ovl.on) body{overflow:hidden}
-  /* 사전 참석 신청 완료 — 기업 상세(company.html)의 알림 모달과 같은 모양, Figma 대로 왼쪽 정렬 */
+  /* 사전신청 완료 — 기업 상세(company.html)의 알림 모달과 같은 모양, Figma 대로 왼쪽 정렬 */
   .amod{width:320px;min-width:280px;max-width:360px;background:#fff;border-radius:12px;box-shadow:0 2px 12px -2px rgba(0,0,0,.15);overflow:hidden}
   .amod .ct{display:flex;flex-direction:column;gap:4px;padding:20px 20px 12px;text-align:left}
   .amod .tt{font-size:16px;line-height:24px;font-weight:700;letter-spacing:-.01em;color:#151419}
@@ -206,6 +206,7 @@
   </div>
 </footer>
 
+<script src="assets/shauth.js?v=1"></script>
 <script src="assets/companies.js?v=14"></script>
 <script>
 /* 기업 목록은 assets/companies.js 한 곳에서 온다. */
@@ -232,7 +233,7 @@ function render(list){
 }
 render(COMPANIES);
 
-/* 내 주주총회 — Figma 카드. 진행중(LIVE)은 '전자주주총회 입장', 진행예정은 '사전 참석 신청'(당일은 신청 마감), 종료는 기업 홈만 */
+/* 내 주주총회 — Figma 카드. 진행중(LIVE)은 '전자주주총회 입장', 진행예정은 '사전신청'(당일은 신청 마감), 종료는 기업 홈만 */
 (function(){
   /* 순서: 큐더스전자 → 진행중(LIVE) → 진행예정(D-day 임박순) → 종료 */
   var RANK={live:0,paused:0,dday:1,dn:1,postponed:1,end:2};
@@ -274,12 +275,12 @@ render(COMPANIES);
     var home='<a class="mbtn" href="company.html?co='+c.key+'">기업 홈</a>';
     if(c.status==='live') return c.entry===false ? home : home+'<a class="mbtn pri" href="live.html?co='+c.key+'">전자주주총회 입장</a>';
     if(c.status==='paused'||c.status==='postponed'||c.status==='end') return home;
-    /* 진행예정 (dday · dn) — 사전 참석 신청 상태별 */
+    /* 진행예정 (dday · dn) — 사전신청 상태별 */
     var ap=c.apply||'none';
     if(ap==='locked') return home;
     if(ap==='closed'||c.status==='dday') return home+'<span class="mbtn off">신청 마감</span>';
     if(ap==='applied') return home+'<button type="button" class="mbtn" data-withdraw>사전 참석 철회</button>';
-    return home+'<button type="button" class="mbtn pri" data-apply>사전 참석 신청</button>';
+    return home+'<button type="button" class="mbtn pri" data-apply>사전신청</button>';
   }
   function sharesRow(c){
     var own='<span>보유 주식</span><b>'+(c.shares||'-')+'</b>';
@@ -305,7 +306,7 @@ render(COMPANIES);
     }).join('')||'<div class="mempty">해당하는 주주총회가 없습니다.</div>';
     row.scrollLeft=0; arrows();
   }
-  /* 사전 참석 신청 → 완료 안내 후 '철회' 버튼으로, 철회 → 다시 '신청' 버튼으로 */
+  /* 사전신청 → 완료 안내 후 '철회' 버튼으로, 철회 → 다시 '신청' 버튼으로 */
   var pendingKey=null;
   function findCo(k){ return mine.filter(function(x){return x.key===k;})[0]; }
   function showAp(t,d){ var ov=document.getElementById('apOvl'); if(!ov) return;
@@ -314,10 +315,15 @@ render(COMPANIES);
   document.addEventListener('click',function(e){
     var a=e.target.closest('[data-apply]');
     if(a){ var card=a.closest('.mcard'); pendingKey=card?card.dataset.key:null;
-      showAp('사전 참석 신청이 완료되었습니다','주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.'); return; }
+      var co=findCo(pendingKey)||{};
+      /* 신청 전에 주주인증을 먼저 받는다 */
+      var go=function(){ showAp('사전신청이 완료되었습니다','주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.'); };
+      if(window.SHAUTH) SHAUTH.open({ co:co.nm||'', term:co.term||'', base:co.base, name:(window.PASS_USER&&PASS_USER.name)||'' }, go);
+      else go();
+      return; }
     var w=e.target.closest('[data-withdraw]');
     if(w){ var card2=w.closest('.mcard'); var c=findCo(card2?card2.dataset.key:null);
-      if(c){ c.apply='none'; draw(); showAp('사전 참석 신청이 철회되었습니다','마감 전까지 \'사전 참석 신청\'을 다시 누르시면 재신청할 수 있습니다.'); } }
+      if(c){ c.apply='none'; draw(); showAp('사전신청이 철회되었습니다','마감 전까지 \'사전신청\'을 다시 누르시면 재신청할 수 있습니다.'); } }
   });
   window.__myApplyDone=function(){ var c=findCo(pendingKey); if(c){ c.apply='applied'; draw(); } pendingKey=null; };
   var row=document.getElementById('mygrid');
@@ -358,12 +364,12 @@ document.getElementById('q').addEventListener('input', function(e){
 </script>
 <div class="ovl" id="apOvl">
   <div class="amod" role="dialog" aria-modal="true" aria-labelledby="apTt">
-    <div class="ct"><div class="tt" id="apTt">사전 참석 신청이 완료되었습니다</div><div class="ds">주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.</div></div>
+    <div class="ct"><div class="tt" id="apTt">사전신청이 완료되었습니다</div><div class="ds">주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.</div></div>
     <div class="bg2"><button type="button" id="apOk">확인</button></div>
   </div>
 </div>
 <script>
-/* 내 주주총회 카드의 '사전 참석 신청' — 신청 완료 안내(Figma 11268:201402) */
+/* 내 주주총회 카드의 '사전신청' — 신청 완료 안내(Figma 11268:201402) */
 (function(){
   var ov=document.getElementById('apOvl');
   document.getElementById('apOk').addEventListener('click',function(){ ov.classList.remove('on'); if(window.__myApplyDone) window.__myApplyDone(); });
@@ -460,7 +466,7 @@ document.getElementById('q').addEventListener('input', function(e){
     <div class="chp-tm">지금</div>
     <div class="chp-ask">어떤 도움이 필요하신가요?</div>
     <div class="chp-opts" id="chOpts">
-      <button class="chp-opt" type="button">사전 참석 신청 · 철회</button>
+      <button class="chp-opt" type="button">사전신청 · 철회</button>
       <button class="chp-opt" type="button">전자투표 방법</button>
       <button class="chp-opt" type="button">대리인(위임) 지정</button>
       <button class="chp-opt" type="button">주주 인증 · 로그인</button>

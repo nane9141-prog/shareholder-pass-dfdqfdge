@@ -215,7 +215,7 @@
   .amod .tt{font-size:16px;line-height:24px;font-weight:700;color:#151419}
   .amod .ds{font-size:14px;line-height:21px;color:#151419}
   .amod .bg2{display:flex;justify-content:flex-end;gap:6px;padding:10px 20px 20px}
-  .amod.left .ct{align-items:stretch;text-align:left}   /* 사전 참석 신청 완료 — Figma 는 왼쪽 정렬 */
+  .amod.left .ct{align-items:stretch;text-align:left}   /* 사전신청 완료 — Figma 는 왼쪽 정렬 */
   .amod .bg2 button{flex:1;height:41px;padding:10px 12px;border:0;border-radius:8px;background:#151419;
     font-family:inherit;font-size:14px;line-height:21px;font-weight:700;letter-spacing:-.01em;color:#fff;cursor:pointer}
   /* 두 묶음은 한 장 안에 둔다 — 카드가 둘로 나뉘어 붙어 있으면 경계가 어지럽다 */
@@ -326,6 +326,7 @@
   </div>
 </div>
 
+<script src="assets/shauth.js?v=1"></script>
 <script src="assets/companies.js?v=14"></script>
 <script src="assets/agenda.js"></script>
 <script>
@@ -367,8 +368,8 @@ else dchip.remove();
   var S = {
     live: { bs:[['출석','']], btn:'전자주주총회 입장', href:'live.html?co='+CO.key, dark:true },
     end:  { bs:[['출석','']], btn:'의결권 행사 내역 보기', href:'mypage.html#vote', line:true },
-    dday: { bs:[], btn:'사전 참석 신청', dark:true },
-    dn:   { bs:[], btn:'사전 참석 신청', dark:true }
+    dday: { bs:[], btn:'사전신청', dark:true },
+    dn:   { bs:[], btn:'사전신청', dark:true }
   };
   var st = S[CO.status] || S.dn;
   var badges = st.bs.map(function(b){ return '<span class="sb '+b[1]+'">'+b[0]+'</span>'; }).join('');
@@ -397,9 +398,15 @@ function say(title, desc, left){
   document.getElementById('aOk').addEventListener('click',function(){ ov.classList.remove('on'); });
   ov.addEventListener('click',function(e){ if(e.target===ov) ov.classList.remove('on'); });
 })();
-/* 사전 참석 신청 — 주주카드와 사전준비 목록이 같은 동작을 한다 */
+/* 사전신청 — 주주카드와 사전준비 목록이 같은 동작을 한다 */
+/* 주주인증 — 사전신청 전에 본인을 확인한다 (assets/shauth.js) */
 function applyJoin(){
-  say('사전 참석 신청이 완료되었습니다', '주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.', true);
+  if (window.SHAUTH) SHAUTH.open({ co:CO.nm, term:CO.term, base:CO.base, name:(window.PASS_USER&&PASS_USER.name)||'' }, applyJoinDone);
+  else applyJoinDone();
+}
+
+function applyJoinDone(){
+  say('사전신청이 완료되었습니다', '주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.', true);
 }
 
 /* ---- 의안 목록 — 번호 배지 + 제목 + 결의 구분, 펼치면 설명과 자료 ---- */
@@ -503,7 +510,7 @@ var PREP=[
     {nm:'의결권 불통일 행사 신청', p:PERIOD, bg:'미신청', btn:'불통일 신청'}
   ]},
   {k:'총회 참여', d:'주주총회 당일 실시간 참석 신청, 대리인 지정 및 사전 질의를 등록합니다.', items:[
-    {nm:'사전 참석 신청', p:PERIOD, bg:'미신청', btn:'참석 신청하기', dark:true},
+    {nm:'사전신청', p:PERIOD, bg:'미신청', btn:'사전신청 하기', dark:true},
     {nm:'대리인 지정', p:PERIOD, bg:'미지정', btn:'지정하기'},
     {nm:'사전 질의 등록', p:PERIOD, bg:'미등록', btn:'질의 등록하기'}
   ]}
@@ -520,7 +527,7 @@ document.getElementById('prepList').innerHTML=PREP.map(function(g){
 
 document.getElementById('prepList').addEventListener('click',function(e){
   var b=e.target.closest('.b'); if(!b) return;
-  if(b.textContent.indexOf('참석 신청')>=0) applyJoin();
+  if(b.textContent.indexOf('사전신청')>=0) applyJoin();
 });
 document.getElementById('sideGroups').innerHTML='<div class="card plist">'+PREP.map(function(g){
   return '<div class="pgrp"><div class="pt">'+g.k+'</div>'
@@ -677,7 +684,7 @@ document.querySelectorAll('#agList .row').forEach(function(r){
     <div class="chp-tm">지금</div>
     <div class="chp-ask">어떤 도움이 필요하신가요?</div>
     <div class="chp-opts" id="chOpts">
-      <button class="chp-opt" type="button">사전 참석 신청 · 철회</button>
+      <button class="chp-opt" type="button">사전신청 · 철회</button>
       <button class="chp-opt" type="button">전자투표 방법</button>
       <button class="chp-opt" type="button">대리인(위임) 지정</button>
       <button class="chp-opt" type="button">주주 인증 · 로그인</button>
