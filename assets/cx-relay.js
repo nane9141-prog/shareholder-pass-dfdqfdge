@@ -21,6 +21,17 @@
 (function () {
   if (window.cxRelay) return;
 
+  /* ── 중계 끄기 ──────────────────────────────────────────────
+     기본은 '같은 기기 안에서만' 동작한다(localStorage 공유).
+     여러 기기를 이어야 할 때만 주소에 ?relay=on 을 붙이거나
+     페이지에서 window.CX_RELAY_ON = true 로 켠다. */
+  var RELAY_ON = /[?&]relay=on\b/.test(location.search) || window.CX_RELAY_ON === true;
+  if (!RELAY_ON) {
+    window.cxRelay = null;          /* 켜져 있지 않다는 것을 분명히 해 둔다 */
+    return;
+  }
+
+
   var KEYS = ['cx.live', 'cx.collect', 'cx.app.px', 'cx.onsite', 'cx.att', 'cx.ans', 'cx.reset'];
   var HOST = 'https://ntfy.sh';
 
