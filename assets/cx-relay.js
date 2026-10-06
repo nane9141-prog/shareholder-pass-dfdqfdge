@@ -289,7 +289,7 @@
     } catch (e) {}
   }
 
-  window.cxRelay = { topic: topic, keys: KEYS, ok: false, publish: publish, connect: connect };
+  window.cxRelay = { topic: topic, keys: KEYS, ok: false, publish: publish, connect: connect, catchUp: function () { catchUp(); } };
   connect();
   catchUp();
   /* 화면으로 돌아왔을 때 끊겨 있으면 다시 잇고 밀린 값을 받아온다 */
