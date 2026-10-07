@@ -1495,8 +1495,7 @@ var PASSNAME=(window.PASS_USER&&PASS_USER.name)||'박성용';
   }
   function off(){ try{ localStorage.removeItem(K); }catch(e){} }
   beat();
-  setInterval(function(){ if(!document.hidden) beat(); }, 4000);
-  document.addEventListener('visibilitychange', function(){ if(document.hidden) off(); else beat(); });
+  setInterval(beat, 4000);       /* 다른 창에 가려져 있어도 보고 있는 것으로 둔다 */
   window.addEventListener('pagehide', off);
   window.addEventListener('beforeunload', off);
 })();
