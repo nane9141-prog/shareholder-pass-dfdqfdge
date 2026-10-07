@@ -1794,7 +1794,7 @@ function passPopup(){
   var x=Math.round(bx+(bw-w)/2), y=Math.round(by+(bh-h)/2);
   if(y<0) y=0;
   try{
-    PASSWIN=window.open('passauth.html','cxPassAuth',
+    PASSWIN=window.open('passauth.html?v=2','cxPassAuth',
       'width='+w+',height='+h+',left='+Math.round(x)+',top='+Math.round(y)+
       ',resizable=yes,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
   }catch(e){ PASSWIN=null; }
@@ -1839,7 +1839,7 @@ function qrStep(){
   clearInterval(QRT);
   QRT=setInterval(function(){ left--; paint(); if(left<=0) authClose(); },1000);
   /* 시연용 — 앱에서 승인한 것으로 보고 잠시 뒤 넘어간다 */
-  setTimeout(function(){ if(document.getElementById('authOvl').classList.contains('on')) authDone(); },6000);
+  setTimeout(function(){ if(document.getElementById('authOvl').classList.contains('on')) authDone(); },3500);
 }
 function authReset(){
   clearInterval(QRT); QRT=null;
