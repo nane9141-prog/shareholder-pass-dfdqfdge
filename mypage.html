@@ -624,6 +624,15 @@ function pxFmtBirth(b){ b=String(b||'').replace(/\D/g,''); return b.length===8?b
   });
   PROXY.mine = mine.concat(PROXY.mine);
 })();
+/* 철회하면 기업 홈 사전준비도 '미지정' 으로 되돌린다 */
+function prepUnset(x){
+  if(!x.ls || !x.key) return;
+  var k='cx.prep.'+x.key, v={};
+  try{ v=JSON.parse(localStorage.getItem(k)||'{}'); }catch(e){ v={}; }
+  v.proxy='미지정';
+  try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){}
+}
+
 /* 철회 등 마이페이지에서 바꾼 상태를 저장 칸에도 반영 */
 function pxSaveSt(x, label){
   if(!x.ls) return;
@@ -745,7 +754,9 @@ function drawProxyDetail(id){
   on('pxCancel', function(){
     confirmBox({ title:'대리인 지정을 철회하시겠습니까?',
       desc:'철회 시 대리인에게 전달된 인증 링크가 무효화되며 위임 신청이 취소됩니다.',
-      ok:'철회', onOk:function(){ x.st='no'; pxSaveSt(x,'철회'); drawProxyDetail(id); } });
+      ok:'철회', onOk:function(){
+        x.st='no'; pxSaveSt(x,'지정철회'); prepUnset(x); drawProxyDetail(id);
+      } });
   });
   on('pxNo', function(){
     confirmBox({ title:'대리인 위임을 거절하시겠습니까?',

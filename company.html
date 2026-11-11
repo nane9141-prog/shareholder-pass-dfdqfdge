@@ -633,6 +633,24 @@ function stSave(o){ var v=stLoad(); for(var k in o) v[k]=o[k];
 var SAVED=stLoad();
 var ST={ apply:(SAVED.apply!=null?SAVED.apply:(CO.apply==='applied')),
          uni:(SAVED.uni||'미신청'), proxy:(SAVED.proxy||'미지정'), qa:0, ans:0 };
+/* 마이페이지에서 대리인 지정을 철회하면 이 화면도 따라 바뀐다 */
+window.addEventListener('storage', function(e){
+  if(e.key !== SKEY) return;
+  var v=stLoad();
+  ST.uni = v.uni || '미신청';
+  ST.proxy = v.proxy || '미지정';
+  if(v.apply != null) ST.apply = v.apply;
+  if(window.prepPaint) prepPaint();
+});
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) return;
+  var v=stLoad();
+  ST.uni = v.uni || '미신청';
+  ST.proxy = v.proxy || '미지정';
+  if(v.apply != null) ST.apply = v.apply;
+  if(window.prepPaint) prepPaint();
+});
+
 var PREP=[
   {k:'의결권 행사', d:'주주총회 안건에 대해 의결권을 직접 행사하거나 위임하실 수 있습니다.', items:[
     {key:'evote', nm:'전자투표 · 전자위임장 행사', p:PERIOD},
