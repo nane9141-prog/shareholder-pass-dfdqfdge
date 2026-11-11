@@ -343,7 +343,16 @@ function stSave(o){ var v = stLoad(); for (var k in o) v[k] = o[k];
   try{ localStorage.setItem(SKEY, JSON.stringify(v)); }catch(e){} }
 var ST = stLoad();
 if (!ST.uni) ST.uni = '미신청';
-if (!ST.proxy) ST.proxy = '미지정';
+/* 대리인 지정 상태는 커넥서스 처리 결과를 따른다 — 반려·철회된 건은 다시 미지정 */
+ST.proxy = (function(){
+  var box=[];
+  try{ box=JSON.parse(localStorage.getItem('cx.proxy')||'[]'); }catch(e){ box=[]; }
+  for (var i=0;i<box.length;i++){
+    if (!box[i] || box[i].co !== CO.key) continue;
+    return /반려|거절|철회|취소/.test(String(box[i].st||'')) ? '미지정' : '지정';
+  }
+  return ST.proxy || '미지정';
+})();
 function prepPaint(){}   /* 이 페이지에는 목록이 없다 */
 
 /* 화면 전환 */
