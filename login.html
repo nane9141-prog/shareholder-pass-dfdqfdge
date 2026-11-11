@@ -35,6 +35,8 @@
   /* ── 페이지 컬럼 ────────────────────────────────────────── */
   main{display:flex;justify-content:center;padding:48px 20px 80px}
   .col{width:520px;max-width:100%;display:flex;flex-direction:column;gap:20px;align-items:center}
+  .col > *{width:100%}
+  .logo-blk{align-self:center}
   .logo-blk{display:flex;flex-direction:column;align-items:center;gap:4px}
   .logo-blk img{height:32px;width:auto;display:block}
   .logo-blk small{font-size:14px;line-height:1.5;color:var(--txt)}
@@ -375,8 +377,7 @@
           <div class="cd" id="apCode">QD-4821-7730</div>
           <button type="button" id="apCopy">복사</button>
         </div>
-        <div class="note">발급된 참석자 코드는 등록된 이메일로도 전송되었습니다.
-          <em>*주주 확인을 마치면 참여 가능한 주주총회를 조회할 수 있습니다.</em></div>
+        <div class="note">발급된 참석자 코드는 등록된 이메일로도 전송되었습니다.<br>*주주 확인을 마치면 참여 가능한 주주총회를 조회할 수 있습니다.</div>
         <div class="brow">
           <button class="btn lg" type="button" id="dnLogin">로그인</button>
           <button class="btn dark lg" type="button" id="dnShauth">주주확인 신청</button>
@@ -407,8 +408,8 @@
     <div class="bd">
       <div class="mdl-h"><b>참석자 코드 로그인</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
       <div class="fset" style="gap:24px">
-        <div class="f"><label>참석자 코드 12자리</label>
-          <div class="inbox"><input id="cdCode" type="text" placeholder="참석자 코드 12자리 입력"></div></div>
+        <div class="f"><label>참석자 코드 N자리</label>
+          <div class="inbox"><input id="cdCode" type="text" placeholder="참석자 코드 N자리 입력"></div></div>
         <div class="f"><label>비밀번호</label>
           <div class="inbox" style="height:48px"><input id="cdPw" type="password" placeholder="비밀번호 입력"><button class="eye" type="button" data-eye="cdPw"></button></div></div>
       </div>
@@ -451,7 +452,7 @@
   <div class="mdl">
     <div class="bd">
       <div class="mdl-h"><b>비밀번호 재설정</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-      <div class="desc">참석자 코드를 받으셨던 이메일을 입력해 주세요.<br><b>참석자 코드와 비밀번호 재설정 링크</b>를 함께 전송합니다.</div>
+      <div class="desc">참석자 코드를 받으셨던 이메일를 입력해 주세요.<br><b>참석자 코드와 비밀번호 재설정 링크</b>를 함께 전송합니다.</div>
       <div class="f" style="margin-top:8px"><label>이메일</label>
         <div class="inbox"><input id="rsMail" type="email" placeholder="참석자 코드를 받은 이메일 입력"></div></div>
     </div>
