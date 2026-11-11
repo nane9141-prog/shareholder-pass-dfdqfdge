@@ -725,7 +725,7 @@ var QA=[
 (function(){
   var sel=document.getElementById('qaAg');
   sel.innerHTML='<option value="">대상 의안을 선택해 주세요</option><option>총회 진행 전반</option>'
-    +units.map(function(a){return '<option>'+chip(a.no)+' '+a.nm+'</option>';}).join('');
+    +PASS_AGENDA.filter(function(a){return !a.header;}).map(function(a){return '<option>'+chip(a.no)+' '+a.nm+'</option>';}).join('');
 
   var tt=document.getElementById('qaTt'), bd=document.getElementById('qaBd'),
       cnt=document.getElementById('qaCnt'), save=document.getElementById('qaSave');
