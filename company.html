@@ -120,7 +120,7 @@
   .pv-card .r{display:flex;gap:8px;align-items:baseline;padding:4px 20px}
   .pv-card .r .k{width:100px;flex:none;font-size:14px;line-height:1.5;color:#6B7078}
   .pv-card .r .v{flex:1;min-width:0;font-size:16px;line-height:1.5;color:#151419}
-  .pv-card .r .v.b{font-weight:700}
+  .pv-card .r .v.st{font-weight:700}
   .pv-co{background:#fff;border:1px solid #EEF0F2;border-radius:12px;padding:20px;margin-bottom:12px;
     display:flex;flex-direction:column;gap:2px}
   .pv-co b{font-size:16px;line-height:1.5;font-weight:700;color:#151419}
@@ -851,7 +851,7 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
 
   function paintMe(){
     $('pxMe').innerHTML=ME[kind].map(function(r){
-      return '<div class="r"><span class="k">'+r[0]+'</span><span class="v'+(r[2]?' b':'')+'">'+r[1]+'</span></div>';
+      return '<div class="r"><span class="k">'+r[0]+'</span><span class="v'+(r[2]?' st':'')+'">'+r[1]+'</span></div>';
     }).join('');
   }
   function fields(){
