@@ -152,6 +152,9 @@
   .upfile svg{width:18px;height:18px;flex:none;fill:none;stroke:#6B7078;stroke-width:1.6}
   .upfile .nm{flex:1;min-width:0;font-size:14px;color:#151419;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .upfile .sz{font-size:12px;color:#A7AAB1;flex:none}
+  .upfile .x{flex:none;width:18px;height:18px;border:0;background:none;padding:0;cursor:pointer;color:#A7AAB1;
+    display:flex;align-items:center;justify-content:center}
+  .upfile .x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
   .pv-line{height:1px;background:#EEF0F2;margin:40px 0 16px}
   .pvck{display:flex;align-items:flex-start;gap:8px;width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left;margin-bottom:16px}
   .pvck .bx{flex:none;width:18px;height:18px;margin-top:2px;border:1px solid #EEF0F2;border-radius:6px;background:#fff;position:relative;transition:.12s}
@@ -447,8 +450,9 @@
 
           <div class="pv-g">
             <div class="pv-sec">위임장</div>
+            <input id="pxFile" type="file" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <button class="updash" type="button" id="pxUp">파일 첨부 (pdf, jpg, png)</button>
-            <div class="upfile" id="pxUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">위임장_회사.pdf</span><span class="sz">4MB</span></div>
+            <div class="upfile" id="pxUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm" id="pxFileNm">위임장_회사.pdf</span><span class="sz" id="pxFileSz">4MB</span><button class="x" type="button" data-updel><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></button></div>
           </div>
 
           <div class="pv-line"></div>
@@ -495,8 +499,9 @@
           </div>
           <div class="pv-g">
             <div class="pv-sec">증빙서류</div>
+            <input id="unFile" type="file" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <button class="updash" type="button" id="unUp">파일 첨부 (pdf, jpg, png)</button>
-            <div class="upfile" id="unUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">불통일 행사 신청 증빙.pdf</span><span class="sz">4MB</span></div>
+            <div class="upfile" id="unUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm" id="unFileNm">불통일 행사 신청 증빙.pdf</span><span class="sz" id="unFileSz">4MB</span><button class="x" type="button" data-updel><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></button></div>
           </div>
           <button class="pvbtn" type="button" id="unGo" disabled>불통일 행사 신청</button>
         </div>
@@ -833,6 +838,13 @@ document.getElementById('sideGroups').innerHTML='<div class="card plist">'+PREP.
       }).join('')+'</div>';
 }).join('')+'</div>';
 
+/* 첨부 파일 크기 표기 */
+function fsize(n){
+  if(n<1024) return n+'B';
+  if(n<1024*1024) return Math.round(n/1024)+'KB';
+  return (Math.round(n/1024/1024*10)/10)+'MB';
+}
+
 /* ═══ 대리인 지정 ═══════════════════════════════════════════ */
 var HOLD = parseInt(String(CO.shares||'1,200').replace(/\D/g,''),10) || 1200;
 function cm(n){ return Number(n).toLocaleString('en-US'); }
@@ -881,7 +893,16 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
     }
     check();
   });
-  $('pxUp').addEventListener('click',function(){ file=true; this.hidden=true; $('pxUpOk').hidden=false; check(); });
+  $('pxUp').addEventListener('click',function(){ $('pxFile').click(); });
+  $('pxFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f) return;
+    file=true; $('pxUp').hidden=true; $('pxUpOk').hidden=false;
+    $('pxFileNm').textContent=f.name; $('pxFileSz').textContent=fsize(f.size);
+    check();
+  });
+  $('pxUpOk').querySelector('[data-updel]').addEventListener('click',function(){
+    file=false; $('pxFile').value=''; $('pxUpOk').hidden=true; $('pxUp').hidden=false; check();
+  });
   $('pxCk').addEventListener('click',function(){ agree=!agree; this.classList.toggle('on',agree); check(); });
 
   $('pxGo').addEventListener('click',function(){
@@ -901,6 +922,9 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
         $('pxDoneCard').innerHTML=card.map(function(r){
           return '<div class="r"><span class="k" style="width:120px">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>';
         }).join('');
+        var dz=document.querySelector('#pvProxyDone .upfile');
+        dz.querySelector('.nm').textContent=$('pxFileNm').textContent;
+        dz.querySelector('.sz').textContent=$('pxFileSz').textContent;
         ST.proxy='지정'; prepPaint(); pvGo('pvProxyDone');
       }, '대리인 지정');
   });
@@ -914,12 +938,22 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
     $('unCnt').textContent=this.value.length;
     $('unGo').disabled = !(this.value.trim() && file);
   });
-  $('unUp').addEventListener('click',function(){
-    file=true; this.hidden=true; $('unUpOk').hidden=false;
+  $('unUp').addEventListener('click',function(){ $('unFile').click(); });
+  $('unFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f) return;
+    file=true; $('unUp').hidden=true; $('unUpOk').hidden=false;
+    $('unFileNm').textContent=f.name; $('unFileSz').textContent=fsize(f.size);
     $('unGo').disabled = !$('unRs').value.trim();
+  });
+  $('unUpOk').querySelector('[data-updel]').addEventListener('click',function(){
+    file=false; $('unFile').value=''; $('unUpOk').hidden=true; $('unUp').hidden=false;
+    $('unGo').disabled=true;
   });
   $('unGo').addEventListener('click',function(){
     $('unDoneRs').textContent=$('unRs').value;
+    var d=document.querySelector('#pvUniDone .upfile');
+    d.querySelector('.nm').textContent=$('unFileNm').textContent;
+    d.querySelector('.sz').textContent=$('unFileSz').textContent;
     ST.uni='신청'; prepPaint(); pvGo('pvUniDone');
   });
 })();
