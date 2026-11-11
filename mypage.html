@@ -68,6 +68,7 @@
   .foot{display:flex;flex-direction:column;gap:20px}
   .foot hr{width:100%;height:0;margin:0;border:0;border-top:1px solid var(--line)}
   .foot .tbtn{align-self:flex-start}
+  .foot{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 
   /* 칩 필터 */
   .chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
@@ -255,7 +256,8 @@
       <div style="height:24px"></div>
       <div class="rows" id="acRows"></div>
       <div style="height:24px"></div>
-      <div class="foot"><hr><button class="tbtn dark" type="button" id="acLeave">회원 탈퇴</button></div>
+      <div class="foot"><hr><button class="tbtn dark" type="button" id="acReset">신청 내역 초기화</button>
+        <button class="tbtn dark" type="button" id="acLeave">회원 탈퇴</button></div>
     </div>
 
     <!-- 신청 내역 · 출석 내역 · 질의 및 발언 내역 · 의결권 행사 내역 -->
@@ -598,6 +600,7 @@ function drawProxyDetail(id){
     +'<div class="sect"><b>'+who+' 정보</b><div>'
     +'<div class="drow"><span class="k">'+who+'</span><span class="v">'+esc(x.who)+'</span></div>'
     +'<div class="drow"><span class="k">휴대폰 번호</span><span class="v">'+esc(x.tel)+'</span></div>'
+    + (x.cxSt ? '<div class="drow"><span class="k">처리 상태</span><span class="v">'+esc(x.cxSt)+'</span></div>' : '')
     +'<div class="drow"><span class="k">이메일 주소</span><span class="v">'+esc(x.mail)+'</span></div>'
     +'<div class="drow"><span class="k">'+(mine?'위임한':'위임 받은')+' 주식수</span><span class="v">'+esc(x.sh)+'</span></div>'
     +'<div class="drow"><span class="k">위임장</span>'+fileRow('위임장_'+c.nm+'.pdf')+'</div>'
@@ -676,10 +679,12 @@ function drawSplitDetail(id){
     +'<div style="height:24px"></div>'
     +'<div class="sect"><b>신청 내역</b><div>'
     +'<div class="drow"><span class="k">총 신청 주식수</span><span class="v">'+esc(x.total)+'</span></div>'
-    +'<div class="drow"><span class="k">찬성</span><span class="v">'+esc(x.pro)+'</span></div>'
-    +'<div class="drow"><span class="k">반대</span><span class="v">'+esc(x.con)+'</span></div>'
-    +'<div class="drow"><span class="k">기권</span><span class="v">'+esc(x.abs)+'</span></div>'
-    +'<div class="drow"><span class="k">사유서</span>'+fileRow('불통일행사_사유서_'+c.nm+'.pdf')+'</div>'
+    + (x.inbox ? '' :
+        '<div class="drow"><span class="k">찬성</span><span class="v">'+esc(x.pro)+'</span></div>'
+      + '<div class="drow"><span class="k">반대</span><span class="v">'+esc(x.con)+'</span></div>'
+      + '<div class="drow"><span class="k">기권</span><span class="v">'+esc(x.abs)+'</span></div>')
+    + (x.rs ? '<div class="drow"><span class="k">신청 사유</span><span class="v">'+esc(x.rs)+'</span></div>' : '')
+    +'<div class="drow"><span class="k">사유서</span>'+fileRow(x.file || ('불통일행사_사유서_'+c.nm+'.pdf'))+'</div>'
     +'</div></div>'
     +'<div style="height:24px"></div>'
     + (x.st==='in' ? '<div class="dacts"><button class="dark" type="button" id="spCancel">신청 취소</button></div>' : '');
@@ -769,6 +774,75 @@ function openTimeline(key){
   document.getElementById('tlClose').addEventListener('click', close);
   ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+})();
+
+/* ---- 전자주총 사이트에서 올린 신청 내역 ----
+   대리인 지정 · 불통일 행사 · 사전 질의는 같은 기기의 기록을 읽어 와 화면 데이터 앞에 붙인다. */
+var INBOX_KEYS = ['cx.proxy', 'cx.uni', 'cx.qa'];
+function lsGet(k, dflt){ try{ return JSON.parse(localStorage.getItem(k) || dflt); }catch(e){ return JSON.parse(dflt); } }
+var PXIN = { '승인완료':'ok', '반려':'no', '지정철회':'no' };
+var SPIN = { ok:'ok', no:'no', off:'off' };
+
+function syncInbox(){
+  /* 위임 · 대리내역 — 내가 지정한 대리인 */
+  PROXY.mine = PROXY.mine.filter(function(x){ return !x.inbox; });
+  lsGet('cx.proxy', '[]').forEach(function(r, n){
+    if(!r || !r.co || !PASS_FIND(r.co)) return;
+    PROXY.mine.unshift({
+      id:'in'+n, inbox:true, key:r.co, who:r.nm || '-',
+      birth:r.birth || (r.biz ? '사업자 '+r.biz : '-'),
+      sex:r.kind === 'corp' ? '법인' : '개인',
+      sh:r.shTxt || ((r.sh || 0).toLocaleString() + '주'),
+      tel:r.tel || '-', mail:r.email || '-',
+      st:PXIN[r.st] || 'wait', cxSt:r.st || '승인대기'
+    });
+  });
+
+  /* 불통일 행사 신청 내역 */
+  for(var i = SPLIT.length - 1; i >= 0; i--) if(SPLIT[i].inbox) SPLIT.splice(i, 1);
+  lsGet('cx.uni', '[]').forEach(function(r, n){
+    if(!r || !r.co || !PASS_FIND(r.co)) return;
+    SPLIT.unshift({ id:'si'+n, inbox:true, key:r.co, at:r.at || '-',
+      st:SPIN[r.st] || 'in', total:r.total || '-', pro:'-', con:'-', abs:'-',
+      rs:r.rs || '', file:r.file || '', size:r.size || '' });
+  });
+
+  /* 질의 및 발언 내역 — 사전 질의 건수를 기록대로 맞춘다 */
+  var qb = lsGet('cx.qa', '{}');
+  Object.keys(qb).forEach(function(k){
+    if(!PASS_FIND(k)) return;
+    var n = (qb[k] || []).length, h = null;
+    HISTORY.forEach(function(x){ if(x.key === k) h = x; });
+    if(!h){
+      h = { key:k, apply:'done', attend:'none', qna:{ pre:0, day:0, say:0 }, vote:'todo',
+            at:'-', shares:(PASS_FIND(k).shares || '-') };
+      HISTORY.push(h);
+    }
+    h.qna.pre = n;
+  });
+}
+syncInbox();
+
+/* 전자주총 사이트에서 올라온 내역을 모두 지운다 — 총회 진행 제어와는 별개다 */
+(function(){
+  var b = document.getElementById('acReset');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    confirmBox({
+      title:'신청 내역을 초기화하시겠습니까?',
+      desc:'전자주주총회 사이트에서 등록한 대리인 지정 · 불통일 행사 신청 · 사전 질의 내역과\n커넥서스에 접수된 담당자 · 대리인 지정 등록 내역이 모두 지워집니다.\n주주총회 의안 진행 상태는 그대로 유지됩니다.',
+      ok:'초기화',
+      onOk:function(){
+        try{
+          INBOX_KEYS.forEach(function(k){ localStorage.removeItem(k); });
+          Object.keys(localStorage).forEach(function(k){
+            if(k.indexOf('cx.prep.') === 0) localStorage.removeItem(k);
+          });
+        }catch(e){}
+        location.reload();
+      }
+    });
+  });
 })();
 
 /* ---- 화면 전환 — 주소의 # 이 어느 화면인지 정한다 ---- */

@@ -759,6 +759,12 @@ var QA=[
   function draw(){
     document.getElementById('qaCount').textContent='내 사전 질의 ('+QA.length+'/'+QMAX+')';
     ST.qa=QA.length; ST.ans=QA.filter(function(x){ return x.a; }).length; prepPaint();
+    /* 마이페이지 질의 및 발언 내역이 같은 기록을 읽는다 */
+    try{
+      var qb=JSON.parse(localStorage.getItem('cx.qa')||'{}');
+      qb[CO.key]=QA.map(function(x){ return { ag:x.ag, t:x.t, d:x.d, a:!!x.a }; });
+      localStorage.setItem('cx.qa', JSON.stringify(qb));
+    }catch(e){}
     var host=document.getElementById('qaList');
     if(!QA.length){ host.innerHTML='<div class="qempty2">아직 등록한 사전 질의가 없습니다</div>'; return; }
     host.innerHTML=QA.map(function(x,i){

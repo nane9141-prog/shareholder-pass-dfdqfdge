@@ -625,6 +625,12 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
             org:(PX.kind==='corp'?nm:nm), nm:nm, no:'002458349298',
             sh:parseInt(qty.replace(/\D/g,''),10)||0,
             email:($('pxMail')?$('pxMail').value:'-'),
+            /* 마이페이지 위임 · 대리내역에서 함께 읽는다 */
+            birth:($('pxBirth')?$('pxBirth').value:''),
+            biz:($('pxBiz')?$('pxBiz').value:''),
+            mgr:($('pxMgrNm')?$('pxMgrNm').value:''),
+            tel:($('pxPhone')?$('pxPhone').value:'-'),
+            shTxt:qty+'주',
             st:'승인대기', at:new Date().toISOString().slice(0,16).replace('T',' '), done:'-' });
           localStorage.setItem('cx.proxy', JSON.stringify(box));
         }catch(e){}
@@ -657,6 +663,14 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
     var d=document.querySelector('#pvUniDone .upfile');
     d.querySelector('.nm').textContent=$('unFileNm').textContent;
     d.querySelector('.sz').textContent=$('unFileSz').textContent;
+    /* 마이페이지 불통일 행사 신청 내역으로도 남긴다 */
+    try{
+      var ub=JSON.parse(localStorage.getItem('cx.uni')||'[]');
+      ub.unshift({ co:CO.key, coNm:CO.nm, at:new Date().toISOString().slice(0,10).replace(/-/g,'.'),
+        rs:$('unRs').value.trim(), total:CO.shares||'-',
+        file:$('unFileNm').textContent, size:$('unFileSz').textContent, st:'in' });
+      localStorage.setItem('cx.uni', JSON.stringify(ub));
+    }catch(e){}
     ST.uni='신청'; stSave({uni:'신청'}); pvGo('pvUniDone');
   });
 })();
