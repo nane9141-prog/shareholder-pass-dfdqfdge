@@ -620,7 +620,7 @@ function pxFmtBirth(b){ b=String(b||'').replace(/\D/g,''); return b.length===8?b
     var id=String(x.id||('px'+i+'_'+(x.at||''))).replace(/[^\w-]/g,'');
     return { id:id, key:x.co, who:x.nm||'-', birth:pxFmtBirth(x.birth), sex:'',
              sh:Number(x.sh||0).toLocaleString('en-US')+'주', tel:pxFmtTel(x.tel), mail:x.email||'-',
-             st:pxStOf(x.st), file:x.file||'', at:x.at||'', ls:true, raw:id };
+             st:pxStOf(x.st), cxSt:x.st||'', file:x.file||'', at:x.at||'', ls:true, raw:id };
   });
   PROXY.mine = mine.concat(PROXY.mine);
 })();
@@ -686,7 +686,7 @@ function drawProxyDetail(id){
   var c=co(x.key), st=PXST[x.st], mine=PROXY.mine.indexOf(x)>=0;
   var who = mine ? '대리인' : '위임인';
   /* 내가 지정한 건은 기업의 승인 절차, 받은 건은 내 수락 절차다 */
-  var stLb = mine ? ({ ok:'승인', wait:'승인대기', no:'거절' })[x.st] : st[0];
+  var stLb = mine ? (x.cxSt || ({ ok:'승인', wait:'승인대기', no:'거절' })[x.st]) : st[0];
   function row(k,v){ return '<div class="pxv-r"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
   /* 개인 · 법인 · 해외에 따라 들어가는 줄이 다르다 */
   var info = row(who, x.who), mgr = '';
@@ -755,7 +755,7 @@ function drawProxyDetail(id){
     confirmBox({ title:'대리인 지정을 철회하시겠습니까?',
       desc:'철회 시 대리인에게 전달된 인증 링크가 무효화되며 위임 신청이 취소됩니다.',
       ok:'철회', onOk:function(){
-        x.st='no'; pxSaveSt(x,'지정철회'); prepUnset(x); drawProxyDetail(id);
+        x.st='no'; x.cxSt = x.ls ? '지정철회' : ''; pxSaveSt(x,'지정철회'); prepUnset(x); drawProxyDetail(id);
       } });
   });
   on('pxNo', function(){
