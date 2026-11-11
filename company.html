@@ -96,7 +96,7 @@
   .prep .list{display:flex;flex-direction:column;gap:8px}
   .prep .row{display:flex;align-items:center;gap:8px;padding:16px 20px;border:1px solid #EEF0F2;border-radius:12px}
   .prep .l{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-  .prep .n{display:flex;align-items:center;gap:4px;font-size:16px;line-height:24px;font-weight:500;
+  .prep .n{display:flex;align-items:center;gap:8px;font-size:16px;line-height:24px;font-weight:500;
     letter-spacing:-.01em;color:#151419}
   .prep .n .bg{display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:6px;
     background:#F3F4F6;font-size:12px;line-height:16px;font-weight:500;color:#151419}
@@ -808,7 +808,7 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-pvback],[data-pvho
 });
 
 /* 사전 신청자만 들어갈 수 있는 항목 */
-var NEEDAPPLY={ uni:'불통일 행사 신청', proxy:'대리인 지정', qa:'사전 질의 등록' };
+var NEEDAPPLY={ proxy:'대리인 지정', qa:'사전 질의 등록' };
 document.getElementById('prepList').addEventListener('click',function(e){
   var b=e.target.closest('.b'); if(!b) return;
   var k=b.dataset.pk;
