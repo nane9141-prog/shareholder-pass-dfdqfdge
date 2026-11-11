@@ -120,6 +120,21 @@
   .prep .n .bg.no{background:#FDF4F5;color:#E9081B}
 
 
+  .ovl{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.45);padding:24px}
+  .ovl.on{display:flex}
+  .ovl.on *{overscroll-behavior:contain}
+  .amod{width:320px;min-width:280px;max-width:360px;background:#fff;border-radius:12px;
+    box-shadow:0 2px 12px -2px rgba(0,0,0,.15);overflow:hidden}
+  .amod .ct{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 20px 12px;text-align:center}
+  .amod .tt{font-size:16px;line-height:24px;font-weight:700;color:#151419}
+  .amod .ds{font-size:14px;line-height:21px;color:#151419}
+  .amod .bg2{display:flex;justify-content:flex-end;gap:6px;padding:10px 20px 20px}
+  .amod.left .ct{align-items:stretch;text-align:left}   /* 사전 신청 완료 — Figma 는 왼쪽 정렬 */
+  .amod .ds{white-space:pre-line}
+  .amod .bg2 #aNo{background:#fff;border:1px solid #EEF0F2;color:#151419}
+  .amod .bg2 button{flex:1;height:41px;padding:10px 12px;border:0;border-radius:8px;background:#151419;
+    font-family:inherit;font-size:14px;line-height:21px;font-weight:700;letter-spacing:-.01em;color:#fff;cursor:pointer}
   [hidden]{display:none!important}
 
   /* 이 페이지만의 틀 */
