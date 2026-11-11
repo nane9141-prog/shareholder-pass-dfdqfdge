@@ -103,10 +103,10 @@
     text-align:left;font-family:inherit;font-size:14px;line-height:1.5;color:#151419;cursor:pointer}
   .csel-m button:hover{background:#F3F4F6}
   .csel-m button.on{background:#F3F4F6;font-weight:700}
-  .docitem{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-  .docitem .dt{display:flex;align-items:flex-start;gap:12px}
+  .docitem{display:flex;flex-direction:column;gap:4px;margin-bottom:20px}
+  .docitem .dt{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .docitem .dt .tt{font-size:14px;line-height:1.5;font-weight:700;color:#151419}
-  .docitem .dd{flex:1;min-width:0;font-size:12px;line-height:1.5;color:#6B7078}
+  .docitem .dd{font-size:12px;line-height:1.5;color:#6B7078;margin-bottom:4px}
   .docitem .dl{flex:none;font-size:12px;line-height:1.5;color:#151419;text-decoration:underline;
     background:none;border:0;padding:0;cursor:pointer}
   .updash{gap:8px}
@@ -450,10 +450,10 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
   function docHTML(list){
     return list.map(function(d,i){
       return '<div class="docitem">'
-        + '<div class="dt"><span class="tt" style="white-space:nowrap">'+d[0]+'</span>'
-        +   '<span class="dd">'+d[1]+'</span>'
+        + '<div class="dt"><span class="tt">'+d[0]+'</span>'
         +   (d[2]?'<button class="dl" type="button" data-dl>'+d[2]+'</button>':'')
         + '</div>'
+        + '<div class="dd">'+d[1]+'</div>'
         + '<button class="updash" type="button" data-up="'+i+'">'+FILE_ICO+'파일 첨부 (pdf, jpg, png)</button>'
         + '<div class="upfile" data-ok="'+i+'" hidden>'+FILE_ICO
         +   '<span class="nm"></span><span class="sz"></span>'
