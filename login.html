@@ -165,14 +165,14 @@
   .ok-msg{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1.5;color:#0DAD7E;margin-top:2px}
   .ok-msg svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   /* 약관 동의 — 체크박스 24px */
-  .tmlist{display:flex;flex-direction:column;gap:12px}
+  .tmlist{display:flex;flex-direction:column;gap:8px}
   .tm{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left}
-  .tm .bx{flex:none;width:24px;height:24px;border:1px solid var(--bd);border-radius:8px;background:#fff;position:relative;transition:.12s}
-  .tm .bx::after{content:"";position:absolute;left:8.4px;top:5.4px;width:5.2px;height:9.6px;
-    border:2px solid #CBCDD2;border-left:0;border-top:0;transform:rotate(45deg);transition:.12s}
+  .tm .bx{flex:none;width:18px;height:18px;border:1px solid var(--bd);border-radius:6px;background:#fff;position:relative;transition:.12s}
+  .tm .bx::after{content:"";position:absolute;left:5.6px;top:3.2px;width:4.4px;height:8.4px;
+    border:1.8px solid #CBCDD2;border-left:0;border-top:0;transform:rotate(45deg);transition:.12s}
   .tm.on .bx{background:var(--txt);border-color:var(--txt)}
   .tm.on .bx::after{border-color:#fff}
-  .tm .lb{flex:1;min-width:0;font-size:16px;line-height:1.5;color:var(--txt)}
+  .tm .lb{flex:1;min-width:0;font-size:14px;line-height:1.5;color:var(--txt)}
   .tm.all .lb{font-weight:700}
   .tm .more{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--txt3)}
   .tm .more svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -344,7 +344,7 @@
         </div>
         <div class="fset">
           <div class="f"><label>이름</label>
-            <div class="inbox lock"><input type="text" value="김주주" readonly></div></div>
+            <div class="inbox lock"><input type="text" value="박성용" readonly></div></div>
           <div class="f"><label>휴대폰번호</label>
             <div class="inbox lock"><input type="tel" value="01022223333" readonly></div>
             <div class="ok-msg"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>인증 완료</div></div>
