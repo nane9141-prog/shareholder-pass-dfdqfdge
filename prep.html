@@ -122,6 +122,11 @@
   .pvck.on .bx{background:#151419;border-color:#151419}
   .pvck.on .bx::after{border-color:#fff}
   .pvck .lb{flex:1;min-width:0;font-size:14px;line-height:1.5;color:#151419}
+  /* 체크박스 — 디자인 시스템 아이콘 */
+  .pvck .bx{box-sizing:border-box;flex:none;width:18px;height:18px;border:0!important;border-radius:0;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'><path d='M6 0.5H12C15.0376 0.5 17.5 2.96243 17.5 6V12C17.5 15.0376 15.0376 17.5 12 17.5H6C2.96243 17.5 0.5 15.0376 0.5 12V6C0.5 2.96243 2.96243 0.5 6 0.5Z' fill='white'/><path d='M6 0.5H12C15.0376 0.5 17.5 2.96243 17.5 6V12C17.5 15.0376 15.0376 17.5 12 17.5H6C2.96243 17.5 0.5 15.0376 0.5 12V6C0.5 2.96243 2.96243 0.5 6 0.5Z' stroke='%23EEF0F2'/></svg>") center/18px 18px no-repeat!important;position:relative;transition:none}
+  .pvck .bx::after{display:none!important}
+  .pvck.on .bx{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'><path d='M0 6C0 2.68629 2.68629 0 6 0H12C15.3137 0 18 2.68629 18 6V12C18 15.3137 15.3137 18 12 18H6C2.68629 18 0 15.3137 0 12V6Z' fill='%23151419'/><path d='M7.5707 10.5573L12.3661 5.76205C12.5212 5.60688 12.704 5.5293 12.9145 5.5293C13.1251 5.5293 13.3079 5.60688 13.4629 5.76205C13.6181 5.91712 13.6957 6.10096 13.6957 6.31359C13.6957 6.52621 13.6181 6.71011 13.4629 6.86528L8.11918 12.2155C7.96401 12.3706 7.78119 12.4482 7.5707 12.4482C7.36021 12.4482 7.17739 12.3706 7.02222 12.2155L4.53037 9.72361C4.3752 9.56844 4.29869 9.38455 4.30082 9.17192C4.30296 8.9593 4.38162 8.77545 4.53678 8.62038C4.69185 8.46521 4.8757 8.38763 5.08832 8.38763C5.30095 8.38763 5.48485 8.46521 5.64001 8.62038L7.5707 10.5573Z' fill='white'/></svg>")!important}
   .pvbtn{width:100%;height:48px;border:0;border-radius:8px;background:#151419;color:#fff;
     font-family:inherit;font-size:16px;font-weight:700;letter-spacing:-.01em;cursor:pointer}
   .pvbtn:disabled{background:#F4F4F6;color:#CBCDD2;cursor:default}
