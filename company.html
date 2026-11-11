@@ -69,8 +69,10 @@
   .swt button.on{color:#151419}
   .acc{border-top:1px solid #EEF0F2}
   .acc .it{border-bottom:1px solid #EEF0F2}
-  .acc .hd{display:flex;align-items:center;gap:8px;width:100%;padding:16px;border:0;background:#fff;
+  .acc .hd{display:flex;align-items:flex-start;gap:16px;width:100%;padding:16px;border:0;background:#fff;
     font-family:inherit;text-align:left;cursor:pointer}
+  .acc .hd .bg{margin-top:1px}          /* 뱃지를 제목 글줄에 맞춘다 */
+  .acc .hd .cv{margin-top:0}
   .acc.faq .hd{padding:16px 0}
   .acc .bg{display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:6px;
     background:#F3F4F6;font-size:12px;line-height:16px;font-weight:500;letter-spacing:-.01em;color:#151419;flex:none}
@@ -102,6 +104,84 @@
     font-family:inherit;font-size:14px;line-height:21px;font-weight:700;letter-spacing:-.01em;color:#151419;cursor:pointer}
   .prep .b.dark{background:#151419;border-color:#151419;color:#fff}
 
+  /* ── 사전준비 세부 화면 (Figma 11089:25129 · 11165:27088 · 11334:204661) ── */
+  .pv{display:none}
+  .pv.on{display:block}
+  .pv-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .pv-back{width:20px;height:20px;flex:none;border:0;background:none;padding:0;cursor:pointer;color:#151419}
+  .pv-back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pv-t{font-size:20px;line-height:1.3;font-weight:700;letter-spacing:-.01em;color:#151419}
+  .pv-d{font-size:12px;line-height:1.5;letter-spacing:-.01em;color:#6B7078;margin-bottom:40px}
+  .pv-sec{font-size:16px;line-height:1.3;font-weight:700;letter-spacing:-.01em;color:#151419;margin-bottom:12px}
+  .pv-sec.lg{font-size:18px}
+  .pv-g{margin-bottom:40px}
+  .pv-card{background:#fff;border:1px solid #EEF0F2;border-radius:12px;padding:12px 0}
+  .pv-card .r{display:flex;gap:8px;align-items:baseline;padding:4px 20px}
+  .pv-card .r .k{width:100px;flex:none;font-size:14px;line-height:1.5;color:#6B7078}
+  .pv-card .r .v{flex:1;min-width:0;font-size:16px;line-height:1.5;color:#151419}
+  .pv-card .r .v.b{font-weight:700}
+  .pv-co{background:#fff;border:1px solid #EEF0F2;border-radius:12px;padding:20px;margin-bottom:12px;
+    display:flex;flex-direction:column;gap:2px}
+  .pv-co b{font-size:16px;line-height:1.5;font-weight:700;color:#151419}
+  .pv-co span{font-size:14px;line-height:1.5;color:#6B7078}
+  .segt{display:flex;gap:8px;margin-bottom:12px}
+  .segt button{flex:1;min-width:0;padding:10px;border:1px solid #EEF0F2;border-radius:8px;background:#fff;
+    font-family:inherit;font-size:14px;font-weight:700;letter-spacing:-.01em;color:#A7AAB1;cursor:pointer}
+  .segt button.on{border-color:#272929;color:#151419}
+  .pv-g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fd{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+  .fd > label{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1.3;font-weight:700;color:#151419}
+  .fd .ib{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1px solid #EEF0F2;border-radius:8px}
+  .fd .ib:focus-within{border-color:#272929}
+  .fd .ib input,.fd .ib textarea{flex:1;min-width:0;border:0;outline:0;background:none;font-family:inherit;
+    font-size:14px;line-height:1.5;letter-spacing:-.01em;color:#151419;resize:none}
+  .fd .ib input::placeholder,.fd .ib textarea::placeholder{color:#A7AAB1}
+  .fd .ib .unit{flex:none;font-size:14px;color:#151419}
+  .fd .w300{width:300px;max-width:100%}
+  .fd .hint{font-size:12px;line-height:1.5;color:#6B7078}
+  .fd .bad{font-size:12px;line-height:1.5;color:#E9081B}
+  .tip{position:relative;display:inline-flex;align-items:center}
+  .tip svg{width:16px;height:16px;fill:none;stroke:#A7AAB1;stroke-width:1.8}
+  .tip .bub{display:none;position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:5;
+    width:220px;padding:10px 12px;border-radius:8px;background:#151419;color:#fff;font-size:14px;line-height:1.4;font-weight:400}
+  .tip:hover .bub{display:block}
+  .updash{height:48px;border:1px dashed #D5D8DC;border-radius:8px;background:#fff;display:flex;
+    align-items:center;justify-content:center;gap:6px;font-size:14px;color:#6B7078;cursor:pointer;font-family:inherit;width:100%}
+  .upfile{height:48px;border:1px solid #EEF0F2;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;padding:8px}
+  .upfile svg{width:18px;height:18px;flex:none;fill:none;stroke:#6B7078;stroke-width:1.6}
+  .upfile .nm{flex:1;min-width:0;font-size:14px;color:#151419;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .upfile .sz{font-size:12px;color:#A7AAB1;flex:none}
+  .pv-line{height:1px;background:#EEF0F2;margin:40px 0 16px}
+  .pvck{display:flex;align-items:flex-start;gap:8px;width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left;margin-bottom:16px}
+  .pvck .bx{flex:none;width:18px;height:18px;margin-top:2px;border:1px solid #EEF0F2;border-radius:6px;background:#fff;position:relative;transition:.12s}
+  .pvck .bx::after{content:"";position:absolute;left:5.6px;top:3.2px;width:4.4px;height:8.4px;
+    border:1.8px solid #CBCDD2;border-left:0;border-top:0;transform:rotate(45deg);transition:.12s}
+  .pvck.on .bx{background:#151419;border-color:#151419}
+  .pvck.on .bx::after{border-color:#fff}
+  .pvck .lb{flex:1;min-width:0;font-size:14px;line-height:1.5;color:#151419}
+  .pvbtn{width:100%;height:48px;border:0;border-radius:8px;background:#151419;color:#fff;
+    font-family:inherit;font-size:16px;font-weight:700;letter-spacing:-.01em;cursor:pointer}
+  .pvbtn:disabled{background:#F4F4F6;color:#CBCDD2;cursor:default}
+  .pvbtn.ghost{background:#fff;border:1px solid #EEF0F2;color:#151419}
+  .pvbtns{display:flex;gap:8px;justify-content:center}
+  .pvbtns .pvbtn{width:180px}
+  /* 완료 화면 */
+  .pv-done{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:24px}
+  .pv-done svg.ck{width:24px;height:24px;fill:none;stroke:#151419;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .pv-done .t{font-size:18px;line-height:1.3;font-weight:700;color:#151419}
+  .pv-done .d{font-size:14px;line-height:1.5;color:#151419}
+  .stp{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px}
+  .stp .s{display:flex;align-items:center;gap:8px}
+  .stp .n{width:19px;height:19px;flex:none;border-radius:50%;background:#151419;color:#fff;font-size:10px;
+    font-weight:500;display:flex;align-items:center;justify-content:center}
+  .stp .n.done{background:#0071F3}
+  .stp .n svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .stp .lb{font-size:14px;line-height:1.5;color:#151419}
+  .stp .ln{width:28px;height:1px;background:#EEF0F2;flex:none}
+  /* 사전준비 목록 — 뱃지 색 */
+  .prep .n .bg.ok{background:#EEF5FF;color:#0071F3}
+  .prep .n .bg.no{background:#FDF4F5;color:#E9081B}
+
   /* 사전 질의 */
   .qh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
   .qh svg{width:20px;height:20px;stroke:#151419;fill:none;stroke-width:1.8}
@@ -119,7 +199,9 @@
   .qta textarea{border:0;min-height:62px;padding:10px 16px 8px;resize:vertical}
   .qta .cnt{padding:8px 16px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:-.01em;color:#151419}
   .qnote{font-size:12px;line-height:18px;letter-spacing:-.01em;color:#4C4F54}
-  .qsave{align-self:flex-start;height:41px;padding:10px 12px;border:0;border-radius:8px;background:#151419;
+  .qnotes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:2px}
+  .qnotes li{font-size:12px;line-height:18px;letter-spacing:-.01em;color:#4C4F54}
+  .qsave{width:100%;height:41px;padding:10px 12px;border:0;border-radius:8px;background:#151419;
     font-family:inherit;font-size:14px;line-height:21px;font-weight:700;letter-spacing:-.01em;color:#fff;cursor:pointer}
   .qsave:disabled{background:#D7D9DF;cursor:not-allowed}
   .qsep{height:1px;background:#D7D9DF;margin:40px 0}
@@ -216,6 +298,8 @@
   .amod .ds{font-size:14px;line-height:21px;color:#151419}
   .amod .bg2{display:flex;justify-content:flex-end;gap:6px;padding:10px 20px 20px}
   .amod.left .ct{align-items:stretch;text-align:left}   /* 사전 신청 완료 — Figma 는 왼쪽 정렬 */
+  .amod .ds{white-space:pre-line}
+  .amod .bg2 #aNo{background:#fff;border:1px solid #EEF0F2;color:#151419}
   .amod .bg2 button{flex:1;height:41px;padding:10px 12px;border:0;border-radius:8px;background:#151419;
     font-family:inherit;font-size:14px;line-height:21px;font-weight:700;letter-spacing:-.01em;color:#fff;cursor:pointer}
   /* 두 묶음은 한 장 안에 둔다 — 카드가 둘로 나뉘어 붙어 있으면 경계가 어지럽다 */
@@ -291,24 +375,181 @@
       </div>
 
       <div class="pane" data-p="prep">
-        <div class="prep" id="prepList"></div>
 
-        <div class="qsep"></div>
-        <div class="qh"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>사전 질의</b></div>
-        <div class="qf">
-          <div class="fld"><span class="lb">대상 의안</span><select id="qaAg"></select></div>
-          <div class="fld"><span class="lb">제목</span>
-            <input class="in" id="qaTt" type="text" maxlength="100" placeholder="질의 제목을 입력해 주세요"></div>
-          <div class="fld"><span class="lb">내용</span>
-            <div class="qta"><textarea id="qaBd" rows="3" maxlength="1000" placeholder="질의 내용을 구체적으로 작성해 주세요"></textarea>
-              <div class="cnt" id="qaCnt">0/1000</div></div></div>
-          <div class="qnote">주의사항</div>
-          <div class="qnote">주주총회 시작 전까지 수정 및 삭제가 가능하나, 답변이 완료된 질의는 불가능합니다. 최대 3건까지 등록하실 수 있습니다.</div>
-          <button class="qsave" id="qaSave" type="button">등록하기</button>
+        <!-- 사전준비 목록 -->
+        <div class="pv on" id="pvHome">
+          <div class="prep" id="prepList"></div>
         </div>
 
-        <div class="qsep"></div>
-        <div class="qmine"><b id="qaCount">내 사전 질의 (0/3)</b><div id="qaList"></div></div>
+        <!-- 대리인 지정 (Figma 11089:25129 · 27377 · 27512) -->
+        <div class="pv" id="pvProxy">
+          <div class="pv-top"><button class="pv-back" type="button" data-pvback><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="pv-t">대리인 지정</div></div>
+          <div class="pv-d">본인 대신 주주총회에 참석해 의결권을 행사할 대리인을 지정합니다</div>
+
+          <div class="pv-co"><b id="pxCo">큐더스전자</b><span id="pxTerm">제10기 정기주주총회</span></div>
+
+          <div class="pv-g">
+            <div class="pv-sec">위임인 정보</div>
+            <div class="pv-card" id="pxMe"></div>
+          </div>
+
+          <div class="pv-g">
+            <div class="pv-sec">대리인 정보</div>
+            <div class="segt" id="pxSeg">
+              <button type="button" class="on" data-px="indi">개인</button>
+              <button type="button" data-px="corp">법인</button>
+              <button type="button" data-px="abroad">해외</button>
+            </div>
+
+            <!-- 개인 -->
+            <div class="px-f" data-pxf="indi">
+              <div class="pv-g2">
+                <div class="fd"><label>이름</label><div class="ib"><input data-pq type="text" placeholder="이름 입력"></div></div>
+                <div class="fd"><label>생년월일</label><div class="ib"><input data-pq type="text" inputmode="numeric" maxlength="8" placeholder="생년월일 8자리 (숫자만 입력)"></div></div>
+                <div class="fd"><label>휴대폰번호</label><div class="ib"><input data-pq type="tel" placeholder="휴대폰번호 입력"></div></div>
+                <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
+              </div>
+            </div>
+
+            <!-- 법인 -->
+            <div class="px-f" data-pxf="corp" hidden>
+              <div class="pv-g2">
+                <div class="fd"><label>기업명</label><div class="ib"><input data-pq type="text" placeholder="기업명 입력"></div></div>
+                <div class="fd"><label>사업자등록번호</label><div class="ib"><input data-pq type="text" placeholder="사업자등록번호 입력"></div></div>
+              </div>
+            </div>
+
+            <!-- 해외 -->
+            <div class="px-f" data-pxf="abroad" hidden>
+              <div class="pv-g2">
+                <div class="fd"><label>대리인명</label><div class="ib"><input data-pq type="text" placeholder="대리인명 입력"></div></div>
+                <div class="fd"><label>참석자 코드<span class="tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r=".9" fill="#A7AAB1" stroke="none"/></svg><span class="bub">본인인증이 어려운 해외 주주에게<br>발급하는 코드입니다.</span></span></label>
+                  <div class="ib"><input data-pq type="text" placeholder="참석자 코드 N자리 입력"></div></div>
+                <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
+              </div>
+            </div>
+
+            <div class="fd"><label>위임주식수</label>
+              <div class="ib w300"><input id="pxQty" type="text" inputmode="numeric" placeholder="위임주식수 입력"><span class="unit">주</span></div>
+              <div class="bad" id="pxQtyErr" hidden>보유 주식수를 초과할 수 없습니다</div>
+            </div>
+
+            <!-- 법인 담당자 정보 -->
+            <div class="px-f" data-pxf="corp" hidden>
+              <div class="pv-sec" style="margin-top:28px">법인 담당자 정보</div>
+              <div class="pv-g2">
+                <div class="fd"><label>담당자명</label><div class="ib"><input data-pq type="text" placeholder="담당자명 입력"></div></div>
+                <div class="fd"><label>휴대폰번호</label><div class="ib"><input data-pq type="tel" placeholder="휴대폰번호 입력"></div></div>
+              </div>
+              <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
+            </div>
+          </div>
+
+          <div class="pv-g">
+            <div class="pv-sec">위임장</div>
+            <button class="updash" type="button" id="pxUp">파일 첨부 (pdf, jpg, png)</button>
+            <div class="upfile" id="pxUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">위임장_회사.pdf</span><span class="sz">4MB</span></div>
+          </div>
+
+          <div class="pv-line"></div>
+          <button class="pvck" type="button" id="pxCk"><span class="bx"></span><span class="lb">[필수] 대리인 동의를 받아 개인정보를 입력했으며, 전자주주총회 참석 목적으로만 이용됨을 확인합니다.</span></button>
+          <button class="pvbtn" type="button" id="pxGo" disabled>대리인 지정</button>
+        </div>
+
+        <!-- 대리인 지정 접수 완료 (Figma 11334:204661) -->
+        <div class="pv" id="pvProxyDone">
+          <div class="pv-done">
+            <svg class="ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+            <div class="t">대리인 지정 접수 완료</div>
+            <div class="d"><span id="pxDoneNm">김도현</span> 님께 수락 요청 알림을 보냈습니다.<br>수락 시 최종 완료됩니다.</div>
+          </div>
+          <div class="stp">
+            <span class="s"><span class="n done"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="lb">대리인 요청</span></span>
+            <span class="ln"></span>
+            <span class="s"><span class="n">2</span><span class="lb">대리인 수락 확인</span></span>
+            <span class="ln"></span>
+            <span class="s"><span class="n">3</span><span class="lb">등록 완료</span></span>
+          </div>
+          <div class="pv-g">
+            <div class="pv-sec lg">대리인 정보</div>
+            <div class="pv-card" id="pxDoneCard"></div>
+          </div>
+          <div class="pv-g">
+            <div class="pv-sec">위임장</div>
+            <div class="upfile"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">위임장_회사.pdf</span><span class="sz">4MB</span></div>
+          </div>
+          <div class="pvbtns">
+            <button class="pvbtn ghost" type="button" data-pvback>신청 내역</button>
+            <button class="pvbtn" type="button" data-pvhome>메인으로</button>
+          </div>
+        </div>
+
+        <!-- 불통일 행사 신청 (Figma 11165:27088) -->
+        <div class="pv" id="pvUni">
+          <div class="pv-top"><button class="pv-back" type="button" data-pvback><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="pv-t">불통일 행사 신청</div></div>
+          <div class="pv-d">보유한 주식의 의결권을 다르게 행사하려는 경우 신청합니다</div>
+          <div class="pv-g">
+            <div class="pv-sec">신청 사유</div>
+            <div class="fd"><div class="ib"><textarea id="unRs" rows="3" maxlength="100" placeholder="신청 사유 입력 (예: 신탁계약에 따라 다수 위탁자의 주식을 명의상 보유하고 있으며 위탁자별 지시가 다른 경우)"></textarea></div>
+              <div class="hint"><b id="unCnt" style="color:#151419;font-weight:500">0</b><span style="color:#A7AAB1">/100</span></div></div>
+          </div>
+          <div class="pv-g">
+            <div class="pv-sec">증빙서류</div>
+            <button class="updash" type="button" id="unUp">파일 첨부 (pdf, jpg, png)</button>
+            <div class="upfile" id="unUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">불통일 행사 신청 증빙.pdf</span><span class="sz">4MB</span></div>
+          </div>
+          <button class="pvbtn" type="button" id="unGo" disabled>불통일 행사 신청</button>
+        </div>
+
+        <!-- 불통일 행사 신청완료 (Figma 11334:274115) -->
+        <div class="pv" id="pvUniDone">
+          <div class="pv-done">
+            <svg class="ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+            <div class="t">불통일 행사 신청완료</div>
+            <div class="d">담당자 검토 후 결과를 이메일 및 문자로 알려드립니다</div>
+          </div>
+          <div class="stp">
+            <span class="s"><span class="n done"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="lb">신청</span></span>
+            <span class="ln"></span>
+            <span class="s"><span class="n">2</span><span class="lb">담당자 검토</span></span>
+            <span class="ln"></span>
+            <span class="s"><span class="n">3</span><span class="lb">승인</span></span>
+          </div>
+          <div class="pv-g">
+            <div class="pv-sec lg">신청 사유</div>
+            <div class="pv-card"><div class="r" style="padding:4px 20px"><span class="v" id="unDoneRs"></span></div></div>
+          </div>
+          <div class="pv-g">
+            <div class="pv-sec">증빙사유</div>
+            <div class="upfile"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">불통일 행사 신청 증빙.pdf</span><span class="sz">4MB</span></div>
+          </div>
+          <div class="pvbtns">
+            <button class="pvbtn ghost" type="button" data-pvback>신청 내역</button>
+            <button class="pvbtn" type="button" data-pvhome>메인으로</button>
+          </div>
+        </div>
+
+        <!-- 사전 질의 (Figma 10471:116092 · 11193:23169) -->
+        <div class="pv" id="pvQa">
+          <div class="pv-top"><button class="pv-back" type="button" data-pvback><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="pv-t" style="font-size:18px">사전 질의</div></div>
+          <div class="qf">
+            <div class="fld"><span class="lb">의안 선택</span><select id="qaAg"></select></div>
+            <div class="fld"><span class="lb">제목</span>
+              <input class="in" id="qaTt" type="text" maxlength="100" placeholder="제목 입력"></div>
+            <div class="fld"><span class="lb">질의 내용</span>
+              <div class="qta"><textarea id="qaBd" rows="3" maxlength="1000" placeholder="질의 내용 입력"></textarea>
+                <div class="cnt" id="qaCnt">0/1000</div></div></div>
+            <ul class="qnotes">
+              <li>사전 질의는 주주 1인당 최대 3회까지 등록할 수 있으며, 질의 1건당 1000자 이내로 작성해 주세요.</li>
+              <li>주주총회 안건과 직접 관련이 없거나, 반복·중복되는 질의 및 타인의 권리를 침해하는 내용은 답변이 제한될 수 있습니다.</li>
+            </ul>
+            <button class="qsave" id="qaSave" type="button">사전 질의 등록</button>
+          </div>
+
+          <div class="qsep"></div>
+          <div class="qmine"><b id="qaCount">내 사전 질의 (0/3)</b><div id="qaList"></div></div>
+        </div>
+
       </div>
     </div>
 
@@ -322,7 +563,7 @@
 <div class="ovl" id="aOvl">
   <div class="amod">
     <div class="ct"><div class="tt" id="aTt"></div><div class="ds" id="aDs"></div></div>
-    <div class="bg2"><button id="aOk" type="button">확인</button></div>
+    <div class="bg2"><button id="aNo" type="button" hidden>취소</button><button id="aOk" type="button">확인</button></div>
   </div>
 </div>
 
@@ -387,16 +628,24 @@ else dchip.remove();
 })();
 
 /* ---- 안내 모달 — 알리고 확인만 받는다 ---- */
-function say(title, desc, left){
+var SAY_THEN=null;
+function say(title, desc, left, then, okLabel){
   document.querySelector('#aOvl .amod').classList.toggle('left',!!left);
   document.getElementById('aTt').textContent=title;
   document.getElementById('aDs').textContent=desc||'';
+  SAY_THEN=then||null;
+  document.getElementById('aNo').hidden=!then;              /* 확인이 필요할 때만 취소를 함께 둔다 */
+  document.getElementById('aOk').textContent=okLabel||'확인';
   document.getElementById('aOvl').classList.add('on');
 }
 (function(){
   var ov=document.getElementById('aOvl');
-  document.getElementById('aOk').addEventListener('click',function(){ ov.classList.remove('on'); });
-  ov.addEventListener('click',function(e){ if(e.target===ov) ov.classList.remove('on'); });
+  function close(){ ov.classList.remove('on'); SAY_THEN=null; }
+  document.getElementById('aOk').addEventListener('click',function(){
+    var f=SAY_THEN; close(); if(f) setTimeout(f,120);
+  });
+  document.getElementById('aNo').addEventListener('click',close);
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
 })();
 /* 사전 신청 — 주주카드와 사전준비 목록이 같은 동작을 한다 */
 /* 주주인증 — 사전 신청 전에 본인을 확인한다 (assets/shauth.js) */
@@ -406,6 +655,7 @@ function applyJoin(){
 }
 
 function applyJoinDone(){
+  ST.apply=true; prepPaint();
   say('사전 신청이 완료되었습니다', '주주총회 당일 이 페이지에서 바로 입장하실 수 있습니다. 사전 질의, 대리인 지정 등의 서비스는 마감 전까지 이용이 가능합니다.', true);
 }
 
@@ -504,30 +754,76 @@ drawNotice();
 
 /* ---- 사전준비 — 내 의결권. 사이드 목록도 같은 데이터를 쓴다. ---- */
 var PERIOD='2026.09.22 ~ 2026.09.28';
+/* 상태 — 사전 신청 여부에 따라 다른 항목의 진입이 막힌다 */
+var ST={ apply:false, uni:'미신청', proxy:'미지정', qa:0, ans:0 };
 var PREP=[
   {k:'의결권 행사', d:'주주총회 안건에 대해 의결권을 직접 행사하거나 위임하실 수 있습니다.', items:[
-    {nm:'전자투표 · 전자위임장 행사', p:PERIOD, btn:'행사하기'},
-    {nm:'의결권 불통일 행사 신청', p:PERIOD, bg:'미신청', btn:'불통일 신청'}
+    {key:'evote', nm:'전자투표 · 전자위임장 행사', p:PERIOD},
+    {key:'uni',   nm:'의결권 불통일 행사 신청', p:PERIOD}
   ]},
   {k:'총회 참여', d:'주주총회 당일 실시간 참석 신청, 대리인 지정 및 사전 질의를 등록합니다.', items:[
-    {nm:'사전 신청', p:PERIOD, bg:'미신청', btn:'사전 신청하기', dark:true},
-    {nm:'대리인 지정', p:PERIOD, bg:'미지정', btn:'지정하기'},
-    {nm:'사전 질의 등록', p:PERIOD, bg:'미등록', btn:'질의 등록하기'}
+    {key:'apply', nm:'사전 신청', p:PERIOD, dark:true},
+    {key:'proxy', nm:'대리인 지정', p:PERIOD},
+    {key:'qa',    nm:'사전 질의 등록', p:PERIOD}
   ]}
 ];
-document.getElementById('prepList').innerHTML=PREP.map(function(g){
-  return '<div><div class="gh"><b>'+g.k+'</b><span>'+g.d+'</span></div><div class="list">'
-    +g.items.map(function(x){
-        return '<div class="row"><div class="l">'
-          +'<div class="n">'+x.nm+(x.bg?'<span class="bg">'+x.bg+'</span>':'')+'</div>'
-          +'<div class="p">'+x.p+'</div></div>'
-          +'<button class="b'+(x.dark?' dark':'')+'" type="button">'+x.btn+'</button></div>';
-      }).join('')+'</div></div>';
-}).join('');
+/* 항목마다 상태 뱃지와 버튼 라벨이 달라진다 */
+function prepMeta(k){
+  if(k==='evote') return { bg:'', btn:'행사하기' };
+  if(k==='uni')   return { bg:ST.uni, cls:(ST.uni==='승인'?'ok':ST.uni==='미승인'?'no':''),
+                           btn:(ST.uni==='미신청'?'불통일 행사 신청':'불통일 행사 신청 내역') };
+  if(k==='apply') return { bg:(ST.apply?'신청':'미신청'), cls:(ST.apply?'ok':''),
+                           btn:(ST.apply?'사전 신청 철회':'사전 신청') };
+  if(k==='proxy') return { bg:ST.proxy, cls:(ST.proxy==='지정'?'ok':''),
+                           btn:(ST.proxy==='미지정'?'대리인 지정':'대리인 지정 현황') };
+  return { bg:(ST.qa?'등록 '+ST.qa:'미등록'), cls:(ST.qa?'ok':''), bg2:(ST.ans?'답변 '+ST.ans:''),
+           btn:(ST.qa?'사전 질의 내역':'사전 질의 등록') };
+}
+function prepPaint(){
+  document.getElementById('prepList').innerHTML=PREP.map(function(g){
+    return '<div><div class="gh"><b>'+g.k+'</b><span>'+g.d+'</span></div><div class="list">'
+      +g.items.map(function(x){
+          var m=prepMeta(x.key);
+          return '<div class="row"><div class="l">'
+            +'<div class="n">'+x.nm
+            +(m.bg?'<span class="bg '+(m.cls||'')+'">'+m.bg+'</span>':'')
+            +(m.bg2?'<span class="bg ok">'+m.bg2+'</span>':'')+'</div>'
+            +'<div class="p">'+x.p+'</div></div>'
+            +'<button class="b'+(x.dark&&!ST.apply?' dark':'')+'" type="button" data-pk="'+x.key+'">'+m.btn+'</button></div>';
+        }).join('')+'</div></div>';
+  }).join('');
+}
+prepPaint();
 
+/* 화면 전환 — 탭 안에서 바뀐다 */
+function pvGo(id){
+  Array.prototype.forEach.call(document.querySelectorAll('.pane[data-p="prep"] .pv'),function(v){
+    v.classList.toggle('on', v.id===id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-pvback],[data-pvhome]'),function(b){
+  b.addEventListener('click',function(){ pvGo('pvHome'); prepPaint(); });
+});
+
+/* 사전 신청자만 들어갈 수 있는 항목 */
+var NEEDAPPLY={ uni:'불통일 행사 신청', proxy:'대리인 지정', qa:'사전 질의 등록' };
 document.getElementById('prepList').addEventListener('click',function(e){
   var b=e.target.closest('.b'); if(!b) return;
-  if(b.textContent.indexOf('사전 신청')>=0) applyJoin();
+  var k=b.dataset.pk;
+  if(k==='apply'){
+    if(ST.apply){ ST.apply=false; prepPaint(); say('사전 신청이 철회되었습니다','마감 전까지 다시 신청하실 수 있습니다.'); }
+    else applyJoin();
+    return;
+  }
+  if(k==='evote'){ say('전자투표 · 전자위임장','외부 서비스로 이동합니다. 시연에서는 연결되지 않습니다.'); return; }
+  if(NEEDAPPLY[k] && !ST.apply){
+    say('사전 참석 신청이 필요합니다', NEEDAPPLY[k]+' 기능은 사전 참석 신청을 완료한 주주만 이용할 수 있습니다.');
+    return;
+  }
+  if(k==='uni'){ pvGo(ST.uni==='미신청'?'pvUni':'pvUniDone'); return; }
+  if(k==='proxy'){ pvGo(ST.proxy==='미지정'?'pvProxy':'pvProxyDone'); return; }
+  if(k==='qa'){ pvGo('pvQa'); return; }
 });
 document.getElementById('sideGroups').innerHTML='<div class="card plist">'+PREP.map(function(g){
   return '<div class="pgrp"><div class="pt">'+g.k+'</div>'
@@ -536,6 +832,98 @@ document.getElementById('sideGroups').innerHTML='<div class="card plist">'+PREP.
           +'<svg class="cv" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>';
       }).join('')+'</div>';
 }).join('')+'</div>';
+
+/* ═══ 대리인 지정 ═══════════════════════════════════════════ */
+var HOLD = parseInt(String(CO.shares||'1,200').replace(/\D/g,''),10) || 1200;
+function cm(n){ return Number(n).toLocaleString('en-US'); }
+(function(){
+  var ME={
+    indi:[['위임인','박성용',1],['주민등록번호','880918-1******'],['휴대폰','010-6655-1234'],
+          ['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']],
+    corp:[['위임인','박성용',1],['주민등록번호','880918-1******'],['휴대폰','010-6655-1234'],
+          ['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']],
+    abroad:[['위임인','박성용',1],['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']]
+  };
+  var kind='indi', file=false, agree=false;
+  var $=function(i){ return document.getElementById(i); };
+  $('pxCo').textContent=CO.nm||'';
+  $('pxTerm').textContent=CO.term||'';
+
+  function paintMe(){
+    $('pxMe').innerHTML=ME[kind].map(function(r){
+      return '<div class="r"><span class="k">'+r[0]+'</span><span class="v'+(r[2]?' b':'')+'">'+r[1]+'</span></div>';
+    }).join('');
+  }
+  function fields(){
+    return Array.prototype.slice.call(document.querySelectorAll('[data-pxf="'+kind+'"] [data-pq]'));
+  }
+  function check(){
+    var ok = agree && file && $('pxQty').value.trim()
+      && fields().every(function(i){ return i.value.trim(); });
+    $('pxGo').disabled = !ok;
+  }
+  document.getElementById('pxSeg').addEventListener('click',function(e){
+    var b=e.target.closest('[data-px]'); if(!b) return;
+    kind=b.dataset.px;
+    Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on', x===b); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pxf]'),function(f){
+      f.hidden = f.dataset.pxf!==kind;
+      Array.prototype.forEach.call(f.querySelectorAll('[data-pq]'),function(i){ i.value=''; });   /* 유형을 바꾸면 입력값은 지워진다 */
+    });
+    $('pxQty').value=''; $('pxQtyErr').hidden=true;
+    paintMe(); check();
+  });
+  document.getElementById('pvProxy').addEventListener('input',function(e){
+    if(e.target.id==='pxQty'){
+      var v=e.target.value.replace(/\D/g,'');
+      if(v && +v>HOLD){ v=String(HOLD); $('pxQtyErr').hidden=false; } else $('pxQtyErr').hidden=true;
+      e.target.value = v?cm(v):'';
+    }
+    check();
+  });
+  $('pxUp').addEventListener('click',function(){ file=true; this.hidden=true; $('pxUpOk').hidden=false; check(); });
+  $('pxCk').addEventListener('click',function(){ agree=!agree; this.classList.toggle('on',agree); check(); });
+
+  $('pxGo').addEventListener('click',function(){
+    var nm=fields()[0].value.trim();
+    say('대리인을 지정하시겠습니까?',
+      '입력하신 정보로 대리인 지정을 신청합니다.\n지정 완료 후에는 대리인이 주주님을 대신하여 의결권을 행사하게 됩니다.\n\n· 대리인: '+nm+'\n· 위임주식수: '+$('pxQty').value+'주',
+      false, function(){
+        var f=fields();
+        var card = kind==='corp'
+          ? [['대리인',f[0].value],['사업자등록번호',f[1].value],['담당자명',f[2]?f[2].value:''],
+             ['휴대폰번호',f[3]?f[3].value:''],['이메일',f[4]?f[4].value:''],['위임주식수',$('pxQty').value+'주']]
+          : kind==='abroad'
+          ? [['대리인',f[0].value],['참석자 코드',f[1].value],['이메일',f[2].value],['위임주식수',$('pxQty').value+'주']]
+          : [['대리인',f[0].value],['생년월일',f[1].value],['휴대폰번호',f[2].value],['이메일',f[3].value],
+             ['위임주식수',$('pxQty').value+'주']];
+        $('pxDoneNm').textContent=f[0].value;
+        $('pxDoneCard').innerHTML=card.map(function(r){
+          return '<div class="r"><span class="k" style="width:120px">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>';
+        }).join('');
+        ST.proxy='지정'; prepPaint(); pvGo('pvProxyDone');
+      });
+  });
+  paintMe();
+})();
+
+/* ═══ 불통일 행사 신청 ═════════════════════════════════════ */
+(function(){
+  var $=function(i){ return document.getElementById(i); }, file=false;
+  $('unRs').addEventListener('input',function(){
+    $('unCnt').textContent=this.value.length;
+    $('unGo').disabled = !(this.value.trim() && file);
+  });
+  $('unUp').addEventListener('click',function(){
+    file=true; this.hidden=true; $('unUpOk').hidden=false;
+    $('unGo').disabled = !$('unRs').value.trim();
+  });
+  $('unGo').addEventListener('click',function(){
+    $('unDoneRs').textContent=$('unRs').value;
+    ST.uni='신청'; prepPaint(); pvGo('pvUniDone');
+  });
+})();
+
 /* ---- 사전 질의 — 총회 전까지 3건까지 고쳐 쓸 수 있다 ---- */
 var QMAX=3;
 var QA=[
@@ -582,6 +970,7 @@ var QA=[
 
   function draw(){
     document.getElementById('qaCount').textContent='내 사전 질의 ('+QA.length+'/'+QMAX+')';
+    ST.qa=QA.length; ST.ans=QA.filter(function(x){ return x.a; }).length; prepPaint();
     var host=document.getElementById('qaList');
     if(!QA.length){ host.innerHTML='<div class="qempty2">아직 등록한 사전 질의가 없습니다</div>'; return; }
     host.innerHTML=QA.map(function(x,i){
