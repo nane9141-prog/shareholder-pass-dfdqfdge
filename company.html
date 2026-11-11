@@ -631,14 +631,26 @@ function stLoad(){ try{ return JSON.parse(localStorage.getItem(SKEY)||'{}'); }ca
 function stSave(o){ var v=stLoad(); for(var k in o) v[k]=o[k];
   try{ localStorage.setItem(SKEY, JSON.stringify(v)); }catch(e){} }
 var SAVED=stLoad();
+/* 대리인 지정 상태는 커넥서스에 접수된 신청의 처리 결과를 따른다.
+   반려 · 지정철회된 건은 다시 미지정으로 돌아간다. */
+function proxyState(fallback){
+  var box=[];
+  try{ box=JSON.parse(localStorage.getItem('cx.proxy')||'[]'); }catch(e){ box=[]; }
+  for(var i=0;i<box.length;i++){
+    if(!box[i] || box[i].co!==CO.key) continue;
+    return /반려|거절|철회|취소/.test(String(box[i].st||'')) ? '미지정' : '지정';
+  }
+  return fallback || '미지정';
+}
 var ST={ apply:(SAVED.apply!=null?SAVED.apply:(CO.apply==='applied')),
-         uni:(SAVED.uni||'미신청'), proxy:(SAVED.proxy||'미지정'), qa:0, ans:0 };
+         uni:(SAVED.uni||'미신청'), proxy:proxyState(SAVED.proxy), qa:0, ans:0 };
 /* 마이페이지에서 대리인 지정을 철회하면 이 화면도 따라 바뀐다 */
 window.addEventListener('storage', function(e){
+  if(e.key === 'cx.proxy'){ ST.proxy = proxyState(stLoad().proxy); if(window.prepPaint) prepPaint(); return; }
   if(e.key !== SKEY) return;
   var v=stLoad();
   ST.uni = v.uni || '미신청';
-  ST.proxy = v.proxy || '미지정';
+  ST.proxy = proxyState(v.proxy);
   if(v.apply != null) ST.apply = v.apply;
   if(window.prepPaint) prepPaint();
 });
@@ -646,7 +658,7 @@ document.addEventListener('visibilitychange', function(){
   if(document.hidden) return;
   var v=stLoad();
   ST.uni = v.uni || '미신청';
-  ST.proxy = v.proxy || '미지정';
+  ST.proxy = proxyState(v.proxy);
   if(v.apply != null) ST.apply = v.apply;
   if(window.prepPaint) prepPaint();
 });
