@@ -867,7 +867,7 @@
   }
   $('#apOtp').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,6); });
   $('#apVerify').addEventListener('click',function(){
-    if($('#apOtp').value.length<6){ toast('인증번호 6자리를 입력해 주세요'); return; }
+    if(!$('#apOtp').value.trim()){ toast('인증번호를 입력해 주세요'); return; }   /* 시연 — 번호는 확인하지 않는다 */
     clearInterval(otpT); otpT=null;
     $('#apTm').textContent='';
     AP.mailOk=true;
