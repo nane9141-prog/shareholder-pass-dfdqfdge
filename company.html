@@ -775,7 +775,7 @@ var PREP=[
 /* 항목마다 상태 뱃지와 버튼 라벨이 달라진다 */
 function prepMeta(k){
   if(k==='evote') return { bg:'', btn:'행사하기' };
-  if(k==='uni')   return { bg:ST.uni, cls:(ST.uni==='승인'?'ok':ST.uni==='미승인'?'no':''),
+  if(k==='uni')   return { bg:ST.uni, cls:(ST.uni==='미승인'?'no':ST.uni==='미신청'?'':'ok'),
                            btn:(ST.uni==='미신청'?'불통일 행사 신청':'불통일 행사 신청 내역') };
   if(k==='apply') return { bg:(ST.apply?'신청':'미신청'), cls:(ST.apply?'ok':''),
                            btn:(ST.apply?'사전 신청 철회':'사전 신청') };
