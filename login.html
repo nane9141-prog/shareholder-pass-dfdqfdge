@@ -133,7 +133,8 @@
     padding:4px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r-lg);
     box-shadow:0 0 6px rgba(0,0,0,.1);max-height:240px;overflow:auto}
   .csel.open .csel-m{display:block}
-  .csel-m button{display:block;width:100%;padding:8px 12px;border:0;border-radius:var(--r-lg);
+  .csel-m button .cd{color:var(--txt3);font-weight:400}
+  .csel-m button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:8px 12px;border:0;border-radius:var(--r-lg);
     background:none;text-align:left;font-size:14px;line-height:1.5;color:var(--txt);cursor:pointer}
   .csel-m button:hover{background:#F3F4F6}
   .csel-m button.on{background:#F3F4F6;font-weight:700}
@@ -848,7 +849,7 @@
   $('#mgHome').addEventListener('click',function(){ signIn('주주PASS 계정'); });
 
   /* ═══ ③ 참석자 코드 신청 · 1단계 ═══════════════════════ */
-  var DIAL={'United States':'+1','South Korea':'+82','Japan':'+81','United Kingdom':'+44','Singapore':'+65'};
+  var DIAL={'대한민국':'+82','미국':'+1','일본':'+81','영국':'+44','싱가포르':'+65'};
   var AP={ kind:'corp', mailOk:false };
 
   $$('[data-kind]').forEach(function(b){
@@ -865,7 +866,8 @@
   var csel=$('#apCountry'), cmenu=$('.csel-m',csel), cval=$('.csel-b .v',csel);
   AP.country='';
   cmenu.innerHTML = Object.keys(DIAL).map(function(nm){
-    return '<button type="button" data-c="'+nm+'">'+nm+'</button>';
+    return '<button type="button" data-c="'+nm+'"><span class="cn">'+nm+'</span>'
+      + '<span class="cd">'+DIAL[nm]+'</span></button>';
   }).join('');
   $('.csel-b',csel).addEventListener('click',function(e){
     e.stopPropagation(); csel.classList.toggle('open');
@@ -873,7 +875,7 @@
   cmenu.addEventListener('click',function(e){
     var b=e.target.closest('[data-c]'); if(!b) return;
     AP.country=b.dataset.c;
-    cval.textContent=AP.country; cval.classList.remove('ph');
+    cval.textContent=AP.country+' '+DIAL[AP.country]; cval.classList.remove('ph');
     $$('button',cmenu).forEach(function(x){ x.classList.toggle('on', x===b); });
     $('#apDial').textContent = DIAL[AP.country]||'';
     csel.classList.remove('open');
