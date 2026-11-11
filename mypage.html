@@ -617,7 +617,7 @@ function pxFmtTel(t){ t=String(t||'').replace(/\D/g,''); return t.length>=10?t.r
 function pxFmtBirth(b){ b=String(b||'').replace(/\D/g,''); return b.length===8?b.slice(0,4)+'.'+b.slice(4,6)+'.'+b.slice(6):''; }
 (function(){
   var mine=pxLoad().filter(function(x){ return x && x.co; }).map(function(x,i){
-    var id=x.id||('px'+i+'_'+(x.at||''));
+    var id=String(x.id||('px'+i+'_'+(x.at||''))).replace(/[^\w-]/g,'');
     return { id:id, key:x.co, who:x.nm||'-', birth:pxFmtBirth(x.birth), sex:'',
              sh:Number(x.sh||0).toLocaleString('en-US')+'주', tel:pxFmtTel(x.tel), mail:x.email||'-',
              st:pxStOf(x.st), file:x.file||'', at:x.at||'', ls:true, raw:id };
@@ -629,7 +629,9 @@ function pxSaveSt(x, label){
   if(!x.ls) return;
   try{
     var box=pxLoad();
-    box.forEach(function(b,i){ if((b.id||('px'+i+'_'+(b.at||'')))===x.raw) b.st=label; });
+    box.forEach(function(b,i){
+      if(String(b.id||('px'+i+'_'+(b.at||''))).replace(/[^\w-]/g,'')===x.raw) b.st=label;
+    });
     localStorage.setItem(PXLS, JSON.stringify(box));
   }catch(e){}
 }
@@ -955,6 +957,7 @@ syncInbox();
 function show(){
   var h=(location.hash||'#account').slice(1).split('/');
   var name=h[0], key=h[1];
+  if(key){ try{ key=decodeURIComponent(key); }catch(e){} }
   var EXTRA={proxy:1, split:1};
   if(!VIEWS[name] && !EXTRA[name] && name!=='account') name='account';
   var view=((name==='vote'||name==='proxy'||name==='split') && key) ? name+'-detail' : name;
