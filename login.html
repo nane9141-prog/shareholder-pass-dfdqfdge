@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로그인 · 주주PASS 전자주주총회</title>
+<link rel="icon" href="assets/fav-pass.png?v=2">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  /* ── 디자인 토큰 (Figma new Design System) ───────────────── */
+  :root{
+    --sf:#fff; --sf-sub:#F8F8FA; --sf-inv:#151419; --sf-pri-sub:#F5F9FF;
+    --bd:#EEF0F2; --bd-strong:#272929;
+    --txt:#151419; --txt3:#6B7078; --ph:#A7AAB1; --dis:#CBCDD2;
+    --brand:#0071F3; --ok:#12A05C; --err:#E9081B;
+    --r-lg:8px; --r-xl:10px; --r-xxxl:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scrollbar-gutter:stable}
+  body{background:var(--sf-sub);color:var(--txt);font-family:'Pretendard',system-ui,sans-serif;
+    letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  button,input,select{font-family:inherit;letter-spacing:-.01em}
+
+  /* ── 헤더 (h60 · px80) ──────────────────────────────────── */
+  header{position:sticky;top:0;z-index:20;height:60px;backdrop-filter:blur(15px);background:rgba(248,248,250,.8)}
+  .hd{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 80px}
+  .brand{display:flex;align-items:center;gap:4px}
+  .brand img{height:20px;width:auto;display:block}
+  .brand small{font-size:12px;line-height:1.5;color:var(--txt)}
+  .nav{display:flex;align-items:center;gap:4px;font-size:14px;color:var(--txt)}
+  .nav span.i{padding:8px 12px;cursor:pointer}
+  .nav .sep{width:1px;height:10px;background:#E5E5E5;padding:0}
+
+  /* ── 페이지 컬럼 ────────────────────────────────────────── */
+  main{display:flex;justify-content:center;padding:48px 20px 80px}
+  .col{width:520px;max-width:100%;display:flex;flex-direction:column;gap:20px;align-items:center}
+  .logo-blk{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .logo-blk img{height:32px;width:auto;display:block}
+  .logo-blk small{font-size:14px;line-height:1.5;color:var(--txt)}
+  .card{width:100%;background:var(--sf);border-radius:var(--r-xxxl);padding:40px;
+    box-shadow:2px 2px 15px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:20px}
+  .card h1{font-size:18px;line-height:1.3;font-weight:700;text-align:center}
+  .page{display:none}
+  .page.on{display:block}
+
+  /* ── 인증 수단 선택 버튼 ────────────────────────────────── */
+  .ways{display:flex;flex-direction:column;gap:8px}
+  .way{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--sf);cursor:pointer;width:100%}
+  .way b{font-size:16px;line-height:1.5;font-weight:700;color:var(--txt)}
+  .way span{font-size:12px;line-height:1.5;color:var(--txt3)}
+  .way.sel{background:var(--sf-sub);border-color:var(--bd-strong)}
+
+  /* ── 구분선 문구 ────────────────────────────────────────── */
+  .divtx{display:flex;align-items:center;gap:10px}
+  .divtx i{flex:1;height:1px;background:var(--bd)}
+  .divtx span{font-size:12px;line-height:1.5;font-weight:700;color:var(--ph)}
+
+  /* ── 버튼 ───────────────────────────────────────────────── */
+  .btn{display:flex;align-items:center;justify-content:center;gap:2px;width:100%;
+    padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--sf);
+    font-size:16px;font-weight:700;line-height:1.5;color:var(--txt);cursor:pointer}
+  .btn.dark{background:var(--sf-inv);border-color:var(--sf-inv);color:#fff}
+  .btn.lg{padding:14px 16px;border-radius:var(--r-xl);font-size:18px}
+  .btn:disabled{background:#F4F4F6;border-color:#F4F4F6;color:var(--dis);cursor:default}
+  .btn.dark:disabled{background:#F4F4F6;border-color:#F4F4F6;color:var(--dis)}
+  .btn.sm{width:auto;padding:12px 16px;font-size:14px;flex:none}
+  .brow{display:flex;gap:12px}
+  .brow .btn{flex:1;min-width:0}
+  .brow .btn.fix{flex:none;padding-left:40px;padding-right:40px}
+
+  /* ── 입력 필드 ──────────────────────────────────────────── */
+  .fset{display:flex;flex-direction:column;gap:16px}
+  .f{display:flex;flex-direction:column;gap:4px}
+  .f > label{font-size:12px;line-height:1.3;font-weight:700;color:var(--txt)}
+  .inbox{display:flex;align-items:center;gap:4px;padding:12px 16px;background:var(--sf);
+    border:1px solid var(--bd);border-radius:var(--r-lg);overflow:hidden}
+  .inbox:focus-within{border-color:var(--bd-strong)}
+  .inbox input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px;line-height:1.5;color:var(--txt)}
+  .inbox input::placeholder{color:var(--ph)}
+  .inbox .tm{font-size:14px;font-weight:500;color:var(--err);flex:none}
+  .eye{flex:none;width:20px;height:20px;border:0;background:none;padding:0;cursor:pointer;color:var(--ph);
+    display:flex;align-items:center;justify-content:center}
+  .eye svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .help{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+  .help i{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1.5;color:var(--txt3);font-style:normal}
+  .help i svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+  .help i.ok{color:var(--ok)}
+  .help i.ok svg{opacity:1}
+  .err{font-size:12px;line-height:1.5;color:var(--err);margin-top:2px}
+  .f.row2{flex-direction:row;gap:12px}
+  .f.row2 > .f{flex:1;min-width:0}
+  .frow{display:flex;gap:8px;align-items:flex-start}
+  .frow > .inbox{flex:1;min-width:0}
+  select.inbox{appearance:none;-webkit-appearance:none;font-size:16px;color:var(--txt);cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7078' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:38px}
+  select.inbox.ph{color:var(--ph)}
+
+  /* ── 스텝 ───────────────────────────────────────────────── */
+  .steps{display:flex;gap:24px;justify-content:center}
+  .steps .s{display:flex;align-items:center;gap:8px;font-size:14px;line-height:1.3;color:var(--dis)}
+  .steps .s b{width:20px;height:20px;flex:none;border-radius:50%;background:var(--dis);color:#fff;
+    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .steps .s.on{color:var(--txt)}
+  .steps .s.on b{background:var(--txt)}
+
+  /* ── 토글(유형) ─────────────────────────────────────────── */
+  .seg{display:flex;gap:8px}
+  .seg button{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);
+    background:var(--sf);font-size:16px;font-weight:700;color:var(--txt);cursor:pointer}
+  .seg button.on{background:var(--sf-sub);border-color:var(--bd-strong)}
+
+  /* ── 정보 박스 ──────────────────────────────────────────── */
+  .ibox{background:var(--sf-sub);border:1px solid var(--bd);border-radius:var(--r-lg);padding:16px;
+    display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.5}
+  .ibox .bt{font-weight:700;margin-bottom:4px}
+  .ibox .r{display:flex;gap:8px}
+  .ibox .r .k{width:100px;flex:none;color:var(--txt3)}
+  .ibox .r .v{color:var(--txt)}
+
+  /* ── 체크박스 ───────────────────────────────────────────── */
+  .ck{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+  .ck .bx{flex:none;width:18px;height:18px;border:1px solid var(--bd);border-radius:6px;background:#fff;position:relative;transition:.12s}
+  .ck .bx::after{content:"";position:absolute;left:5.6px;top:3.2px;width:4.4px;height:8.4px;
+    border:1.8px solid #CBCDD2;border-left:0;border-top:0;transform:rotate(45deg);transition:.12s}
+  .ck.on .bx{background:var(--txt);border-color:var(--txt)}
+  .ck.on .bx::after{border-color:#fff}
+  .ck .lb{flex:1;min-width:0;font-size:14px;line-height:1.5;color:var(--txt)}
+  .ck.all .lb{font-weight:700}
+  .ck .more{font-size:12px;color:var(--txt3);display:inline-flex;align-items:center;gap:2px}
+  .ck .more svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .cklist{display:flex;flex-direction:column;gap:8px}
+
+  /* ── 완료 화면 ──────────────────────────────────────────── */
+  .done-h{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+  .done-h .t{display:inline-flex;align-items:center;gap:8px;font-size:18px;line-height:1.3;font-weight:700}
+  .done-h .t svg{width:20px;height:20px;fill:none;stroke:var(--ok);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .done-h .d{font-size:12px;line-height:1.5;color:var(--txt3)}
+  .codebox{background:var(--sf-pri-sub);border-radius:4px;padding:20px;display:flex;flex-direction:column;
+    align-items:center;gap:8px}
+  .codebox .cd{font-size:20px;line-height:1.3;font-weight:700;color:var(--brand)}
+  .codebox button{font-size:10px;color:var(--brand);text-decoration:underline;background:none;border:0;cursor:pointer}
+  .note{font-size:16px;line-height:1.6;text-align:center;color:var(--txt)}
+  .note em{font-style:normal;display:block;color:var(--txt3);font-size:14px;margin-top:4px}
+
+  /* ── 모달 ───────────────────────────────────────────────── */
+  .ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+  .ovl.on{display:flex}
+  .mdl{width:420px;max-width:100%;max-height:92vh;overflow:auto;background:var(--sf);border-radius:var(--r-xxxl);
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+  .mdl .bd{padding:32px 28px 12px;display:flex;flex-direction:column;gap:16px}
+  .mdl .ft{padding:12px 28px 32px;display:flex;flex-direction:column;gap:16px}
+  .mdl-h{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px}
+  .mdl-h b{flex:1;min-width:0;font-size:20px;line-height:1.3;font-weight:700}
+  .mdl-x{width:30px;height:30px;flex:none;border:0;background:none;padding:0;cursor:pointer;color:var(--txt);
+    display:flex;align-items:center;justify-content:center}
+  .mdl-x svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .mdl .desc{font-size:14px;line-height:1.5;color:var(--txt)}
+  .mdl .desc b{font-weight:700}
+
+  /* 알림 모달(소형) */
+  .mdl.sm{width:340px;border-radius:12px;box-shadow:0 2px 12px -2px rgba(0,0,0,.15);filter:none}
+  .mdl.sm .bd{padding:20px 20px 12px;gap:4px}
+  .mdl.sm .bd .t{font-size:16px;font-weight:700;line-height:1.4}
+  .mdl.sm .bd .d{font-size:14px;line-height:1.5;color:var(--txt)}
+  .mdl.sm .ft{padding:10px 20px 20px}
+  .mdl.sm .btn{padding:10px 12px;font-size:14px}
+
+  /* 간편인증 기관 그리드 */
+  .orgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .org{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0;
+    border:1px solid var(--bd);border-radius:var(--r-xl);background:var(--sf);cursor:pointer}
+  .org.on{background:var(--sf-sub);border-color:var(--bd-strong)}
+  .org img{width:52px;height:52px;border-radius:var(--r-xxxl);display:block;object-fit:contain}
+  .org span{font-size:12px;line-height:1.3;font-weight:700;color:var(--txt)}
+
+  /* 링크 행 */
+  .lnkrow{display:flex;align-items:center;justify-content:center;gap:24px;font-size:14px}
+  .lnkrow span{color:var(--txt)}
+  .lnkrow button{background:none;border:0;padding:0;font-size:14px;font-weight:700;color:var(--txt);cursor:pointer;text-decoration:underline}
+
+  /* 토스트 */
+  .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);z-index:400;
+    display:flex;align-items:center;gap:6px;padding:14px 18px;border-radius:10px;background:rgba(21,20,25,.92);
+    color:#fff;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.2s}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast svg{width:16px;height:16px;fill:none;stroke:#4ADE80;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+  @media(max-width:720px){
+    .hd{padding:0 20px}
+    main{padding:24px 16px 60px}
+    .card{padding:24px 20px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <a class="brand" href="index.html"><img src="assets/logo-pass.svg" alt="주주PASS" width="73" height="20"><small>전자주주총회</small></a>
+    <nav class="nav">
+      <span class="i">이용안내</span><span class="i">고객센터</span><span class="sep"></span><span class="i">로그인</span>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="col">
+    <div class="logo-blk">
+      <img src="assets/logo-pass.svg" alt="주주PASS">
+      <small>전자주주총회</small>
+    </div>
+
+    <!-- ① 로그인 ------------------------------------------------- -->
+    <div class="page on" id="pgLogin">
+      <div class="card">
+        <h1>로그인</h1>
+        <div class="ways">
+          <button class="way sel" type="button" data-way="simple">
+            <b>간편인증</b><span>카카오・네이버・PASS・토스・KB국민・페이코</span>
+          </button>
+          <button class="way" type="button" data-way="cert">
+            <b>공동인증서 / 금융인증서</b><span>만14세 미만 · 법인</span>
+          </button>
+          <button class="way" type="button" data-way="code">
+            <b>주주식별번호 / 참석자 코드</b><span>해외 · 비주주</span>
+          </button>
+        </div>
+        <div class="divtx"><i></i><span>주주패스가 처음이신가요?</span><i></i></div>
+        <div class="ways">
+          <button class="btn dark" type="button" id="goJoin">이용자 등록</button>
+          <button class="btn" type="button" id="goApply">참석자 코드 신청</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 서비스 통합 안내 --------------------------------------- -->
+    <div class="page" id="pgMerge">
+      <div class="card">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+          <h1 style="width:100%">서비스 통합 안내</h1>
+          <div style="font-size:12px;line-height:1.5;color:var(--txt3)">
+            <b style="display:block;color:var(--txt3)">주주PASS 하나로 전자주주총회까지</b>
+            하나의 본인인증 정보로 통합하여 이용할 수 있습니다
+          </div>
+        </div>
+        <div class="ibox">
+          <div class="bt">전자투표/위임장 서비스 가입 이력</div>
+          <div class="r"><span class="k">이름</span><span class="v">박성용</span></div>
+          <div class="r"><span class="k">최초 가입일</span><span class="v">2026년 1월 20일</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:14px;line-height:1.5;font-weight:700">통합 서비스 이용을 위해 약관에 동의해 주세요.</div>
+          <div class="cklist">
+            <button class="ck all" type="button" id="mgAll"><span class="bx"></span><span class="lb">전체동의</span></button>
+            <button class="ck" type="button" data-mg="1"><span class="bx"></span><span class="lb">[필수] 전자주주총회 이용약관 동의</span><span class="more">상세보기<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span></button>
+            <button class="ck" type="button" data-mg="2"><span class="bx"></span><span class="lb">[필수] 전자주주총회 개인정보 처리방침 동의</span><span class="more">상세보기<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span></button>
+          </div>
+        </div>
+        <div class="brow">
+          <button class="btn fix" type="button" data-go="pgLogin">취소</button>
+          <button class="btn dark" type="button" id="mgOk" disabled>서비스 통합 동의하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 통합 완료 ----------------------------------------------- -->
+    <div class="page" id="pgMergeDone">
+      <div class="card">
+        <div class="done-h">
+          <div class="t"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>통합 완료</div>
+          <div class="d">주주PASS 정보를 전자주주총회로 연동했습니다</div>
+        </div>
+        <div class="ibox">
+          <div class="r"><span class="k">이름</span><span class="v">박성용</span></div>
+          <div class="r"><span class="k">최초 가입일</span><span class="v">2026년 1월 20일</span></div>
+          <div class="r"><span class="k">계정 통합일</span><span class="v" id="mgDate">2026년 9월 3일</span></div>
+        </div>
+        <button class="btn dark" type="button" id="mgHome">메인으로</button>
+      </div>
+    </div>
+
+    <!-- ④ 참석자 코드 신청 · 1단계 -------------------------------- -->
+    <div class="page" id="pgApply">
+      <div class="card">
+        <h1>참석자 코드 신청</h1>
+        <div class="steps"><span class="s on"><b>1</b>정보 입력</span><span class="s"><b>2</b>비밀번호 설정</span></div>
+
+        <div class="f">
+          <label>유형</label>
+          <div class="seg">
+            <button type="button" class="on" data-kind="corp">해외(법인)</button>
+            <button type="button" data-kind="indi">해외(개인)</button>
+          </div>
+        </div>
+
+        <div class="fset">
+          <!-- 법인 전용 -->
+          <div class="f corp-only"><label>법인(기관)명</label>
+            <div class="inbox"><input id="apCorp" type="text" placeholder="법인(기관)명 입력"></div></div>
+          <div class="f corp-only"><label>담당자명</label>
+            <div class="inbox"><input id="apMgr" type="text" placeholder="담당자명 입력"></div></div>
+          <div class="f row2 corp-only">
+            <div class="f"><label>부서 (선택)</label><div class="inbox"><input type="text" placeholder="부서명 입력"></div></div>
+            <div class="f"><label>직급 (선택)</label><div class="inbox"><input type="text" placeholder="직급명 입력"></div></div>
+          </div>
+          <!-- 개인 전용 -->
+          <div class="f indi-only" hidden><label>이름</label>
+            <div class="inbox"><input id="apName" type="text" placeholder="이름 입력"></div></div>
+
+          <div class="f"><label>휴대폰번호</label>
+            <div class="frow">
+              <select class="inbox ph" id="apCountry" style="flex:none;width:180px">
+                <option value="" selected disabled>국가 선택</option>
+                <option>United States</option><option>South Korea</option><option>Japan</option>
+                <option>United Kingdom</option><option>Singapore</option>
+              </select>
+              <div class="inbox" style="flex:none;width:84px" id="apDialBox"><input id="apDial" type="text" value="" placeholder="+" readonly style="color:var(--txt3)"></div>
+              <div class="inbox"><input id="apPhone" type="tel" inputmode="numeric" placeholder="휴대폰번호 입력"></div>
+            </div>
+          </div>
+
+          <div class="f"><label>이메일</label>
+            <div class="frow">
+              <div class="inbox"><input id="apMail" type="email" placeholder="이메일 입력"></div>
+              <button class="btn sm" type="button" id="apSend">인증 요청</button>
+            </div>
+          </div>
+
+          <div class="f" id="apOtpF" hidden><label>인증번호</label>
+            <div class="frow">
+              <div class="inbox"><input id="apOtp" type="text" inputmode="numeric" maxlength="6" placeholder="인증번호 입력"><span class="tm" id="apTm">3:00</span></div>
+              <button class="btn sm" type="button" id="apVerify">인증</button>
+            </div>
+            <div class="help"><i id="apOtpMsg"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>인증번호를 입력해 주세요</span></i></div>
+          </div>
+        </div>
+
+        <button class="btn dark lg" type="button" id="apNext" disabled>다음</button>
+      </div>
+    </div>
+
+    <!-- ⑤ 참석자 코드 신청 · 2단계 (비밀번호 설정) ---------------- -->
+    <div class="page" id="pgApplyPw">
+      <div class="card">
+        <h1>참석자 코드 신청</h1>
+        <div class="steps"><span class="s"><b>1</b>정보 입력</span><span class="s on"><b>2</b>비밀번호 설정</span></div>
+        <div class="fset">
+          <div class="f"><label>비밀번호 설정</label>
+            <div class="inbox"><input id="spPw" type="password" placeholder="비밀번호 설정"><button class="eye" type="button" data-eye="spPw"></button></div>
+            <div class="help">
+              <i data-rule="mix"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>영문, 숫자, 특수문자 조합 (8자리 이상)</span></i>
+              <i data-rule="seq"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>연속된 문자·숫자·특수문자 3자리 이상 불가</span></i>
+            </div>
+          </div>
+          <div class="f"><label>비밀번호 확인</label>
+            <div class="inbox"><input id="spPw2" type="password" placeholder="비밀번호 재입력"><button class="eye" type="button" data-eye="spPw2"></button></div>
+            <div class="err" id="spErr" hidden>비밀번호가 일치하지 않습니다</div>
+          </div>
+        </div>
+        <button class="btn dark lg" type="button" id="spOk" disabled>설정 완료</button>
+      </div>
+    </div>
+
+    <!-- ⑥ 참석자 코드 발급 완료 ----------------------------------- -->
+    <div class="page" id="pgApplyDone">
+      <div class="card">
+        <div class="done-h">
+          <div class="t"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>참석자 코드 발급 완료</div>
+          <div class="d" style="font-size:14px">코드를 복사해 로그인해 주세요</div>
+        </div>
+        <div class="codebox">
+          <div class="cd" id="apCode">QD-4821-7730</div>
+          <button type="button" id="apCopy">복사</button>
+        </div>
+        <div class="note">발급된 참석자 코드는 등록된 이메일로도 전송되었습니다.
+          <em>*주주 확인을 마치면 참여 가능한 주주총회를 조회할 수 있습니다.</em></div>
+        <div class="brow">
+          <button class="btn lg" type="button" id="dnLogin">로그인</button>
+          <button class="btn dark lg" type="button" id="dnShauth">주주확인 신청</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══ 모달 ══════════════════════════════════════════════════ -->
+
+<!-- 간편인증 — 인증 기관 선택 -->
+<div class="ovl" id="mdSimple">
+  <div class="mdl">
+    <div class="bd">
+      <div class="mdl-h"><b>간편인증</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div style="font-size:14px;line-height:1.3;font-weight:700">인증 기관을 선택해 주세요</div>
+      <div class="orgs" id="orgList"></div>
+    </div>
+    <div class="ft"><button class="btn dark" type="button" id="simpleOk">확인</button></div>
+  </div>
+</div>
+
+<!-- 참석자 코드 로그인 -->
+<div class="ovl" id="mdCode">
+  <div class="mdl">
+    <div class="bd">
+      <div class="mdl-h"><b>참석자 코드 로그인</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="fset" style="gap:24px">
+        <div class="f"><label>참석자 코드 12자리</label>
+          <div class="inbox"><input id="cdCode" type="text" placeholder="참석자 코드 12자리 입력"></div></div>
+        <div class="f"><label>비밀번호</label>
+          <div class="inbox" style="height:48px"><input id="cdPw" type="password" placeholder="비밀번호 입력"><button class="eye" type="button" data-eye="cdPw"></button></div></div>
+      </div>
+    </div>
+    <div class="ft">
+      <div class="brow">
+        <button class="btn lg" type="button" id="cdReset">비밀번호 재설정</button>
+        <button class="btn dark lg" type="button" id="cdOk">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 주주PASS 로그인 (이용자 등록 · 기존계정 통합) -->
+<div class="ovl" id="mdPass">
+  <div class="mdl">
+    <div class="bd" style="padding:32px 24px 12px;gap:24px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+        <img src="assets/logo-pass.svg" alt="주주PASS" style="height:32px;width:auto">
+        <div style="font-size:12px;line-height:1.5;color:var(--txt3)">주주PASS 계정 하나로 관련된 모든 서비스를 이용할 수 있습니다<br>(주주총회 생중계, 전자투표/전자위임)</div>
+      </div>
+      <div class="fset">
+        <div class="f"><label>아이디</label><div class="inbox"><input id="lgId" type="text" placeholder="아이디 입력"></div></div>
+        <div class="f"><label>비밀번호</label>
+          <div class="inbox" style="height:48px"><input id="lgPw" type="password" placeholder="비밀번호 입력"><button class="eye" type="button" data-eye="lgPw"></button></div></div>
+      </div>
+      <div class="lnkrow"><span>비밀번호를 잊으셨나요?</span><button type="button" id="lgReset">비밀번호 재설정</button></div>
+    </div>
+    <div class="ft">
+      <div class="brow">
+        <button class="btn lg fix" type="button" data-close>취소</button>
+        <button class="btn dark lg" type="button" id="lgOk">로그인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 비밀번호 재설정 — 이메일 -->
+<div class="ovl" id="mdReset">
+  <div class="mdl">
+    <div class="bd">
+      <div class="mdl-h"><b>비밀번호 재설정</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="desc">참석자 코드를 받으셨던 이메일을 입력해 주세요.<br><b>참석자 코드와 비밀번호 재설정 링크</b>를 함께 전송합니다.</div>
+      <div class="f" style="margin-top:8px"><label>이메일</label>
+        <div class="inbox"><input id="rsMail" type="email" placeholder="참석자 코드를 받은 이메일 입력"></div></div>
+    </div>
+    <div class="ft"><button class="btn dark lg" type="button" id="rsSend">재설정 메일 전송</button></div>
+  </div>
+</div>
+
+<!-- 재설정 메일 전송 완료 알림 -->
+<div class="ovl" id="mdSent">
+  <div class="mdl sm">
+    <div class="bd">
+      <div class="t">비밀번호 재설정 메일 전송 완료</div>
+      <div class="d">등록된 이메일로 비밀번호 재설정 링크가 전송되었습니다. (링크 유효시간: 15분)</div>
+      <div class="d">메일이 도착하지 않은 경우 스팸함을 확인해 주세요.</div>
+    </div>
+    <div class="ft"><button class="btn dark" type="button" id="sentOk">확인</button></div>
+  </div>
+</div>
+
+<!-- 비밀번호 변경 -->
+<div class="ovl" id="mdPw">
+  <div class="mdl">
+    <div class="bd">
+      <div class="mdl-h"><b>비밀번호 변경</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="fset">
+        <div class="f"><label>비밀번호</label>
+          <div class="inbox" style="height:48px"><input id="npPw" type="password" placeholder="비밀번호 입력"><button class="eye" type="button" data-eye="npPw"></button></div>
+          <div class="help">
+            <i data-rule="mix"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>영문, 숫자, 특수문자 조합 (8자리 이상)</span></i>
+            <i data-rule="seq"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>연속된 문자·숫자·특수문자 3자리 이상 불가</span></i>
+          </div>
+        </div>
+        <div class="f"><label>비밀번호 확인</label>
+          <div class="inbox" style="height:48px"><input id="npPw2" type="password" placeholder="비밀번호 확인"><button class="eye" type="button" data-eye="npPw2"></button></div>
+          <div class="err" id="npErr" hidden>비밀번호가 일치하지 않습니다</div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><button class="btn dark lg" type="button" id="npOk" disabled>비밀번호 변경</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span></span></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   주주PASS 전자주주총회 — 로그인 플로우 (시연용)
+   Figma: 11537-218638 / 219032 · 11907-74983 / 75228
+          12086-65744 / 66279 / 94711 · 11409-332365 / 332162
+          11409-333854 외 참석자 코드 신청 6종
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+  var $ = function(s,r){ return (r||document).querySelector(s); };
+  var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+
+  /* ── 페이지 전환 ───────────────────────────────────────── */
+  function go(id){
+    $$('.page').forEach(function(p){ p.classList.toggle('on', p.id===id); });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  $$('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.go); }); });
+
+  /* ── 모달 ──────────────────────────────────────────────── */
+  function openM(id){ $('#'+id).classList.add('on'); }
+  function closeM(el){ (typeof el==='string'?$('#'+el):el).classList.remove('on'); }
+  $$('.ovl').forEach(function(ov){
+    ov.addEventListener('click',function(e){
+      if(e.target===ov || e.target.closest('[data-close]')) closeM(ov);
+    });
+  });
+
+  /* ── 토스트 ────────────────────────────────────────────── */
+  var tT=null;
+  function toast(msg){
+    var t=$('#toast'); t.querySelector('span').textContent=msg; t.classList.add('on');
+    clearTimeout(tT); tT=setTimeout(function(){ t.classList.remove('on'); },2200);
+  }
+
+  /* ── 비밀번호 보기/숨기기 ──────────────────────────────── */
+  var EYE_OFF='<svg viewBox="0 0 24 24"><path d="M2 2l20 20"/><path d="M6.7 6.7C4.6 8 3 10 2 12c2 4 6 7 10 7 1.9 0 3.6-.6 5.1-1.5"/><path d="M9.9 5.2A9.9 9.9 0 0 1 12 5c4 0 8 3 10 7-.8 1.6-1.9 3-3.2 4.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  var EYE_ON ='<svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  $$('.eye').forEach(function(b){
+    b.innerHTML=EYE_OFF;
+    b.addEventListener('click',function(){
+      var i=$('#'+b.dataset.eye), on=i.type==='password';
+      i.type = on?'text':'password';
+      b.innerHTML = on?EYE_ON:EYE_OFF;
+    });
+  });
+
+  /* ── 비밀번호 규칙 ─────────────────────────────────────── */
+  function ruleMix(v){
+    return v.length>=8 && /[A-Za-z]/.test(v) && /\d/.test(v) && /[^A-Za-z0-9]/.test(v);
+  }
+  function ruleSeq(v){
+    if(!v) return false;
+    for(var i=0;i<v.length-2;i++){
+      var a=v.charCodeAt(i), b=v.charCodeAt(i+1), c=v.charCodeAt(i+2);
+      if((b-a===1 && c-b===1) || (a-b===1 && b-c===1)) return false;   /* 연속 */
+      if(a===b && b===c) return false;                                  /* 동일 반복 */
+    }
+    return true;
+  }
+  /* 비밀번호 쌍(입력·확인) 하나를 묶어 검사한다 */
+  function bindPw(pwId, pw2Id, helpRoot, errId, okBtn){
+    var pw=$('#'+pwId), pw2=$('#'+pw2Id), err=errId?$('#'+errId):null, btn=$('#'+okBtn);
+    var mix=helpRoot?$('[data-rule="mix"]',helpRoot):null, seq=helpRoot?$('[data-rule="seq"]',helpRoot):null;
+    function check(){
+      var v=pw.value, v2=pw2.value;
+      var m=ruleMix(v), s=v?ruleSeq(v):false;
+      if(mix) mix.classList.toggle('ok', m);
+      if(seq) seq.classList.toggle('ok', s);
+      var bad = v2.length>0 && v!==v2;
+      if(err) err.hidden = !bad;
+      btn.disabled = !(m && s && v2.length>0 && v===v2);
+    }
+    pw.addEventListener('input',check); pw2.addEventListener('input',check);
+    return check;
+  }
+
+  /* ═══ ① 로그인 ═════════════════════════════════════════ */
+  $$('.way').forEach(function(w){
+    w.addEventListener('click',function(){
+      $$('.way').forEach(function(x){ x.classList.toggle('sel', x===w); });
+      var k=w.dataset.way;
+      if(k==='simple') openM('mdSimple');
+      else if(k==='code') openM('mdCode');
+      else toast('공동인증서는 시연 대상이 아닙니다');
+    });
+  });
+  $('#goJoin').addEventListener('click',function(){ openM('mdPass'); });
+  $('#goApply').addEventListener('click',function(){ go('pgApply'); });
+
+  /* ── 간편인증 기관 ─────────────────────────────────────── */
+  var ORGS=[
+    {k:'naver', nm:'네이버', img:'assets/auth-naver.png'},
+    {k:'kakao', nm:'카카오', img:'assets/auth-kakao.png'},
+    {k:'toss',  nm:'토스',   img:'assets/auth-toss.png'},
+    {k:'payco', nm:'페이코', img:'assets/auth-payco.png'},
+    {k:'pass',  nm:'PASS',  img:'assets/auth-pass.png'},
+    {k:'kb',    nm:'KB국민', img:'assets/auth-kb.png'}
+  ];
+  var pickedOrg='pass';
+  $('#orgList').innerHTML = ORGS.map(function(o){
+    return '<button class="org'+(o.k===pickedOrg?' on':'')+'" type="button" data-org="'+o.k+'">'
+      +'<img src="'+o.img+'" alt=""><span>'+o.nm+'</span></button>';
+  }).join('');
+  $('#orgList').addEventListener('click',function(e){
+    var b=e.target.closest('[data-org]'); if(!b) return;
+    pickedOrg=b.dataset.org;
+    $$('.org',this).forEach(function(x){ x.classList.toggle('on', x===b); });
+  });
+
+  /* ── PASS QR 인증 — 현장투표와 같은 창을 쓴다 ──────────── */
+  var AUTHWIN=null, AUTHMSG=null, AUTHTHEN=null;
+  function passAuth(done){
+    AUTHTHEN=done||null;
+    try{
+      AUTHWIN=window.open('passauth.html?v=2','cxPassAuth',
+        'width=480,height=800,menubar=no,toolbar=no,location=no,status=no');
+    }catch(e){ AUTHWIN=null; }
+    if(!AUTHWIN){ toast('팝업이 차단되어 인증을 열 수 없습니다'); return; }
+    try{ AUTHWIN.focus(); }catch(e){}
+    if(AUTHMSG) window.removeEventListener('message',AUTHMSG);
+    AUTHMSG=function(ev){
+      if(ev.origin!==location.origin) return;
+      var d=ev.data||{};
+      if(!d.cxPass) return;
+      window.removeEventListener('message',AUTHMSG); AUTHMSG=null;
+      if(d.ok){ var f=AUTHTHEN; AUTHTHEN=null; if(f) setTimeout(f,200); }
+      else toast('인증이 취소되었습니다');
+    };
+    window.addEventListener('message',AUTHMSG);
+  }
+
+  function signIn(how){
+    try{
+      localStorage.setItem('cx.pass.auth', JSON.stringify({ by:how, at:Date.now(), name:'박성용' }));
+    }catch(e){}
+    toast('로그인되었습니다');
+    setTimeout(function(){ location.href='index.html'; },700);
+  }
+
+  $('#simpleOk').addEventListener('click',function(){
+    closeM('mdSimple');
+    passAuth(function(){ signIn('간편인증 · '+(ORGS.filter(function(o){return o.k===pickedOrg;})[0]||{}).nm); });
+  });
+
+  /* ── 참석자 코드 로그인 ────────────────────────────────── */
+  $('#cdOk').addEventListener('click',function(){
+    if(!$('#cdCode').value.trim() || !$('#cdPw').value){ toast('참석자 코드와 비밀번호를 입력해 주세요'); return; }
+    closeM('mdCode'); signIn('참석자 코드');
+  });
+  $('#cdReset').addEventListener('click',function(){ closeM('mdCode'); openM('mdReset'); });
+
+  /* ── 주주PASS 로그인 → 서비스 통합 ─────────────────────── */
+  $('#lgOk').addEventListener('click',function(){
+    if(!$('#lgId').value.trim() || !$('#lgPw').value){ toast('아이디와 비밀번호를 입력해 주세요'); return; }
+    closeM('mdPass'); go('pgMerge');
+  });
+  $('#lgReset').addEventListener('click',function(){ closeM('mdPass'); openM('mdReset'); });
+
+  /* ═══ ② 서비스 통합 동의 ═══════════════════════════════ */
+  var MG={1:false,2:false};
+  function mgPaint(){
+    $$('[data-mg]').forEach(function(b){ b.classList.toggle('on', !!MG[b.dataset.mg]); });
+    var all=MG[1]&&MG[2];
+    $('#mgAll').classList.toggle('on', all);
+    $('#mgOk').disabled = !all;
+  }
+  $$('[data-mg]').forEach(function(b){
+    b.addEventListener('click',function(e){
+      if(e.target.closest('.more')){ toast('시연용 화면입니다'); return; }
+      MG[b.dataset.mg]=!MG[b.dataset.mg]; mgPaint();
+    });
+  });
+  $('#mgAll').addEventListener('click',function(){
+    var all=!(MG[1]&&MG[2]); MG[1]=all; MG[2]=all; mgPaint();
+  });
+  mgPaint();
+  $('#mgOk').addEventListener('click',function(){
+    var d=new Date();
+    $('#mgDate').textContent=d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일';
+    go('pgMergeDone');
+  });
+  $('#mgHome').addEventListener('click',function(){ signIn('주주PASS 계정'); });
+
+  /* ═══ ③ 참석자 코드 신청 · 1단계 ═══════════════════════ */
+  var DIAL={'United States':'+1','South Korea':'+82','Japan':'+81','United Kingdom':'+44','Singapore':'+65'};
+  var AP={ kind:'corp', mailOk:false };
+
+  $$('[data-kind]').forEach(function(b){
+    b.addEventListener('click',function(){
+      AP.kind=b.dataset.kind;
+      $$('[data-kind]').forEach(function(x){ x.classList.toggle('on', x===b); });
+      $$('.corp-only').forEach(function(x){ x.hidden = AP.kind!=='corp'; });
+      $$('.indi-only').forEach(function(x){ x.hidden = AP.kind!=='indi'; });
+      apCheck();
+    });
+  });
+
+  $('#apCountry').addEventListener('change',function(){
+    this.classList.remove('ph');
+    $('#apDial').value = DIAL[this.value]||'';
+    apCheck();
+  });
+  $('#apPhone').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,11); apCheck(); });
+  ['#apCorp','#apMgr','#apName','#apMail'].forEach(function(s){ $(s).addEventListener('input',apCheck); });
+
+  function apCheck(){
+    var ok = AP.mailOk && $('#apCountry').value && $('#apPhone').value.length>=9;
+    if(AP.kind==='corp') ok = ok && $('#apCorp').value.trim() && $('#apMgr').value.trim();
+    else ok = ok && $('#apName').value.trim();
+    $('#apNext').disabled = !ok;
+  }
+
+  /* 인증 요청 → 타이머 → 인증 */
+  var otpT=null, otpLeft=0;
+  $('#apSend').addEventListener('click',function(){
+    var m=$('#apMail').value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){ toast('이메일 형식을 확인해 주세요'); return; }
+    this.textContent='재전송';
+    $('#apOtpF').hidden=false;
+    AP.mailOk=false; apCheck();
+    $('#apOtpMsg').classList.remove('ok');
+    $('#apOtpMsg').querySelector('span').textContent='메일로 받은 인증번호를 입력해 주세요';
+    otpLeft=180; tick();
+    clearInterval(otpT); otpT=setInterval(tick,1000);
+    toast('인증번호를 전송했습니다');
+  });
+  function tick(){
+    var m=Math.floor(otpLeft/60), s=otpLeft%60;
+    $('#apTm').textContent=m+':'+(s<10?'0':'')+s;
+    if(otpLeft<=0){ clearInterval(otpT); otpT=null; }
+    otpLeft--;
+  }
+  $('#apOtp').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,6); });
+  $('#apVerify').addEventListener('click',function(){
+    if($('#apOtp').value.length<6){ toast('인증번호 6자리를 입력해 주세요'); return; }
+    clearInterval(otpT); otpT=null;
+    $('#apTm').textContent='';
+    AP.mailOk=true;
+    $('#apOtpMsg').classList.add('ok');
+    $('#apOtpMsg').querySelector('span').textContent='인증완료';
+    apCheck();
+  });
+
+  $('#apNext').addEventListener('click',function(){ go('pgApplyPw'); });
+
+  /* ── 2단계 · 비밀번호 설정 ─────────────────────────────── */
+  bindPw('spPw','spPw2', $('#pgApplyPw'), 'spErr', 'spOk');
+  $('#spOk').addEventListener('click',function(){
+    var pick=function(a){ return a[Math.floor(Math.random()*a.length)]; };
+    var n=function(){ return String(Math.floor(1000+Math.random()*9000)); };
+    $('#apCode').textContent = pick(['QD','KE','IR'])+'-'+n()+'-'+n();
+    go('pgApplyDone');
+  });
+
+  /* ── 발급 완료 ─────────────────────────────────────────── */
+  $('#apCopy').addEventListener('click',function(){
+    var t=$('#apCode').textContent;
+    if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){});
+    toast('참석자 코드를 복사했습니다');
+  });
+  $('#dnLogin').addEventListener('click',function(){
+    go('pgLogin');
+    $('#cdCode').value=$('#apCode').textContent;
+    openM('mdCode'); setTimeout(function(){ $('#cdPw').focus(); },150);
+  });
+  $('#dnShauth').addEventListener('click',function(){ toast('주주확인 신청은 시연 대상이 아닙니다'); });
+
+  /* ═══ ④ 비밀번호 재설정 ════════════════════════════════ */
+  $('#rsSend').addEventListener('click',function(){
+    var m=$('#rsMail').value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){ toast('이메일 형식을 확인해 주세요'); return; }
+    closeM('mdReset'); openM('mdSent');
+  });
+  /* 메일 링크를 눌러 들어온 것으로 보고 비밀번호 변경으로 넘어간다 */
+  $('#sentOk').addEventListener('click',function(){ closeM('mdSent'); openM('mdPw'); });
+  bindPw('npPw','npPw2', $('#mdPw'), 'npErr', 'npOk');
+  $('#npOk').addEventListener('click',function(){
+    closeM('mdPw'); toast('비밀번호를 변경했습니다');
+  });
+
+  /* 주소에 ?v=apply 등을 붙이면 바로 그 단계로 연다 — 시연 편의 */
+  var q=(new URLSearchParams(location.search)).get('v');
+  if(q==='apply') go('pgApply');
+  else if(q==='merge') go('pgMerge');
+  else if(q==='code') openM('mdCode');
+  else if(q==='reset') openM('mdReset');
+})();
+</script>
+</body>
+</html>
