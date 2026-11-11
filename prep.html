@@ -271,8 +271,7 @@
           </div>
           <div class="pv-g">
             <div class="pv-sec">증빙서류</div>
-            <input id="unFile" type="file" accept=".pdf,.jpg,.jpeg,.png" hidden>
-            <button class="updash" type="button" id="unUp">파일 첨부 (pdf, jpg, png)</button>
+                        <button class="updash" type="button" id="unUp">파일 첨부 (pdf, jpg, png)</button>
             <div class="upfile" id="unUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm" id="unFileNm">불통일 행사 신청 증빙.pdf</span><span class="sz" id="unFileSz">4MB</span><button class="x" type="button" data-updel><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></button></div>
           </div>
           <button class="pvbtn" type="button" id="unGo" disabled>불통일 행사 신청</button>
@@ -455,7 +454,6 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
         +   '<span class="dd">'+d[1]+'</span>'
         +   (d[2]?'<button class="dl" type="button" data-dl>'+d[2]+'</button>':'')
         + '</div>'
-        + '<input type="file" accept=".pdf,.jpg,.jpeg,.png" hidden data-f="'+i+'">'
         + '<button class="updash" type="button" data-up="'+i+'">'+FILE_ICO+'파일 첨부 (pdf, jpg, png)</button>'
         + '<div class="upfile" data-ok="'+i+'" hidden>'+FILE_ICO
         +   '<span class="nm"></span><span class="sz"></span>'
@@ -559,34 +557,34 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
     check();
   });
 
+  /* 서류 이름으로 파일명을 만든다 — 시연이라 실제 선택은 받지 않는다 */
+  function docFile(i){
+    var d = DOCS[PX.kind+'/'+PX.loc][i];
+    return { nm: d[0].replace(/\(선택\)$/,'').trim()+'.pdf', sz: (Math.round((0.8+Math.random()*3.4)*10)/10)+'MB' };
+  }
   $('pxDocs').addEventListener('click', function(e){
     var up = e.target.closest('[data-up]');
-    if (up) { this.querySelector('[data-f="'+up.dataset.up+'"]').click(); return; }
+    if (up) {
+      var i = up.dataset.up, f = docFile(i);
+      PX.files[i] = f;
+      var box = this.querySelector('[data-ok="'+i+'"]');
+      box.querySelector('.nm').textContent = f.nm;
+      box.querySelector('.sz').textContent = f.sz;
+      box.hidden = false; up.hidden = true;
+      check();
+      return;
+    }
     var dl = e.target.closest('[data-dl]');
     if (dl) { say('양식 다운로드','시연용 화면입니다. 실제 양식은 제공되지 않습니다.'); return; }
     var del = e.target.closest('[data-del]');
     if (del) {
       var i = del.dataset.del;
       delete PX.files[i];
-      this.querySelector('[data-f="'+i+'"]').value = '';
       this.querySelector('[data-ok="'+i+'"]').hidden = true;
       this.querySelector('[data-up="'+i+'"]').hidden = false;
       check();
     }
   });
-  $('pxDocs').addEventListener('change', function(e){
-    var inp = e.target.closest('[data-f]'); if (!inp) return;
-    var f = inp.files && inp.files[0]; if (!f) return;
-    var i = inp.dataset.f;
-    PX.files[i] = f;
-    var box = this.querySelector('[data-ok="'+i+'"]');
-    box.querySelector('.nm').textContent = f.name;
-    box.querySelector('.sz').textContent = fsize(f.size);
-    box.hidden = false;
-    this.querySelector('[data-up="'+i+'"]').hidden = true;
-    check();
-  });
-
   $('pxCk').addEventListener('click', function(){
     PX.agree = !PX.agree; this.classList.toggle('on', PX.agree); check();
   });
@@ -614,7 +612,7 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
         }).join('');
         var first = PX.files[0];
         var dz = document.querySelector('#pvProxyDone .upfile');
-        if (first) { dz.querySelector('.nm').textContent = first.name; dz.querySelector('.sz').textContent = fsize(first.size); }
+        if (first) { dz.querySelector('.nm').textContent = first.nm; dz.querySelector('.sz').textContent = first.sz; }
         ST.proxy = '지정'; stSave({proxy:'지정'}); pvGo('pvProxyDone');
       }, '대리인 지정');
   });
@@ -629,15 +627,14 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
     $('unCnt').textContent=this.value.length;
     $('unGo').disabled = !(this.value.trim() && file);
   });
-  $('unUp').addEventListener('click',function(){ $('unFile').click(); });
-  $('unFile').addEventListener('change',function(){
-    var f=this.files&&this.files[0]; if(!f) return;
-    file=true; $('unUp').hidden=true; $('unUpOk').hidden=false;
-    $('unFileNm').textContent=f.name; $('unFileSz').textContent=fsize(f.size);
+  $('unUp').addEventListener('click',function(){
+    file=true; this.hidden=true; $('unUpOk').hidden=false;
+    $('unFileNm').textContent='불통일 행사 신청 증빙.pdf';
+    $('unFileSz').textContent=(Math.round((0.8+Math.random()*3.4)*10)/10)+'MB';
     $('unGo').disabled = !$('unRs').value.trim();
   });
   $('unUpOk').querySelector('[data-updel]').addEventListener('click',function(){
-    file=false; $('unFile').value=''; $('unUpOk').hidden=true; $('unUp').hidden=false;
+    file=false; $('unUpOk').hidden=true; $('unUp').hidden=false;
     $('unGo').disabled=true;
   });
   $('unGo').addEventListener('click',function(){
