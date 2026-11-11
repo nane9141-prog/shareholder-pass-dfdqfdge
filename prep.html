@@ -85,6 +85,32 @@
   .upfile svg{width:18px;height:18px;flex:none;fill:none;stroke:#6B7078;stroke-width:1.6}
   .upfile .nm{flex:1;min-width:0;font-size:14px;color:#151419;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .upfile .sz{font-size:12px;color:#A7AAB1;flex:none}
+  /* 국가 선택 드롭다운 */
+  .csel-b{display:flex;align-items:center;gap:4px;width:100%;padding:10px 10px 10px 12px;
+    background:#fff;border:1px solid #EEF0F2;border-radius:8px;cursor:pointer;font-family:inherit}
+  .csel.open .csel-b{border-color:#272929}
+  .csel-b .v{flex:1;min-width:0;text-align:left;font-size:14px;line-height:1.5;color:#151419;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .csel-b .v.ph{color:#A7AAB1}
+  .csel-b svg{width:16px;height:16px;flex:none;fill:none;stroke:#6B7078;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .csel.open .csel-b svg{transform:rotate(180deg)}
+  .csel-m{display:none;position:absolute;left:0;top:calc(100% + 4px);z-index:30;width:184px;
+    padding:4px;background:#fff;border:1px solid #EEF0F2;border-radius:8px;
+    box-shadow:0 0 6px rgba(0,0,0,.1);max-height:240px;overflow:auto}
+  .csel.open .csel-m{display:block}
+  .csel-m button{display:block;width:100%;padding:8px 12px;border:0;border-radius:8px;background:none;
+    text-align:left;font-family:inherit;font-size:14px;line-height:1.5;color:#151419;cursor:pointer}
+  .csel-m button:hover{background:#F3F4F6}
+  .csel-m button.on{background:#F3F4F6;font-weight:700}
+  .docitem{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .docitem .dt{display:flex;align-items:flex-start;gap:12px}
+  .docitem .dt .tt{font-size:14px;line-height:1.5;font-weight:700;color:#151419}
+  .docitem .dd{flex:1;min-width:0;font-size:12px;line-height:1.5;color:#6B7078}
+  .docitem .dl{flex:none;font-size:12px;line-height:1.5;color:#151419;text-decoration:underline;
+    background:none;border:0;padding:0;cursor:pointer}
+  .updash{gap:8px}
+  .updash svg{width:18px;height:18px;fill:none;stroke:#A7AAB1;stroke-width:1.6}
   .upfile .x{flex:none;width:18px;height:18px;border:0;background:none;padding:0;cursor:pointer;color:#A7AAB1;
     display:flex;align-items:center;justify-content:center}
   .upfile .x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
@@ -162,7 +188,7 @@
 
 <main class="prepwrap">
   <div class="pcol">
-        <!-- 대리인 지정 (Figma 11089:25129 · 27377 · 27512) -->
+        <!-- 대리인 지정 (Figma 14932:71500 · 71724 · 73059 · 14944:76429) -->
         <div class="pv" id="pvProxy">
           <div class="pv-top"><div class="pv-t">대리인 지정</div></div>
           <div class="pv-d">본인 대신 주주총회에 참석해 의결권을 행사할 대리인을 지정합니다</div>
@@ -176,65 +202,33 @@
 
           <div class="pv-g">
             <div class="pv-sec">대리인 정보</div>
-            <div class="segt" id="pxSeg">
-              <button type="button" class="on" data-px="indi">개인</button>
-              <button type="button" data-px="corp">법인</button>
-              <button type="button" data-px="abroad">해외</button>
-            </div>
-
-            <!-- 개인 -->
-            <div class="px-f" data-pxf="indi">
-              <div class="pv-g2">
-                <div class="fd"><label>이름</label><div class="ib"><input data-pq type="text" placeholder="이름 입력"></div></div>
-                <div class="fd"><label>생년월일</label><div class="ib"><input data-pq type="text" inputmode="numeric" maxlength="8" placeholder="생년월일 8자리 (숫자만 입력)"></div></div>
-                <div class="fd"><label>휴대폰번호</label><div class="ib"><input data-pq type="tel" placeholder="휴대폰번호 입력"></div></div>
-                <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
+            <div class="fd"><label>유형</label>
+              <div class="segt" data-pxseg="kind">
+                <button type="button" class="on" data-v="indi">개인</button>
+                <button type="button" data-v="corp">법인</button>
               </div>
             </div>
-
-            <!-- 법인 -->
-            <div class="px-f" data-pxf="corp" hidden>
-              <div class="pv-g2">
-                <div class="fd"><label>기업명</label><div class="ib"><input data-pq type="text" placeholder="기업명 입력"></div></div>
-                <div class="fd"><label>사업자등록번호</label><div class="ib"><input data-pq type="text" placeholder="사업자등록번호 입력"></div></div>
+            <div class="fd"><label>소재지</label>
+              <div class="segt" data-pxseg="loc">
+                <button type="button" class="on" data-v="home">국내</button>
+                <button type="button" data-v="abroad">해외</button>
               </div>
             </div>
+            <div id="pxFields"></div>
+          </div>
 
-            <!-- 해외 -->
-            <div class="px-f" data-pxf="abroad" hidden>
-              <div class="pv-g2">
-                <div class="fd"><label>대리인명</label><div class="ib"><input data-pq type="text" placeholder="대리인명 입력"></div></div>
-                <div class="fd"><label>참석자 코드<span class="tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r=".9" fill="#A7AAB1" stroke="none"/></svg><span class="bub">본인인증이 어려운 해외 주주에게<br>발급하는 코드입니다.</span></span></label>
-                  <div class="ib"><input data-pq type="text" placeholder="참석자 코드 N자리 입력"></div></div>
-                <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
-              </div>
-            </div>
-
-            <div class="fd"><label>위임주식수</label>
-              <div class="ib w300"><input id="pxQty" type="text" inputmode="numeric" placeholder="위임주식수 입력"><span class="unit">주</span></div>
-              <div class="bad" id="pxQtyErr" hidden>보유 주식수를 초과할 수 없습니다</div>
-            </div>
-
-            <!-- 법인 담당자 정보 -->
-            <div class="px-f" data-pxf="corp" hidden>
-              <div class="pv-sec" style="margin-top:28px">법인 담당자 정보</div>
-              <div class="pv-g2">
-                <div class="fd"><label>담당자명</label><div class="ib"><input data-pq type="text" placeholder="담당자명 입력"></div></div>
-                <div class="fd"><label>휴대폰번호</label><div class="ib"><input data-pq type="tel" placeholder="휴대폰번호 입력"></div></div>
-              </div>
-              <div class="fd"><label>이메일</label><div class="ib"><input data-pq type="email" placeholder="이메일 입력"></div></div>
-            </div>
+          <div class="pv-g" id="pxMgrG" hidden>
+            <div class="pv-sec">법인 담당자 정보</div>
+            <div id="pxMgr"></div>
           </div>
 
           <div class="pv-g">
-            <div class="pv-sec">위임장</div>
-            <input id="pxFile" type="file" accept=".pdf,.jpg,.jpeg,.png" hidden>
-            <button class="updash" type="button" id="pxUp">파일 첨부 (pdf, jpg, png)</button>
-            <div class="upfile" id="pxUpOk" hidden><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm" id="pxFileNm">위임장_회사.pdf</span><span class="sz" id="pxFileSz">4MB</span><button class="x" type="button" data-updel><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></button></div>
+            <div class="pv-sec">증빙서류</div>
+            <div id="pxDocs"></div>
           </div>
 
           <div class="pv-line"></div>
-          <button class="pvck" type="button" id="pxCk"><span class="bx"></span><span class="lb">[필수] 대리인 동의를 받아 개인정보를 입력했으며, 전자주주총회 참석 목적으로만 이용됨을 확인합니다.</span></button>
+          <button class="pvck" type="button" id="pxCk"><span class="bx"></span><span class="lb" id="pxCkTx"></span></button>
           <button class="pvbtn" type="button" id="pxGo" disabled>대리인 지정</button>
         </div>
 
@@ -386,90 +380,246 @@ function fsize(n){
   return (Math.round(n/1024/1024*10)/10)+'MB';
 }
 
-/* ═══ 대리인 지정 ═══════════════════════════════════════════ */
+/* ═══ 대리인 지정 (Figma 14932:71500 · 71724 · 73059 · 14944:76429) ═══ */
 var HOLD = parseInt(String(CO.shares||'1,200').replace(/\D/g,''),10) || 1200;
 function cm(n){ return Number(n).toLocaleString('en-US'); }
 (function(){
-  var ME={
+  var $ = function(i){ return document.getElementById(i); };
+  var FILE_ICO = '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  var DEL_ICO  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+  var COUNTRY = ['United States','South Korea','Japan','United Kingdom','Singapore'];
+
+  /* 위임인 정보 — 개인은 주민등록번호·휴대폰까지, 법인은 사업자등록번호 */
+  var ME = {
     indi:[['위임인','박성용',1],['주민등록번호','880918-1******'],['휴대폰','010-6655-1234'],
           ['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']],
-    corp:[['위임인','박성용',1],['주민등록번호','880918-1******'],['휴대폰','010-6655-1234'],
-          ['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']],
-    abroad:[['위임인','박성용',1],['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']]
+    corp:[['위임인','미래에셋자산운용',1],['사업자등록번호','123-45-67890'],
+          ['이메일','park6565@example.com'],['보유 주식수',cm(HOLD)+'주']]
   };
-  var kind='indi', file=false, agree=false;
-  var $=function(i){ return document.getElementById(i); };
-  $('pxCo').textContent=CO.nm||'';
-  $('pxTerm').textContent=CO.term||'';
 
-  function paintMe(){
-    $('pxMe').innerHTML=ME[kind].map(function(r){
-      return '<div class="r"><span class="k">'+r[0]+'</span><span class="v'+(r[2]?' st':'')+'">'+r[1]+'</span></div>';
+  /* 증빙서류 — 네 조합이 서로 다르다 */
+  var DOCS = {
+    'indi/home':[
+      ['대리권 증명서','주주 본인의 서명 또는 도장을 날인한 대리권 증명서(위임장)를 첨부해 주세요.'],
+      ['주주 본인 신분증 사본','위임장 확인을 위한 주주 본인의 신분증(주민등록증, 운전면허증 등) 사본을 첨부해 주세요. 주민등록번호 뒷자리는 가림(마스킹) 처리해 주세요.'],
+      ['대리인 신분증 사본','주총장에 참석하시는 대리인의 신분증 사본을 첨부해 주세요. 주민등록번호 뒷자리는 가림(마스킹) 처리해 주세요.']
+    ],
+    'indi/abroad':[
+      ['보유주식 증빙 서류','주주명부 기준일 현재 주식 보유 내역을 확인할 수 있는 잔고증명서를 첨부해 주세요'],
+      ['본인 확인 서류(선택)','주주번호에 여권번호를 입력하신 경우, 본인 확인을 위해 유효한 여권 사본을 첨부해 주세요']
+    ],
+    'corp/home':[
+      ['대리권 증명서','법인 인감을 날인한 대리권 증명서(위임장)를 첨부해 주세요','증명서 양식 다운로드'],
+      ['법인인감증명서','대리권 증명서에 날인한 인감과 같아야 하며, 3개월 이내 발급분만 가능합니다.'],
+      ['담당자 재직증명서','담당자의 재직증명서를 첨부해 주세요']
+    ],
+    'corp/abroad':[
+      ['대리권 증빙 서류','대상 주주총회와 위임 범위가 명시된 위임장을 첨부해 주세요','증빙 양식 다운로드'],
+      ['보유주식 증빙 서류','주주명부 기준일 현재 주식 보유 내역을 확인할 수 있는 잔고증명서를 첨부해 주세요'],
+      ['서명권자 증빙 서류','대표 서명 권한을 증명하는 서류(이사직임증명서, 이사회 결의서 등)를 첨부해 주세요']
+    ]
+  };
+  var CKTX = {
+    indi:'[필수] 대리인 동의를 받아 개인정보를 입력했으며, 전자주주총회 참석 목적으로만 이용됨을 확인합니다.',
+    corp:'본인은 대리인의 동의를 받아 개인정보를 입력하였으며, 전자주주총회 참석을 위한 목적으로만 이용됨을 확인합니다.'
+  };
+
+  var PX = { kind:'indi', loc:'home', agree:false, files:{} };
+  $('pxCo').textContent = CO.nm || '';
+  $('pxTerm').textContent = CO.term || '';
+
+  /* ── 조각 만들기 ─────────────────────────────── */
+  function fd(id, label, ph, extra){
+    return '<div class="fd"><label>'+label+'</label>'
+      + '<div class="ib'+(extra&&extra.w300?' w300':'')+'">'
+      + '<input id="'+id+'" data-pq type="'+((extra&&extra.type)||'text')+'"'
+      + ((extra&&extra.num)?' inputmode="numeric"':'')+' placeholder="'+ph+'">'
+      + ((extra&&extra.unit)?'<span class="unit">'+extra.unit+'</span>':'')
+      + '</div></div>';
+  }
+  function fdPhoneIntl(){
+    return '<div class="fd"><label>휴대폰 번호</label>'
+      + '<div class="frow" style="display:flex;gap:8px;align-items:center">'
+      +   '<div class="csel" id="pxCsel" style="position:relative;width:120px;flex:none">'
+      +     '<button class="csel-b" type="button"><span class="v ph">국가 선택</span>'
+      +       '<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'
+      +     '<div class="csel-m">'+COUNTRY.map(function(c){ return '<button type="button" data-c="'+c+'">'+c+'</button>'; }).join('')+'</div>'
+      +   '</div>'
+      +   '<div class="ib" style="flex:1;min-width:0"><input id="pxPhone" data-pq type="tel" inputmode="numeric" placeholder="휴대폰번호 (숫자만 입력)"></div>'
+      + '</div></div>';
+  }
+  function docHTML(list){
+    return list.map(function(d,i){
+      return '<div class="docitem">'
+        + '<div class="dt"><span class="tt" style="white-space:nowrap">'+d[0]+'</span>'
+        +   '<span class="dd">'+d[1]+'</span>'
+        +   (d[2]?'<button class="dl" type="button" data-dl>'+d[2]+'</button>':'')
+        + '</div>'
+        + '<input type="file" accept=".pdf,.jpg,.jpeg,.png" hidden data-f="'+i+'">'
+        + '<button class="updash" type="button" data-up="'+i+'">'+FILE_ICO+'파일 첨부 (pdf, jpg, png)</button>'
+        + '<div class="upfile" data-ok="'+i+'" hidden>'+FILE_ICO
+        +   '<span class="nm"></span><span class="sz"></span>'
+        +   '<button class="x" type="button" data-del="'+i+'">'+DEL_ICO+'</button></div>'
+        + '</div>';
     }).join('');
   }
-  function fields(){
-    return Array.prototype.slice.call(document.querySelectorAll('[data-pxf="'+kind+'"] [data-pq]'));
+
+  /* ── 다시 그리기 ─────────────────────────────── */
+  function paint(){
+    var k = PX.kind, L = PX.loc, key = k+'/'+L;
+    PX.files = {};
+    /* 위임인 정보 */
+    $('pxMe').innerHTML = ME[k].map(function(r){
+      return '<div class="r"><span class="k">'+r[0]+'</span><span class="v'+(r[2]?' st':'')+'">'+r[1]+'</span></div>';
+    }).join('');
+
+    /* 대리인 정보 */
+    var h = '';
+    if (k === 'indi') {
+      h += fd('pxName','이름','이름 입력');
+      if (L === 'home') h += fd('pxBirth','생년월일','생년월일 8자리 (숫자만 입력)',{num:1});
+      h += (L === 'home')
+        ? fd('pxPhone','휴대폰번호','휴대폰번호 (숫자만 입력)',{num:1})
+        : fdPhoneIntl();
+      h += fd('pxMail','이메일','이메일 입력',{type:'email'});
+      h += fd('pxQty','위임 주식수','위임 주식수 입력',{num:1,unit:'주',w300:1});
+    } else {
+      h += fd('pxName','법인(기관)명','법인(기관)명 입력');
+      if (L === 'home') h += fd('pxBiz','사업자등록번호','사업자등록번호 입력');
+      h += fd('pxQty','위임주식수','위임주식수 입력',{num:1,unit:'주',w300:1});
+    }
+    $('pxFields').innerHTML = h;
+
+    /* 법인 담당자 정보 */
+    $('pxMgrG').hidden = (k !== 'corp');
+    if (k === 'corp') {
+      $('pxMgr').innerHTML = fd('pxMgrNm','담당자명','담당자명 입력')
+        + '<div class="pv-g2">'+fd('pxDept','부서','부서 입력')+fd('pxPos','직급','직급 입력')+'</div>'
+        + (L === 'home' ? fd('pxPhone','휴대폰번호','휴대폰번호 (숫자만 입력)',{num:1}) : fdPhoneIntl())
+        + fd('pxMail','이메일','이메일 입력',{type:'email'});
+    } else {
+      $('pxMgr').innerHTML = '';
+    }
+
+    /* 증빙서류 */
+    $('pxDocs').innerHTML = docHTML(DOCS[key]);
+    $('pxCkTx').textContent = CKTX[k];
+    PX.agree = false; $('pxCk').classList.remove('on');
+    bindCsel();
+    check();
   }
+
+  /* 국가 선택 */
+  function bindCsel(){
+    var c = $('pxCsel'); if (!c) return;
+    var val = c.querySelector('.csel-b .v');
+    c.querySelector('.csel-b').addEventListener('click', function(e){
+      e.stopPropagation(); c.classList.toggle('open');
+    });
+    c.querySelector('.csel-m').addEventListener('click', function(e){
+      var b = e.target.closest('[data-c]'); if (!b) return;
+      val.textContent = b.dataset.c; val.classList.remove('ph');
+      Array.prototype.forEach.call(this.querySelectorAll('button'), function(x){ x.classList.toggle('on', x === b); });
+      c.classList.remove('open'); check();
+    });
+  }
+  document.addEventListener('click', function(){
+    var c = $('pxCsel'); if (c) c.classList.remove('open');
+  });
+
+  /* ── 유효성 ─────────────────────────────────── */
+  function need(){ return DOCS[PX.kind+'/'+PX.loc].length; }
   function check(){
-    var ok = agree && file && $('pxQty').value.trim()
-      && fields().every(function(i){ return i.value.trim(); });
+    var inputs = Array.prototype.slice.call(document.querySelectorAll('#pvProxy [data-pq]'));
+    var ok = PX.agree && inputs.length && inputs.every(function(i){ return i.value.trim(); });
+    var c = $('pxCsel');
+    if (c && c.querySelector('.csel-b .v').classList.contains('ph')) ok = false;
+    for (var i = 0; i < need(); i++) if (!PX.files[i]) ok = false;
     $('pxGo').disabled = !ok;
   }
-  document.getElementById('pxSeg').addEventListener('click',function(e){
-    var b=e.target.closest('[data-px]'); if(!b) return;
-    kind=b.dataset.px;
-    Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on', x===b); });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-pxf]'),function(f){
-      f.hidden = f.dataset.pxf!==kind;
-      Array.prototype.forEach.call(f.querySelectorAll('[data-pq]'),function(i){ i.value=''; });   /* 유형을 바꾸면 입력값은 지워진다 */
+
+  /* ── 이벤트 ─────────────────────────────────── */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-pxseg]'), function(seg){
+    seg.addEventListener('click', function(e){
+      var b = e.target.closest('[data-v]'); if (!b) return;
+      PX[seg.dataset.pxseg === 'kind' ? 'kind' : 'loc'] = b.dataset.v;
+      Array.prototype.forEach.call(seg.querySelectorAll('button'), function(x){ x.classList.toggle('on', x === b); });
+      paint();   /* 유형을 바꾸면 입력값은 지워진다 */
     });
-    $('pxQty').value=''; $('pxQtyErr').hidden=true;
-    paintMe(); check();
   });
-  document.getElementById('pvProxy').addEventListener('input',function(e){
-    if(e.target.id==='pxQty'){
-      var v=e.target.value.replace(/\D/g,'');
-      if(v && +v>HOLD){ v=String(HOLD); $('pxQtyErr').hidden=false; } else $('pxQtyErr').hidden=true;
-      e.target.value = v?cm(v):'';
+
+  $('pvProxy').addEventListener('input', function(e){
+    if (e.target.id === 'pxQty') {
+      var v = e.target.value.replace(/\D/g,'');
+      if (v && +v > HOLD) v = String(HOLD);
+      e.target.value = v ? cm(v) : '';
+    } else if (e.target.id === 'pxBirth' || e.target.id === 'pxPhone') {
+      e.target.value = e.target.value.replace(/\D/g,'');
     }
     check();
   });
-  $('pxUp').addEventListener('click',function(){ $('pxFile').click(); });
-  $('pxFile').addEventListener('change',function(){
-    var f=this.files&&this.files[0]; if(!f) return;
-    file=true; $('pxUp').hidden=true; $('pxUpOk').hidden=false;
-    $('pxFileNm').textContent=f.name; $('pxFileSz').textContent=fsize(f.size);
+
+  $('pxDocs').addEventListener('click', function(e){
+    var up = e.target.closest('[data-up]');
+    if (up) { this.querySelector('[data-f="'+up.dataset.up+'"]').click(); return; }
+    var dl = e.target.closest('[data-dl]');
+    if (dl) { say('양식 다운로드','시연용 화면입니다. 실제 양식은 제공되지 않습니다.'); return; }
+    var del = e.target.closest('[data-del]');
+    if (del) {
+      var i = del.dataset.del;
+      delete PX.files[i];
+      this.querySelector('[data-f="'+i+'"]').value = '';
+      this.querySelector('[data-ok="'+i+'"]').hidden = true;
+      this.querySelector('[data-up="'+i+'"]').hidden = false;
+      check();
+    }
+  });
+  $('pxDocs').addEventListener('change', function(e){
+    var inp = e.target.closest('[data-f]'); if (!inp) return;
+    var f = inp.files && inp.files[0]; if (!f) return;
+    var i = inp.dataset.f;
+    PX.files[i] = f;
+    var box = this.querySelector('[data-ok="'+i+'"]');
+    box.querySelector('.nm').textContent = f.name;
+    box.querySelector('.sz').textContent = fsize(f.size);
+    box.hidden = false;
+    this.querySelector('[data-up="'+i+'"]').hidden = true;
     check();
   });
-  $('pxUpOk').querySelector('[data-updel]').addEventListener('click',function(){
-    file=false; $('pxFile').value=''; $('pxUpOk').hidden=true; $('pxUp').hidden=false; check();
-  });
-  $('pxCk').addEventListener('click',function(){ agree=!agree; this.classList.toggle('on',agree); check(); });
 
-  $('pxGo').addEventListener('click',function(){
-    var nm=fields()[0].value.trim();
+  $('pxCk').addEventListener('click', function(){
+    PX.agree = !PX.agree; this.classList.toggle('on', PX.agree); check();
+  });
+
+  $('pxGo').addEventListener('click', function(){
+    var nm = $('pxName').value.trim(), qty = $('pxQty').value;
     say('대리인을 지정하시겠습니까?',
-      '입력하신 정보로 대리인 지정을 신청합니다.\n지정 완료 후에는 대리인이 주주님을 대신하여 의결권을 행사하게 됩니다.\n\n· 대리인: '+nm+'\n· 위임주식수: '+$('pxQty').value+'주',
+      '입력하신 정보로 대리인 지정을 신청합니다.\n지정 완료 후에는 대리인이 주주님을 대신하여 의결권을 행사하게 됩니다.\n\n· 대리인: '+nm+'\n· 위임주식수: '+qty+'주',
       false, function(){
-        var f=fields();
-        var card = kind==='corp'
-          ? [['대리인',f[0].value],['사업자등록번호',f[1].value],['담당자명',f[2]?f[2].value:''],
-             ['휴대폰번호',f[3]?f[3].value:''],['이메일',f[4]?f[4].value:''],['위임주식수',$('pxQty').value+'주']]
-          : kind==='abroad'
-          ? [['대리인',f[0].value],['참석자 코드',f[1].value],['이메일',f[2].value],['위임주식수',$('pxQty').value+'주']]
-          : [['대리인',f[0].value],['생년월일',f[1].value],['휴대폰번호',f[2].value],['이메일',f[3].value],
-             ['위임주식수',$('pxQty').value+'주']];
-        $('pxDoneNm').textContent=f[0].value;
-        $('pxDoneCard').innerHTML=card.map(function(r){
+        var rows = [['대리인', nm]];
+        if (PX.kind === 'indi') {
+          if ($('pxBirth')) rows.push(['생년월일', $('pxBirth').value]);
+          rows.push(['휴대폰번호', $('pxPhone').value]);
+          rows.push(['이메일', $('pxMail').value]);
+        } else {
+          if ($('pxBiz')) rows.push(['사업자등록번호', $('pxBiz').value]);
+          rows.push(['담당자명', $('pxMgrNm').value]);
+          rows.push(['휴대폰번호', $('pxPhone').value]);
+          rows.push(['이메일', $('pxMail').value]);
+        }
+        rows.push(['위임주식수', qty+'주']);
+        $('pxDoneNm').textContent = nm;
+        $('pxDoneCard').innerHTML = rows.map(function(r){
           return '<div class="r"><span class="k" style="width:120px">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>';
         }).join('');
-        var dz=document.querySelector('#pvProxyDone .upfile');
-        dz.querySelector('.nm').textContent=$('pxFileNm').textContent;
-        dz.querySelector('.sz').textContent=$('pxFileSz').textContent;
-        ST.proxy='지정'; stSave({proxy:'지정'}); pvGo('pvProxyDone');
+        var first = PX.files[0];
+        var dz = document.querySelector('#pvProxyDone .upfile');
+        if (first) { dz.querySelector('.nm').textContent = first.name; dz.querySelector('.sz').textContent = fsize(first.size); }
+        ST.proxy = '지정'; stSave({proxy:'지정'}); pvGo('pvProxyDone');
       }, '대리인 지정');
   });
-  paintMe();
+
+  paint();
 })();
 
 /* ═══ 불통일 행사 신청 ═════════════════════════════════════ */
