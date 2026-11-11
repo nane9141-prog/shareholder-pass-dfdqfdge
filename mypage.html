@@ -723,7 +723,7 @@ function drawProxyDetail(id){
     +'<div class="pxv">'
     +  '<div class="pxv-hd"><img src="assets/logo-'+c.key+'.png" alt="'+esc(c.nm)+'" width="46" height="46">'
     +    '<span class="t"><b>'+esc(c.nm+' '+c.term)+'</b>'
-    +      '<span class="m">'+esc(c.date)+' 개최<i></i>주주명부 기준일 2025.12.31</span></span>'
+    +      '<span class="m">'+esc(c.date||'2026년 3월 31일 (화)')+' 개최<i></i>주주명부 기준일 2025.12.31</span></span>'
     +    '<span class="pxv-bd '+st[1]+'">'+stLb+'</span></div>'
     +  '<hr>'
     +  '<div class="pxv-sec"><b>'+who+' 정보</b><div class="pxv-rows">'+info+'</div></div>'
