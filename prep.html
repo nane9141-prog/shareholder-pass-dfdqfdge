@@ -618,6 +618,16 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
         var first = PX.files[0];
         var dz = document.querySelector('#pvProxyDone .upfile');
         if (first) { dz.querySelector('.nm').textContent = first.nm; dz.querySelector('.sz').textContent = first.sz; }
+        /* CONEXUS 전자주주총회 관리 · 담당자 · 대리인 지정 관리로 접수된다 */
+        try{
+          var box=JSON.parse(localStorage.getItem('cx.proxy')||'[]');
+          box.unshift({ co:CO.key, coNm:CO.nm, kind:PX.kind, loc:PX.loc,
+            org:(PX.kind==='corp'?nm:nm), nm:nm, no:'002458349298',
+            sh:parseInt(qty.replace(/\D/g,''),10)||0,
+            email:($('pxMail')?$('pxMail').value:'-'),
+            st:'승인대기', at:new Date().toISOString().slice(0,16).replace('T',' '), done:'-' });
+          localStorage.setItem('cx.proxy', JSON.stringify(box));
+        }catch(e){}
         ST.proxy = '지정'; stSave({proxy:'지정'}); pvGo('pvProxyDone');
       }, '대리인 지정');
   });
