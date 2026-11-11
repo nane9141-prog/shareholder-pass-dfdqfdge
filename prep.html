@@ -260,7 +260,7 @@
             <div class="upfile"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="nm">위임장_회사.pdf</span><span class="sz">4MB</span></div>
           </div>
           <div class="pvbtns">
-            <button class="pvbtn ghost" type="button" data-pvback>신청 내역</button>
+            <button class="pvbtn ghost" type="button" data-pvmy="proxy">신청 내역</button>
             <button class="pvbtn" type="button" data-pvhome>메인으로</button>
           </div>
         </div>
@@ -354,6 +354,10 @@ function pvGo(id){
 }
 Array.prototype.forEach.call(document.querySelectorAll('[data-pvback],[data-pvhome]'), function(b){
   b.addEventListener('click', function(){ location.href = HOME; });
+});
+/* 대리인 지정 완료 → 마이페이지 · 위임 · 대리내역 */
+Array.prototype.forEach.call(document.querySelectorAll('[data-pvmy]'), function(b){
+  b.addEventListener('click', function(){ location.href = 'mypage.html#' + b.dataset.pvmy; });
 });
 
 /* 안내 모달 */
@@ -621,11 +625,15 @@ function cm(n){ return Number(n).toLocaleString('en-US'); }
         /* CONEXUS 전자주주총회 관리 · 담당자 · 대리인 지정 관리로 접수된다 */
         try{
           var box=JSON.parse(localStorage.getItem('cx.proxy')||'[]');
-          box.unshift({ co:CO.key, coNm:CO.nm, kind:PX.kind, loc:PX.loc,
+          /* 마이페이지 · 위임 · 대리내역(내가 지정한 대리인)에도 이 칸을 읽어 보여준다 */
+          box.unshift({ id:'px'+Date.now(), co:CO.key, coNm:CO.nm, kind:PX.kind, loc:PX.loc,
             org:(PX.kind==='corp'?nm:nm), nm:nm, no:'002458349298',
             sh:parseInt(qty.replace(/\D/g,''),10)||0,
             email:($('pxMail')?$('pxMail').value:'-'),
-            st:'승인대기', at:new Date().toISOString().slice(0,16).replace('T',' '), done:'-' });
+            tel:($('pxPhone')?$('pxPhone').value:''), birth:($('pxBirth')?$('pxBirth').value:''),
+            mgr:($('pxMgrNm')?$('pxMgrNm').value:''),
+            file:(first?first.nm:''),
+            st:'승인대기', at:(function(d){ var z=function(n){ return (n<10?'0':'')+n; }; return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes()); })(new Date()), done:'-' });
           localStorage.setItem('cx.proxy', JSON.stringify(box));
         }catch(e){}
         ST.proxy = '지정'; stSave({proxy:'지정'}); pvGo('pvProxyDone');
