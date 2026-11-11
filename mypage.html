@@ -121,8 +121,7 @@
   .dcard .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
   .dcard .tx b{font-size:18px;line-height:24px;font-weight:700}
   .dcard .tx span{font-size:12px;line-height:18px;color:var(--sub)}
-  .drow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
-  .drow:last-child{border-bottom:0}
+  .drow{display:flex;align-items:center;gap:8px;padding:8px 0}
   .drow .k{width:120px;flex:none;font-size:13px;line-height:20px;color:var(--sub)}
   .drow .v{flex:1;min-width:0;font-size:14px;line-height:21px;color:var(--fg)}
   .fcard{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);
@@ -197,6 +196,46 @@
   .dhead .s i{width:1px;height:10px;background:var(--line2)}
   .hr2{height:0;border:0;border-top:1px solid #272929;margin:0}
   .hr1{height:0;border:0;border-top:1px solid var(--line);margin:0}
+  /* 위임 · 대리 내역 상세 — Figma 11237:75557 */
+  .pxv{display:flex;flex-direction:column;gap:24px;padding:24px;border-radius:12px;background:#fff}
+  .pxv hr{height:1px;margin:0;border:0;background:#EEF0F2}
+  .pxv-hd{display:flex;align-items:center;gap:12px}
+  .pxv-hd img{width:46px;height:46px;flex:none;border-radius:12px;object-fit:contain;background:#fff;
+    box-shadow:0 2px 12px -2px rgba(0,0,0,.15)}
+  .pxv-hd .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .pxv-hd .t b{font-size:20px;line-height:1.3;font-weight:700;letter-spacing:-.2px;color:#151419}
+  .pxv-hd .t .m{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.5;
+    letter-spacing:-.12px;color:#6B7078}
+  .pxv-hd .t .m i{width:1px;height:6px;background:#EEF0F2}
+  .pxv-bd{flex:none;padding:4px 8px;border-radius:8px;background:#F3F4F6;color:#6B7078;
+    font-size:14px;line-height:1.3;font-weight:500;letter-spacing:-.14px;white-space:nowrap}
+  .pxv-bd.ok{background:#F5F9FF;color:#0071F3}
+  .pxv-bd.no{background:#FDF4F5;color:#E9081B}
+  .pxv-sec{display:flex;flex-direction:column;gap:12px}
+  .pxv-sec>b{font-size:16px;line-height:1.3;font-weight:700;letter-spacing:-.16px;color:#151419}
+  .pxv-rows{display:flex;flex-direction:column;gap:2px}
+  .pxv-r{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 0}
+  .pxv-r .k{width:150px;flex:none;font-size:14px;line-height:1.5;letter-spacing:-.14px;color:#6B7078}
+  .pxv-r .v{flex:1;min-width:0;font-size:16px;line-height:1.5;letter-spacing:-.16px;color:#151419}
+  .pxv-r .fcard{height:48px;padding:8px;border-radius:8px;border-color:#EEF0F2}
+  .pxv-r .fcard .fn{font-size:14px;color:#151419}
+  .pxv-r .fcard .fs{font-size:12px;color:#A7AAB1}
+  .pxv-qa{display:flex;flex-direction:column;gap:12px}
+  .pxv-qc{border:1px solid #EEF0F2;border-radius:12px;overflow:hidden}
+  .pxv-qc .q{display:flex;flex-direction:column;gap:8px;padding:20px}
+  .pxv-qc .q .h{display:flex;align-items:flex-start;gap:8px}
+  .pxv-qc .q .h b{flex:1;min-width:0;font-size:16px;line-height:1.5;font-weight:700;letter-spacing:-.16px;color:#151419}
+  .pxv-qc .q .h .d{flex:none;font-size:12px;line-height:1.5;color:#A7AAB1}
+  .pxv-qc .q .b{font-size:14px;line-height:1.5;letter-spacing:-.14px;color:#4C4F54;white-space:pre-line}
+  .pxv-qc .a{display:flex;flex-direction:column;gap:8px;padding:20px;background:#F8F8FA}
+  .pxv-qc .a .h{display:flex;align-items:center;justify-content:space-between}
+  .pxv-qc .a .h b{font-size:12px;line-height:1.5;font-weight:700;color:#0071F3}
+  .pxv-qc .a .h span{font-size:12px;line-height:1.5;color:#A7AAB1}
+  .pxv-acts{display:flex;gap:8px}
+  .pxv-acts button{flex:1;padding:10px 12px;border-radius:8px;border:0;background:#EEF0F2;color:#4C4F54;
+    font-family:inherit;font-size:14px;line-height:1.5;font-weight:700;letter-spacing:-.14px;cursor:pointer}
+  .pxv-acts .line{background:#fff;border:1px solid #EEF0F2;color:#151419}
+  .pxv-acts .dark{background:#151419;color:#fff}
   .sect{display:flex;flex-direction:column;gap:12px}
   .sect>b{font-size:16px;line-height:21px;font-weight:700}
   .kpi2{display:flex;gap:8px}
@@ -243,7 +282,7 @@
       <a class="m" href="#vote" data-v="vote">의결권 행사 내역</a></div>
     <hr>
     <div class="grp">
-      <a class="m" href="#proxy" data-v="proxy">위임 · 대리내역</a>
+      <a class="m" href="#proxy" data-v="proxy">위임 · 대리 내역</a>
       <a class="m" href="#split" data-v="split">불통일 행사 신청 내역</a></div>
     <hr>
     <div class="grp small"><a class="m" href="login.html">로그아웃</a></div>
@@ -279,7 +318,7 @@
       <div class="list" data-list="vote"></div></div>
 
     <!-- 위임 · 대리내역 -->
-    <div class="view" data-view="proxy"><h1>위임 · 대리내역</h1><div style="height:20px"></div>
+    <div class="view" data-view="proxy"><h1>위임 · 대리 내역</h1><div style="height:20px"></div>
       <div class="utabs" id="pxTabs">
         <button type="button" class="on" data-pt="mine">내가 지정한 대리인</button>
         <button type="button" data-pt="recv">나를 지정한 위임인</button></div>
@@ -534,11 +573,26 @@ function confirmBox(o){
    mine = 내가 대리인을 지정한 건, recv = 나를 대리인으로 지정한 위임인의 건 */
 var PROXY = {
   mine: [
-    { id:'m1', key:'hyundai',    who:'김철수', birth:'1985.04.02', sex:'남', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com', st:'ok'   },
-    { id:'m2', key:'korea-zinc', who:'김철수', birth:'1985.04.02', sex:'남', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com', st:'ok'   },
+    /* 법인 대리인 — 승인 후 행사 전 (Figma 11240:76460) */
+    { id:'m1', key:'hyundai', kind:'corp', who:'법무법인 세종', biz:'110-81-354568',
+      mgrNm:'김명호', mgrTel:'010-0000-0000', mgrMail:'psy@example.com',
+      sh:'800,000주', tel:'010-0000-0000', mail:'psy@example.com', st:'ok',
+      qa:[
+        { t:'주가 부진에 대한 경영진의 인식 및 실질적인 주주환원 정책 확대', d:'2026.03.26',
+          b:'최근 수년간 당사는 매출 및 영업이익 측면에서 의미 있는 성과를 달성했다고 발표하였으나, 주식 시장에서 형성된 당사의 주가는 기업의 본질적 가치와 재무 성과에 미치지 못하는 저평가 상태(PBR 1배 미만)를 지속하고 있습니다.\n\n경영진께서는 현재의 주가 수준과 시장의 평가를 어떻게 진단하고 계신지, 이를 타개하기 위한 연간 주가 관리 방안이 수립되어 있는지 궁금합니다.\n\n잉여현금흐름과 보유 현금성 자산 규모를 고려할 때 단발성 배당에 그치지 않고 자사주 매입 및 소각, 또는 최소 배당성향을 명시하는 다년도 주주환원 정책을 도입할 용의가 있으신지 구체적으로 답변해 주시기 바랍니다.' },
+        { t:'신규 투자 사업의 가시적 성과 창출 시점 및 R&D 로드맵', d:'2026.03.24',
+          b:'회사는 지난 수년간 미래 성장 동력 확보를 명목으로 신규 사업 분야에 대규모 R&D 비용과 설비 투자를 집행해 왔습니다.\n\n현재 추진 중인 신사업 부문의 손익분기점 달성 예상 시점과, 향후 3개년 내 전체 매출에서 차지할 목표 비중은 어느 정도입니까?\n\n지분 투자를 완료한 자회사·관계사의 실적 정상화 방안과 시너지 창출을 위한 핵심 전략 로드맵을 상세히 설명해 주십시오.',
+          aD:'2026.03.24',
+          a:'안녕하십니까, 주주님. 저희 회사의 성장과 미래 가치 창출에 깊은 관심을 보내주신 점에 감사드립니다.\n\n[답변 1-1] 신사업 부문은 2027년 하반기 손익분기점 달성을 목표로 하고 있으며, 2029년까지 전체 매출의 20% 수준으로 끌어올리는 것을 중기 목표로 설정하고 있습니다.\n\n[답변 1-2] 지분 투자를 완료한 자회사는 올해 안에 흑자 전환을 목표로 원가 구조 개선과 공동 구매를 추진하고 있으며, 그룹 내 기술 공유를 통한 시너지 과제를 분기별로 점검하여 그 결과를 IR 자료로 공개하겠습니다.' }
+      ] },
+    /* 해외 대리인 — 행사 완료 (Figma 11240:76577) */
+    { id:'m2', key:'korea-zinc', kind:'overseas', who:'John Miller', code:'A1B2C3',
+      sh:'800,000주', tel:'010-2222-3333', mail:'psy@example.com', st:'ok' },
     { id:'m3', key:'mirae-asset',who:'김철수', birth:'1985.04.02', sex:'남', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com', st:'wait' },
     { id:'m4', key:'shinhan',    who:'김철수', birth:'1985.04.02', sex:'남', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com', st:'wait' },
-    { id:'m5', key:'kakaobank',  who:'김철수', birth:'1985.04.02', sex:'남', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com', st:'no'   }
+    /* 거절 (Figma 12189:73239) */
+    { id:'m5', key:'kakaobank', kind:'overseas', who:'John Miller', code:'A1B2C3',
+      sh:'800,000주', tel:'010-2222-3333', mail:'psy@example.com', st:'no' }
   ],
   recv: [
     { id:'r1', key:'korea-zinc', who:'김철수', sh:'800,000주', tel:'010-1111-2222', mail:'kim@example.com',  st:'ok'   },
@@ -620,40 +674,76 @@ function drawProxyDetail(id){
   var x=pxFind(id); if(!x){ location.hash='#proxy'; return; }
   var c=co(x.key), st=PXST[x.st], mine=PROXY.mine.indexOf(x)>=0;
   var who = mine ? '대리인' : '위임인';
+  /* 내가 지정한 건은 기업의 승인 절차, 받은 건은 내 수락 절차다 */
+  var stLb = mine ? ({ ok:'승인', wait:'승인대기', no:'거절' })[x.st] : st[0];
+  function row(k,v){ return '<div class="pxv-r"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
+  /* 개인 · 법인 · 해외에 따라 들어가는 줄이 다르다 */
+  var info = row(who, x.who), mgr = '';
+  if(x.kind === 'corp'){
+    info += row('사업자등록번호', x.biz || '-');
+    mgr = '<hr><div class="pxv-sec"><b>법인 담당자 정보</b><div class="pxv-rows">'
+      + row('담당자명', x.mgrNm || '-') + row('휴대폰번호', x.mgrTel || x.tel)
+      + row('이메일주소', x.mgrMail || x.mail) + '</div></div>';
+  } else {
+    if(x.kind === 'overseas') info += row('참석자 코드', x.code || '-');
+    else if(mine && (x.birth || x.sex)) info += row('생년월일 / 성별', [x.birth, x.sex].filter(Boolean).join(' / '));
+    info += row('휴대폰번호', x.tel) + row('이메일주소', x.mail);
+  }
+
+  /* 사전 질의 — 답변이 달린 질의는 아래에 답변 블록이 붙는다 */
+  var qa = '';
+  if(x.qa && x.qa.length){
+    qa = '<hr><div class="pxv-sec"><b>사전 질의 '+x.qa.length+'</b><div class="pxv-qa">'
+      + x.qa.map(function(q){
+          return '<div class="pxv-qc"><div class="q"><div class="h"><b>'+esc(q.t)+'</b>'
+            +'<span class="d">'+esc(q.d)+'</span></div><div class="b">'+esc(q.b)+'</div></div>'
+            + (q.a ? '<div class="a"><div class="h"><b>답변</b><span>'+esc(q.aD||q.d)+'</span></div>'
+                    +'<div class="b" style="font-size:14px;line-height:1.5;color:#4C4F54;white-space:pre-line">'
+                    + esc(q.a)+'</div></div>' : '')
+            +'</div>';
+        }).join('') + '</div></div>';
+  }
+
+  var give = row('위임주식수', x.sh)
+    + '<div class="pxv-r"><span class="k">위임장</span>'+fileRow(x.file||('위임장_'+c.nm+'.pdf'))+'</div>'
+    + (x.at ? row('신청일시', x.at.replace(/-/g,'.')) : '');
+
+  var acts = x.st==='no' ? ''
+    : (mine
+        ? '<div class="pxv-acts"><button type="button" id="pxCancel">대리인 지정 철회</button>'
+          +'<button class="line" type="button" id="pxResend">인증링크 재전송</button></div>'
+        : (x.st==='wait'
+            ? '<div class="pxv-acts"><button type="button" id="pxNo">거절하기</button>'
+              +'<button class="dark" type="button" id="pxYes">수락하기</button></div>'
+            : ''));
+
   document.getElementById('pxd').innerHTML=
-    '<button class="back" type="button" id="pxBack"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>위임 · 대리내역</button>'
+    '<button class="back" type="button" id="pxBack"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>위임 · 대리 내역</button>'
     +'<div style="height:12px"></div>'
-    +'<div class="dcard"><img src="assets/logo-'+c.key+'.png" alt="'+esc(c.nm)+'" width="46" height="46">'
-    +'<span class="tx"><b>'+esc(c.nm+' '+c.term)+'</b>'
-    +'<span>'+esc(c.date)+' 개최 · 주주명부 기준일 2025.12.31</span></span>'
-    +'<span class="st '+st[1]+'">'+st[0]+'</span></div>'
-    +'<div style="height:24px"></div>'
-    +'<div class="sect"><b>'+who+' 정보</b><div>'
-    +'<div class="drow"><span class="k">'+who+'</span><span class="v">'+esc(x.who)+'</span></div>'
-    +'<div class="drow"><span class="k">휴대폰 번호</span><span class="v">'+esc(x.tel)+'</span></div>'
-    +'<div class="drow"><span class="k">이메일 주소</span><span class="v">'+esc(x.mail)+'</span></div>'
-    +'<div class="drow"><span class="k">'+(mine?'위임한':'위임 받은')+' 주식수</span><span class="v">'+esc(x.sh)+'</span></div>'
-    +'<div class="drow"><span class="k">위임장</span>'+fileRow(x.file||('위임장_'+c.nm+'.pdf'))+'</div>'
-    +(x.at?'<div class="drow"><span class="k">신청일시</span><span class="v">'+esc(x.at.replace(/-/g,'.'))+'</span></div>':'')
-    +'</div></div>'
-    +'<div style="height:24px"></div>'
-    + (x.st!=='wait' ? '' :
-        (mine
-          ? '<div class="dacts"><button class="ghost" type="button" id="pxResend">인증링크 재발송</button>'
-            +'<button class="dark" type="button" id="pxCancel">대리인 지정 철회</button></div>'
-          : '<div class="dacts"><button class="ghost" type="button" id="pxNo">거절하기</button>'
-            +'<button class="dark" type="button" id="pxYes">수락하기</button></div>'));
+    +'<div class="pxv">'
+    +  '<div class="pxv-hd"><img src="assets/logo-'+c.key+'.png" alt="'+esc(c.nm)+'" width="46" height="46">'
+    +    '<span class="t"><b>'+esc(c.nm+' '+c.term)+'</b>'
+    +      '<span class="m">'+esc(c.date)+' 개최<i></i>주주명부 기준일 2025.12.31</span></span>'
+    +    '<span class="pxv-bd '+st[1]+'">'+stLb+'</span></div>'
+    +  '<hr>'
+    +  '<div class="pxv-sec"><b>'+who+' 정보</b><div class="pxv-rows">'+info+'</div></div>'
+    +  mgr
+    +  '<hr>'
+    +  '<div class="pxv-sec"><b>위임 내용</b><div class="pxv-rows">'+give+'</div></div>'
+    +  qa
+    +  acts
+    +'</div>';
   document.getElementById('pxBack').addEventListener('click', function(){ location.hash='#proxy'; });
   function on(bid,fn){ var b=document.getElementById(bid); if(b) b.addEventListener('click',fn); }
   on('pxResend', function(){
-    confirmBox({ single:true, title:'인증링크 재발송 완료',
-      desc:'대리인 정보로 인증 링크를 다시 보내드렸습니다.',
+    confirmBox({ single:true, title:'인증링크 재전송 완료',
+      desc:'대리인 정보로 인증링크를 재전송했습니다.',
       cap:'수신 이메일: '+x.mail, ok:'확인' });
   });
   on('pxCancel', function(){
     confirmBox({ title:'대리인 지정을 철회하시겠습니까?',
-      desc:'신청을 철회하시면 대리인에게 전달된 인증 링크가 무효화되며, 위임 신청이 취소됩니다.',
-      ok:'철회하기', onOk:function(){ x.st='no'; pxSaveSt(x,'철회'); drawProxyDetail(id); } });
+      desc:'철회 시 대리인에게 전달된 인증 링크가 무효화되며 위임 신청이 취소됩니다.',
+      ok:'철회', onOk:function(){ x.st='no'; pxSaveSt(x,'철회'); drawProxyDetail(id); } });
   });
   on('pxNo', function(){
     confirmBox({ title:'대리인 위임을 거절하시겠습니까?',
