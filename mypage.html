@@ -611,9 +611,9 @@ function drawProxy(){
       +'<span class="right"><span class="st '+st[1]+'">'+st[0]+'</span></span></div>';
   }).join('');
 }
-function fileRow(name){
+function fileRow(name, size){
   return '<span class="fcard"><svg viewBox="0 0 24 24"><path d="M14 3v5h5"/><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/></svg>'
-    +'<span class="fn">'+esc(name)+'</span><span class="fs">4MB</span>'
+    +'<span class="fn">'+esc(name)+'</span><span class="fs">'+esc(size||'4MB')+'</span>'
     +'<svg viewBox="0 0 24 24"><path d="M12 4v12m0 0 4-4m-4 4-4-4"/><path d="M4 20h16"/></svg></span>';
 }
 function drawProxyDetail(id){
@@ -715,7 +715,7 @@ function drawSplitDetail(id){
       + '<div class="drow"><span class="k">반대</span><span class="v">'+esc(x.con)+'</span></div>'
       + '<div class="drow"><span class="k">기권</span><span class="v">'+esc(x.abs)+'</span></div>')
     + (x.rs ? '<div class="drow"><span class="k">신청 사유</span><span class="v">'+esc(x.rs)+'</span></div>' : '')
-    +'<div class="drow"><span class="k">사유서</span>'+fileRow(x.file || ('불통일행사_사유서_'+c.nm+'.pdf'))+'</div>'
+    +'<div class="drow"><span class="k">사유서</span>'+fileRow(x.file || ('불통일행사_사유서_'+c.nm+'.pdf'), x.size)+'</div>'
     +'</div></div>'
     +'<div style="height:24px"></div>'
     + (x.st==='in' ? '<div class="dacts"><button class="dark" type="button" id="spCancel">신청 취소</button></div>' : '');
