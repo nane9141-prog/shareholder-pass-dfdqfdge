@@ -158,6 +158,32 @@
   .note{font-size:16px;line-height:1.6;text-align:center;color:var(--txt)}
   .note em{font-style:normal;display:block;color:var(--txt3);font-size:14px;margin-top:4px}
 
+  /* ── 회원가입 ───────────────────────────────────────────── */
+  .sub-d{font-size:12px;line-height:1.5;color:var(--txt3);text-align:center}
+  .inbox.lock{background:#F3F4F6}
+  .inbox.lock input{color:var(--txt)}
+  .ok-msg{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1.5;color:#0DAD7E;margin-top:2px}
+  .ok-msg svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  /* 약관 동의 — 체크박스 24px */
+  .tmlist{display:flex;flex-direction:column;gap:12px}
+  .tm{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+  .tm .bx{flex:none;width:24px;height:24px;border:1px solid var(--bd);border-radius:8px;background:#fff;position:relative;transition:.12s}
+  .tm .bx::after{content:"";position:absolute;left:8.4px;top:5.4px;width:5.2px;height:9.6px;
+    border:2px solid #CBCDD2;border-left:0;border-top:0;transform:rotate(45deg);transition:.12s}
+  .tm.on .bx{background:var(--txt);border-color:var(--txt)}
+  .tm.on .bx::after{border-color:#fff}
+  .tm .lb{flex:1;min-width:0;font-size:16px;line-height:1.5;color:var(--txt)}
+  .tm.all .lb{font-weight:700}
+  .tm .more{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--txt3)}
+  .tm .more svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  /* 회원가입 유형 선택 */
+  .kinds{display:flex;flex-direction:column;gap:8px}
+  .kind{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;
+    padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--sf);cursor:pointer}
+  .kind b{font-size:16px;line-height:1.5;font-weight:700;color:var(--txt)}
+  .kind span{font-size:12px;line-height:1.5;color:var(--txt3)}
+  .kind.on{background:var(--sf-sub);border-color:var(--bd-strong)}
+
   /* ── 모달 ───────────────────────────────────────────────── */
   .ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
   .ovl.on{display:flex}
@@ -293,7 +319,43 @@
       </div>
     </div>
 
-    <!-- ④ 참석자 코드 신청 · 1단계 -------------------------------- -->
+    <!-- ④ 회원가입 · 약관 동의 ------------------------------------ -->
+    <div class="page" id="pgTerms">
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <h1>약관 동의</h1>
+          <div class="sub-d">회원가입을 위한 약관동의가 필요합니다</div>
+        </div>
+        <div class="tmlist">
+          <button class="tm all" type="button" id="tmAll"><span class="bx"></span><span class="lb">전체 동의</span></button>
+          <button class="tm" type="button" data-tm="1"><span class="bx"></span><span class="lb">[필수] 이용약관</span><span class="more">상세보기<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span></button>
+          <button class="tm" type="button" data-tm="2"><span class="bx"></span><span class="lb">[필수] 개인정보처리방침</span><span class="more">상세보기<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span></button>
+        </div>
+        <button class="btn dark" type="button" id="tmOk" disabled>본인 인증하기</button>
+      </div>
+    </div>
+
+    <!-- ⑤ 회원가입 · 정보 입력 ------------------------------------- -->
+    <div class="page" id="pgSignup">
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <h1>회원가입</h1>
+          <div class="sub-d">회원가입을 위해 정보를 입력해주세요</div>
+        </div>
+        <div class="fset">
+          <div class="f"><label>이름</label>
+            <div class="inbox lock"><input type="text" value="김주주" readonly></div></div>
+          <div class="f"><label>휴대폰번호</label>
+            <div class="inbox lock"><input type="tel" value="01022223333" readonly></div>
+            <div class="ok-msg"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>인증 완료</div></div>
+          <div class="f"><label>이메일</label>
+            <div class="inbox"><input id="suMail" type="email" placeholder="이메일 입력"></div></div>
+        </div>
+        <button class="btn dark" type="button" id="suOk" disabled>회원가입</button>
+      </div>
+    </div>
+
+    <!-- ⑥ 참석자 코드 신청 · 1단계 -------------------------------- -->
     <div class="page" id="pgApply">
       <div class="card">
         <h1>참석자 코드 신청</h1>
@@ -408,6 +470,33 @@
       <div class="orgs" id="orgList"></div>
     </div>
     <div class="ft"><button class="btn dark" type="button" id="simpleOk">확인</button></div>
+  </div>
+</div>
+
+<!-- 회원가입 유형 -->
+<div class="ovl" id="mdType">
+  <div class="mdl">
+    <div class="bd">
+      <div class="mdl-h"><b>회원가입 유형</b><button class="mdl-x" type="button" data-close><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="kinds" id="kindList">
+        <button class="kind on" type="button" data-kd="adult"><b>개인 (만 14세 이상)</b><span>간편인증</span></button>
+        <button class="kind" type="button" data-kd="minor"><b>개인 (만 14세 미만)</b><span>공동인증서</span></button>
+        <button class="kind" type="button" data-kd="corp"><b>법인</b><span>공동인증서</span></button>
+        <button class="kind" type="button" data-kd="abroad"><b>해외</b><span>참석자 코드</span></button>
+      </div>
+    </div>
+    <div class="ft"><button class="btn dark" type="button" id="kdOk">회원가입</button></div>
+  </div>
+</div>
+
+<!-- 회원가입 완료 -->
+<div class="ovl" id="mdJoined">
+  <div class="mdl sm">
+    <div class="bd">
+      <div class="t">회원가입 완료</div>
+      <div class="d">이제 주주총회에 참여할 수 있습니다. 참여할 기업을 추가하고 주주 확인을 마치면 보유 주식과 주주총회 일정을 확인할 수 있습니다.</div>
+    </div>
+    <div class="ft"><button class="btn dark" type="button" id="joinedOk">확인</button></div>
   </div>
 </div>
 
@@ -593,7 +682,7 @@
     });
   });
   $('#goJoin').addEventListener('click',function(){ openM('mdPass'); });   /* 기존 주주패스 계정 로그인 */
-  $('#goSignup').addEventListener('click',function(){ openM('mdPass'); });  /* 회원가입 */
+  $('#goSignup').addEventListener('click',function(){ openM('mdType'); });  /* 회원가입 */
   $('#goApply').addEventListener('click',function(){ go('pgApply'); });
 
   /* ── 간편인증 기관 ─────────────────────────────────────── */
@@ -664,6 +753,43 @@
     closeM('mdPass'); go('pgMerge');
   });
   $('#lgReset').addEventListener('click',function(){ closeM('mdPass'); openM('mdReset'); });
+
+  /* ═══ ①-2 회원가입 ════════════════════════════════════ */
+  var KIND='adult';
+  $('#kindList').addEventListener('click',function(e){
+    var b=e.target.closest('[data-kd]'); if(!b) return;
+    KIND=b.dataset.kd;
+    $$('.kind',this).forEach(function(x){ x.classList.toggle('on', x===b); });
+  });
+  $('#kdOk').addEventListener('click',function(){ closeM('mdType'); go('pgTerms'); });
+
+  /* 약관 동의 */
+  var TM={1:false,2:false};
+  function tmPaint(){
+    $$('[data-tm]').forEach(function(b){ b.classList.toggle('on', !!TM[b.dataset.tm]); });
+    var all=TM[1]&&TM[2];
+    $('#tmAll').classList.toggle('on', all);
+    $('#tmOk').disabled = !all;
+  }
+  $$('[data-tm]').forEach(function(b){
+    b.addEventListener('click',function(e){
+      if(e.target.closest('.more')){ toast('시연용 화면입니다'); return; }
+      TM[b.dataset.tm]=!TM[b.dataset.tm]; tmPaint();
+    });
+  });
+  $('#tmAll').addEventListener('click',function(){
+    var all=!(TM[1]&&TM[2]); TM[1]=all; TM[2]=all; tmPaint();
+  });
+  tmPaint();
+  /* 본인인증은 시연에서 건너뛰고 바로 정보 입력으로 넘어간다 */
+  $('#tmOk').addEventListener('click',function(){ go('pgSignup'); });
+
+  /* 정보 입력 */
+  $('#suMail').addEventListener('input',function(){
+    $('#suOk').disabled = !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.value.trim());
+  });
+  $('#suOk').addEventListener('click',function(){ openM('mdJoined'); });
+  $('#joinedOk').addEventListener('click',function(){ closeM('mdJoined'); signIn('회원가입'); });
 
   /* ═══ ② 서비스 통합 동의 ═══════════════════════════════ */
   var MG={1:false,2:false};
@@ -790,6 +916,8 @@
   /* 주소에 ?v=apply 등을 붙이면 바로 그 단계로 연다 — 시연 편의 */
   var q=(new URLSearchParams(location.search)).get('v');
   if(q==='apply') go('pgApply');
+  else if(q==='signup') openM('mdType');
+  else if(q==='terms') go('pgTerms');
   else if(q==='merge') go('pgMerge');
   else if(q==='code') openM('mdCode');
   else if(q==='reset') openM('mdReset');
