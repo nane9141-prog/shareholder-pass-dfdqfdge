@@ -4,7 +4,7 @@
 window.PASS_USER = { name: '박성용' };
 
 window.PASS_CO = [
-  { key: 'kakaobank', nm: '카카오뱅크', term: '제10기 정기주주총회', status: 'live',
+  { key: 'kakaobank', nm: '카카오뱅크', term: '제10기 정기주주총회', status: 'live', apply: 'applied',
     date: '2026년 9월 29일 (화)', time: '오전 10:00',
     place: '서울 영등포구 카카오뱅크 본사 대강당',
     hero: ['#ffe98a', '#ffd21f'], ink: '#1a1a1a',
@@ -23,7 +23,7 @@ window.PASS_CO = [
     hero: ['#7d97c8', '#0a2a66'], ink: '#fff',
     kind: '보통주', shares: '340주', limit: '0주', dday: 'D-day' },
 
-  { key: 'kudoselectric', nm: '큐더스전자', term: '제10기 정기주주총회', status: 'live',
+  { key: 'kudoselectric', nm: '큐더스전자', term: '제10기 정기주주총회', status: 'live', apply: 'applied',
     date: '2026년 9월 29일 (화)', time: '오전 10:00',
     place: '서울 강남구 큐더스전자 본사 대강당',
     hero: ['#1b2a3a', '#0a0f16'], ink: '#fff', banner: 'assets/banner-kudoselectric.jpg',

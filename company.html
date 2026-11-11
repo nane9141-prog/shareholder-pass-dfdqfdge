@@ -568,7 +568,7 @@
 </div>
 
 <script src="assets/shauth.js?v=2"></script>
-<script src="assets/companies.js?v=14"></script>
+<script src="assets/companies.js?v=15"></script>
 <script src="assets/agenda.js"></script>
 <script>
 /* CX(SSOT)가 있으면 그대로 사용, 없으면 데모 폴백. 실제 통합 시 cx-data.js 로드로 대체. */
@@ -755,7 +755,7 @@ drawNotice();
 /* ---- 사전준비 — 내 의결권. 사이드 목록도 같은 데이터를 쓴다. ---- */
 var PERIOD='2026.09.22 ~ 2026.09.28';
 /* 상태 — 사전 신청 여부에 따라 다른 항목의 진입이 막힌다 */
-var ST={ apply:false, uni:'미신청', proxy:'미지정', qa:0, ans:0 };
+var ST={ apply:(CO.apply==='applied'), uni:'미신청', proxy:'미지정', qa:0, ans:0 };
 var PREP=[
   {k:'의결권 행사', d:'주주총회 안건에 대해 의결권을 직접 행사하거나 위임하실 수 있습니다.', items:[
     {key:'evote', nm:'전자투표 · 전자위임장 행사', p:PERIOD},
@@ -807,7 +807,7 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-pvback],[data-pvho
 });
 
 /* 사전 신청자만 들어갈 수 있는 항목 */
-var NEEDAPPLY={ proxy:'대리인 지정', qa:'사전 질의 등록' };
+var NEEDAPPLY={ uni:'불통일 행사 신청', proxy:'대리인 지정', qa:'사전 질의 등록' };
 document.getElementById('prepList').addEventListener('click',function(e){
   var b=e.target.closest('.b'); if(!b) return;
   var k=b.dataset.pk;
