@@ -51,8 +51,19 @@
   .way{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
     padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--sf);cursor:pointer;width:100%}
   .way b{font-size:16px;line-height:1.5;font-weight:700;color:var(--txt)}
-  .way span{font-size:12px;line-height:1.5;color:var(--txt3)}
   .way.sel{background:var(--sf-sub);border-color:var(--bd-strong)}
+  /* 기존 주주패스 계정 로그인 — 로고 위, 설명 아래 2단 박스 버튼 */
+  .pass-btn{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;
+    padding:12px 14px;border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--sf);cursor:pointer}
+  .pass-btn img{height:19px;width:auto;display:block}
+  .pass-btn span{font-size:12px;line-height:1.5;font-weight:500;color:var(--txt)}
+  /* 회원가입 · 참석자 코드 신청 — 텍스트 버튼 */
+  .foot-lnk{display:flex;align-items:center;justify-content:center;gap:24px}
+  .foot-lnk .q{font-size:14px;line-height:1.5;color:var(--txt)}
+  .foot-lnk .tb{display:inline-flex;align-items:center;gap:8px}
+  .foot-lnk .tb i{width:1px;height:8px;background:var(--bd)}
+  .foot-lnk button{background:none;border:0;padding:0;font-size:14px;line-height:1.5;font-weight:700;
+    color:var(--txt);cursor:pointer}
 
   /* ── 구분선 문구 ────────────────────────────────────────── */
   .divtx{display:flex;align-items:center;gap:10px}
@@ -220,20 +231,18 @@
       <div class="card">
         <h1>로그인</h1>
         <div class="ways">
-          <button class="way sel" type="button" data-way="simple">
-            <b>간편인증</b><span>카카오・네이버・PASS・토스・KB국민・페이코</span>
-          </button>
-          <button class="way" type="button" data-way="cert">
-            <b>공동인증서 / 금융인증서</b><span>만14세 미만 · 법인</span>
-          </button>
-          <button class="way" type="button" data-way="code">
-            <b>주주식별번호 / 참석자 코드</b><span>해외 · 비주주</span>
-          </button>
+          <button class="way" type="button" data-way="simple"><b>간편인증</b></button>
+          <button class="way" type="button" data-way="cert"><b>공동인증서 / 금융인증서</b></button>
+          <button class="way sel" type="button" data-way="code"><b>주주식별번호 / 참석자 코드</b></button>
         </div>
-        <div class="divtx"><i></i><span>주주패스가 처음이신가요?</span><i></i></div>
-        <div class="ways">
-          <button class="btn dark" type="button" id="goJoin">이용자 등록</button>
-          <button class="btn" type="button" id="goApply">참석자 코드 신청</button>
+        <div class="divtx"><i></i><span>기존 주주패스 회원이신가요?</span><i></i></div>
+        <button class="pass-btn" type="button" id="goJoin">
+          <img src="assets/logo-pass.svg" alt="주주PASS">
+          <span>기존 주주패스 계정 로그인</span>
+        </button>
+        <div class="foot-lnk">
+          <span class="q">주주패스가 처음이신가요?</span>
+          <span class="tb"><button type="button" id="goSignup">회원가입</button><i></i><button type="button" id="goApply">참석자 코드 신청</button></span>
         </div>
       </div>
     </div>
@@ -583,7 +592,8 @@
       else toast('공동인증서는 시연 대상이 아닙니다');
     });
   });
-  $('#goJoin').addEventListener('click',function(){ openM('mdPass'); });
+  $('#goJoin').addEventListener('click',function(){ openM('mdPass'); });   /* 기존 주주패스 계정 로그인 */
+  $('#goSignup').addEventListener('click',function(){ openM('mdPass'); });  /* 회원가입 */
   $('#goApply').addEventListener('click',function(){ go('pgApply'); });
 
   /* ── 간편인증 기관 ─────────────────────────────────────── */
