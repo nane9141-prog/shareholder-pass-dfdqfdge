@@ -106,10 +106,28 @@
   .f.row2 > .f{flex:1;min-width:0}
   .frow{display:flex;gap:8px;align-items:flex-start}
   .frow > .inbox{flex:1;min-width:0}
-  select.inbox{appearance:none;-webkit-appearance:none;font-size:16px;color:var(--txt);cursor:pointer;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7078' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
-    background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:38px}
-  select.inbox.ph{color:var(--ph)}
+  /* 국가 선택 — 열린 모습까지 디자인대로 그린다 */
+  .csel{position:relative;flex:none;width:184px}
+  .csel-b{display:flex;align-items:center;gap:4px;width:100%;padding:12px 14px 12px 16px;
+    background:var(--sf);border:1px solid var(--bd);border-radius:var(--r-lg);cursor:pointer}
+  .csel.open .csel-b{border-color:var(--bd-strong)}
+  .csel-b .v{flex:1;min-width:0;text-align:left;font-size:16px;line-height:1.5;color:var(--txt);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .csel-b .v.ph{color:var(--ph)}
+  .csel-b svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--txt3);stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .csel.open .csel-b svg{transform:rotate(180deg)}
+  .csel-m{display:none;position:absolute;left:0;top:calc(100% + 4px);z-index:30;width:184px;
+    padding:4px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r-lg);
+    box-shadow:0 0 6px rgba(0,0,0,.1);max-height:240px;overflow:auto}
+  .csel.open .csel-m{display:block}
+  .csel-m button{display:block;width:100%;padding:8px 12px;border:0;border-radius:var(--r-lg);
+    background:none;text-align:left;font-size:14px;line-height:1.5;color:var(--txt);cursor:pointer}
+  .csel-m button:hover{background:#F3F4F6}
+  .csel-m button.on{background:#F3F4F6;font-weight:700}
+  /* 국가코드는 번호 입력칸 안에 붙는다 */
+  .inbox .dial{flex:none;font-size:16px;line-height:1.5;color:var(--txt3)}
+  .inbox .dial:empty{display:none}
 
   /* ── 스텝 ───────────────────────────────────────────────── */
   .steps{display:flex;gap:24px;justify-content:center}
@@ -385,13 +403,14 @@
 
           <div class="f"><label>휴대폰번호</label>
             <div class="frow">
-              <select class="inbox ph" id="apCountry" style="flex:none;width:180px">
-                <option value="" selected disabled>국가 선택</option>
-                <option>United States</option><option>South Korea</option><option>Japan</option>
-                <option>United Kingdom</option><option>Singapore</option>
-              </select>
-              <div class="inbox" style="flex:none;width:84px" id="apDialBox"><input id="apDial" type="text" value="" placeholder="+" readonly style="color:var(--txt3)"></div>
-              <div class="inbox"><input id="apPhone" type="tel" inputmode="numeric" placeholder="휴대폰번호 입력"></div>
+              <div class="csel" id="apCountry">
+                <button class="csel-b" type="button">
+                  <span class="v ph">국가 선택</span>
+                  <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="csel-m"></div>
+              </div>
+              <div class="inbox"><span class="dial" id="apDial"></span><input id="apPhone" type="tel" inputmode="numeric" placeholder="휴대폰번호 입력"></div>
             </div>
           </div>
 
@@ -830,16 +849,30 @@
     });
   });
 
-  $('#apCountry').addEventListener('change',function(){
-    this.classList.remove('ph');
-    $('#apDial').value = DIAL[this.value]||'';
+  /* 국가 선택 — 목록을 직접 그려 열린 모습까지 디자인대로 맞춘다 */
+  var csel=$('#apCountry'), cmenu=$('.csel-m',csel), cval=$('.csel-b .v',csel);
+  AP.country='';
+  cmenu.innerHTML = Object.keys(DIAL).map(function(nm){
+    return '<button type="button" data-c="'+nm+'">'+nm+'</button>';
+  }).join('');
+  $('.csel-b',csel).addEventListener('click',function(e){
+    e.stopPropagation(); csel.classList.toggle('open');
+  });
+  cmenu.addEventListener('click',function(e){
+    var b=e.target.closest('[data-c]'); if(!b) return;
+    AP.country=b.dataset.c;
+    cval.textContent=AP.country; cval.classList.remove('ph');
+    $$('button',cmenu).forEach(function(x){ x.classList.toggle('on', x===b); });
+    $('#apDial').textContent = DIAL[AP.country]||'';
+    csel.classList.remove('open');
     apCheck();
   });
+  document.addEventListener('click',function(){ csel.classList.remove('open'); });
   $('#apPhone').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,11); apCheck(); });
   ['#apCorp','#apMgr','#apName','#apMail'].forEach(function(s){ $(s).addEventListener('input',apCheck); });
 
   function apCheck(){
-    var ok = AP.mailOk && $('#apCountry').value && $('#apPhone').value.length>=9;
+    var ok = AP.mailOk && AP.country && $('#apPhone').value.length>=9;
     if(AP.kind==='corp') ok = ok && $('#apCorp').value.trim() && $('#apMgr').value.trim();
     else ok = ok && $('#apName').value.trim();
     $('#apNext').disabled = !ok;
